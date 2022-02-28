@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.BusinessMotor;
 using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
@@ -24,8 +25,8 @@ namespace Business.Concrete
             _productDal = productDal;
             _mapper = mapper;
         }
-        
-        //[ValidationAspect(typeof(ProductAddDto))]
+
+        [ValidationAspect(typeof(ProductAddDto))]
         public IResult Add(ProductAddDto productPostDto)
         {
 
