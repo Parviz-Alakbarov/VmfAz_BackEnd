@@ -1,4 +1,7 @@
 using Business.Profiles;
+using Core.DependencyResolvers;
+using Core.Extensions;
+using Core.Utilities.IoC;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,6 +32,11 @@ namespace WebAPI
             services.AddControllers();
 
             services.AddAutoMapper(conf => { conf.AddProfile(new MapProfile()); });
+
+            services.AddDependecyResolvers(new ICoreModule[]
+            {
+                new CoreModule()
+            });
 
             services.AddSwaggerGen(c =>
             {
