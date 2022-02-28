@@ -28,6 +28,7 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(ProductAddDto))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(ProductAddDto productPostDto)
         {
 
@@ -42,11 +43,14 @@ namespace Business.Concrete
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
         }
+
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(ProductUpdateDto productUpdateDto)
         {
             throw new NotImplementedException();
         }
 
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Delete(Product product)
         {
             throw new NotImplementedException();
