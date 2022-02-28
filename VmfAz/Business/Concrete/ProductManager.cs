@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Business.Abstract;
 using Business.Constants;
+using Core.Utilities.BusinessMotor;
 using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
 using DataAccess.Abstract;
@@ -23,13 +24,25 @@ namespace Business.Concrete
             _productDal = productDal;
             _mapper = mapper;
         }
+        
+        //[ValidationAspect(typeof(ProductAddDto))]
         public IResult Add(ProductAddDto productPostDto)
         {
+
+            IResult result = BusinessRules.Run(
+                CheckIfProductLimitExceeded());
+
+            if (result != null)
+                return result;
 
             Product product = _mapper.Map<Product>(productPostDto);
 
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
+        }
+        public IResult Update(ProductUpdateDto productUpdateDto)
+        {
+            throw new NotImplementedException();
         }
 
         public IResult Delete(Product product)
@@ -39,7 +52,7 @@ namespace Business.Concrete
 
         public IDataResult<List<Product>> GetAll()
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductsListedSuccessfully);
         }
 
         public IDataResult<Product> GetProductById(int id)
@@ -52,9 +65,15 @@ namespace Business.Concrete
             throw new NotImplementedException();
         }
 
-        public IResult Update(ProductUpdateDto productUpdateDto)
+
+
+        private IResult CheckIfProductLimitExceeded()
         {
-            throw new NotImplementedException();
+            if (_productDal.GetAll().Count>=10)
+            {
+                return new ErrorResult();
+            }
+            return new SuccessResult();
         }
     }
 }

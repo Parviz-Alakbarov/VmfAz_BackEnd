@@ -10,6 +10,7 @@ namespace Business.Constants
     {
         //Product Messages
         public static readonly string ProductAdded = "Product Added Successfully!";
+        public static readonly string ProductsListedSuccessfully = "Products Listed Successfully!"; 
 
         //Brand Messages
         public static readonly string BrandAdded = "Brand Added Successfully!";
