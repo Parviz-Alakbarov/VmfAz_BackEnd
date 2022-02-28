@@ -15,27 +15,50 @@ namespace Core.DataAccess.EntityFramework
     {
         public void Add(TEntity entity)
         {
-            throw new NotImplementedException();
+            using (TContext context = new TContext())
+            {
+                var addEntity = context.Entry(entity);
+                addEntity.State = EntityState.Added;
+                context.SaveChanges();
+            }
         }
 
         public void Delete(TEntity entity)
         {
-            throw new NotImplementedException();
+            using (TContext context= new TContext())
+            {
+                var deleteEntity = context.Entry(entity);
+                deleteEntity.State = EntityState.Deleted;
+                context.SaveChanges();
+            }
         }
 
         public List<TEntity> GetAll(Expression<Func<TEntity, bool>> expression)
         {
-            throw new NotImplementedException();
+            using (TContext context = new TContext())
+            {
+                return expression == null
+                    ? context.Set<TEntity>().ToList()
+                    : context.Set<TEntity>().Where(expression).ToList();
+            }
         }
 
         public TEntity GetT(Expression<Func<TEntity, bool>> expression)
         {
-            throw new NotImplementedException();
+            using (TContext context = new TContext())
+            {
+                return context.Set<TEntity>().SingleOrDefault(expression);
+            }
         }
 
         public void Update(TEntity entity)
         {
-            throw new NotImplementedException();
+            using (TContext context = new TContext())
+            {
+                var updateEntity = context.Entry(entity);
+                updateEntity.State = EntityState.Modified;
+                context.SaveChanges();
+            }
         }
     }
 }
