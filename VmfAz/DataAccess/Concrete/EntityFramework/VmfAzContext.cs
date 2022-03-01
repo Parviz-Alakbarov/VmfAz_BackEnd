@@ -1,4 +1,5 @@
-﻿using DataAccess.Configurations;
+﻿using Core.Entities.Concrete;
+using DataAccess.Configurations;
 using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,6 +19,9 @@ namespace DataAccess.Concrete.EntityFramework
 
         public DbSet<Product>  Products { get; set; }
         public DbSet<Brand> Brands { get; set; }
+        public DbSet<OperationClaim> OperationClaims { get; set; }
+        public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -2,6 +2,7 @@ using Business.Profiles;
 using Core.DependencyResolvers;
 using Core.Extensions;
 using Core.Utilities.IoC;
+using Core.Utilities.Security.JWT;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,24 @@ namespace WebAPI
 
             services.AddControllers();
 
+            var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+
+            services.AddAuthentication(JWTBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opt =>
+                {
+                    opt.TokenValidationParamethers = new TokenValidationParamethers
+                    {
+                        ValidAudience = tokenOptions.Audience,
+                        ValidIssuer = tokenOptions.Issuer,
+                        ValidateIssuerSigningKey = true,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
+                    };
+                });
+
+
             services.AddAutoMapper(conf => { conf.AddProfile(new MapProfile()); });
 
             services.AddDependecyResolvers(new ICoreModule[]
@@ -57,6 +76,7 @@ namespace WebAPI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

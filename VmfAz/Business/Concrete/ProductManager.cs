@@ -27,7 +27,7 @@ namespace Business.Concrete
             _mapper = mapper;
         }
 
-        [ValidationAspect(typeof(ProductAddDto))]
+        [ValidationAspect(typeof(ProductAddDto), Priority =1)]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(ProductAddDto productPostDto)
         {
