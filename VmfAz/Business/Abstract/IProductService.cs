@@ -1,6 +1,6 @@
 ﻿using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.ProductDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace Business.Abstract
     public interface IProductService 
     {
         IDataResult<List<Product>> GetAll();
-        IDataResult<List<ProductDetailDto>> GetProductDetils();
+        IDataResult<List<ProductDetailDto>> GetProductDetils(int id);
         IDataResult<Product> GetProductById(int id);
 
         IResult Add(ProductAddDto productPostDto);

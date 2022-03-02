@@ -8,7 +8,7 @@ using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.ProductDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +67,7 @@ namespace Business.Concrete
             throw new NotImplementedException();
         }
 
-        public IDataResult<List<ProductDetailDto>> GetProductDetils()
+        public IDataResult<List<ProductDetailDto>> GetProductDetils(int id)
         {
             throw new NotImplementedException();
         }
