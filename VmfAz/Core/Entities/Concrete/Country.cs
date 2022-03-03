@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Concrete.ProductEntries
+namespace Core.Entities.Concrete
 {
-    public class ProductProductionCountry
+    public class Country
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<Product> Products { get; set; }
+
+        public List<City> Cities { get; set; }
+        public List<AppUser> AppUsers { get; set; }
 
     }
 }

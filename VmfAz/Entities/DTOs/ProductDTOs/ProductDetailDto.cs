@@ -14,8 +14,8 @@ namespace Entities.DTOs.ProductDTOs
         public decimal SalePrice { get; set; }
         public decimal CostPrice { get; set; }
         public int DiscountPercent { get; set; }
-        public string Description { get; set; }
-        public int BrandId { get; set; }
-        //public Gender Gender { get; set; }
+        public string Description { get; set; }       
+        public string BrandName { get; set; }
+        
     }
 }

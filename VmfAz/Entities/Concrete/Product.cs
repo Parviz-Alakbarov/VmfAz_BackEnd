@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Entities.Concrete;
 using Entities.Concrete.ProductEntries;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Entities.Concrete
         public decimal WarrantyLimit { get; set; }//decimal(3,1)
         public int? ProductStyleId { get; set; }
         public int? ProductWaterResistanceId { get; set; }
-        public int? ProductProductionCountryId { get; set; }
+        public int? CountryId { get; set; }
         public int? ProductMechanismId { get; set; }
         public int? ProductGlassTypeId { get; set; }
         public int? ProductCaseMaterialId { get; set; }
@@ -40,11 +41,11 @@ namespace Entities.Concrete
         public Gender Gender { get; set; }
         public ProductStyle ProductStyle { get; set; }
         public ProductWaterResistance ProductWaterResistance { get; set; }
-        public ProductProductionCountry ProductProductionCountry { get; set; }
         public ProductMechanism ProductMechanism { get; set; }
         public ProductGlassType ProductGlassType { get; set; }
         public ProductCaseShape ProductCaseShape { get; set; }
         public ProductCaseMaterial ProductCaseMaterial { get; set; }
+        public Country Country { get; set; }
     }
 
 }

@@ -22,6 +22,8 @@ namespace Core.Entities.Concrete
         public byte[] PasswordHash { get; set; }
 
         public List<UserOperationClaim> UserOperationClaims { get; set; }
+        public Country Country { get; set; }
+        public City City { get; set; }
 
     }
 }

@@ -35,10 +35,11 @@ namespace DataAccess.Concrete.EntityFramework
         public DbSet<ProductCaseSize> ProductCaseSizes { get; set; }
         public DbSet<ProductGlassType> ProductGlassTypes { get; set; }
         public DbSet<ProductMechanism> ProductMechanisms { get; set; }
-        public DbSet<ProductProductionCountry> ProductProductionCountries { get; set; }
         public DbSet<ProductStyle> ProductStyles { get; set; }
         public DbSet<ProductWaterResistance> ProductWaterResistances { get; set; }
         public DbSet<ProductFunctionality> ProductFunctionalities { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<City> Cities { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

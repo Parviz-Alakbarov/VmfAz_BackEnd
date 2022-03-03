@@ -22,7 +22,6 @@ namespace Entities.Concrete
         public ProductBeltType ProductBeltType { get; set; }
         public ProductCaseSize ProductCaseSize { get; set; }
         public Color ProductDialColor { get; set; }
-
         public Color ProductBeltColor { get; set; }
     }
 }
