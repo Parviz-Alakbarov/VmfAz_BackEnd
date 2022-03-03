@@ -18,5 +18,10 @@ namespace Core.Entities.Concrete
         public string Address { get; set; }
         public bool IsAdmin { get; set; }
         public bool IsDeleted { get; set; }
+        public byte[] PasswordSalt { get; set; }
+        public byte[] PasswordHash { get; set; }
+
+        public List<UserOperationClaim> UserOperationClaims { get; set; }
+
     }
 }

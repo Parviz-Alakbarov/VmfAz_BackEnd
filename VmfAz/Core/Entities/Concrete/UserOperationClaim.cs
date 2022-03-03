@@ -12,5 +12,8 @@ namespace Core.Entities.Concrete
         public int AppUserId { get; set; }
         public int OperationClaimId { get; set; }
 
+        public AppUser AppUser { get; set; }
+        public OperationClaim OperationClaim { get; set; }
+
     }
 }

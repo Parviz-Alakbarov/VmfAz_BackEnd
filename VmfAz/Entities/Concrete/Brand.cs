@@ -16,5 +16,7 @@ namespace Entities.Concrete
         public string Image { get; set; }
         public DateTime CreateDate { get; set; }
         public bool IsDeleted { get; set; }
+
+        public List<Product> Products { get; set; }
     }
 }

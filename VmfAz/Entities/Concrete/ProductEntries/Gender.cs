@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Entities.Concrete
+namespace Entities.Concrete.ProductEntries
 {
-    public class OperationClaim : IEntity
+    public class Gender
     {
         public int Id { get; set; }
         public string Name { get; set; }
-
-        public List<UserOperationClaim> UserOperationClaims { get; set; }
+        public List<Product> Products { get; set; }
     }
 }
