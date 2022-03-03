@@ -29,16 +29,15 @@ namespace Business.Concrete
 
         [ValidationAspect(typeof(ProductAddDto), Priority =1)]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult Add(ProductAddDto productPostDto)
+        public IResult Add(ProductAddDto productAddDto)
         {
-
             IResult result = BusinessRules.Run(
                 CheckIfProductLimitExceeded());
 
             if (result != null)
                 return result;
 
-            Product product = _mapper.Map<Product>(productPostDto);
+            Product product = _mapper.Map<Product>(productAddDto);
 
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);

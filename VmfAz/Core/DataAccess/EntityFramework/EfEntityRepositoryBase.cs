@@ -43,7 +43,7 @@ namespace Core.DataAccess.EntityFramework
             }
         }
 
-        public TEntity GetT(Expression<Func<TEntity, bool>> expression)
+        public TEntity Get(Expression<Func<TEntity, bool>> expression)
         {
             using (TContext context = new TContext())
             {
