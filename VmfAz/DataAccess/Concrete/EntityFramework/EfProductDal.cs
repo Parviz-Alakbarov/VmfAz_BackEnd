@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfProductDal : EfEntityRepositoryBase<Product, VmfAzContext> , IProductDal
+    public class EfProductDal : EfEntityRepositoryBase<Product, VmfAzContext>, IProductDal
     {
-         
+
     }
 }

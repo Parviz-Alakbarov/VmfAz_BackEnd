@@ -16,7 +16,6 @@ namespace Core.Entities.Concrete
         public int CountryId { get; set; }
         public int CityId { get; set; }
         public string Address { get; set; }
-        public bool IsAdmin { get; set; }
         public bool IsDeleted { get; set; }
         public byte[] PasswordSalt { get; set; }
         public byte[] PasswordHash { get; set; }

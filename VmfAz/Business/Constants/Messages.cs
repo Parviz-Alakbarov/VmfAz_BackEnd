@@ -10,7 +10,7 @@ namespace Business.Constants
     {
         //Product Messages
         public static readonly string ProductAdded = "Product Added Successfully!";
-        public static readonly string ProductsListedSuccessfully = "Products Listed Successfully!"; 
+        public static readonly string ProductsListedSuccessfully = "Products Listed Successfully!";
 
         //Brand Messages
         public static readonly string BrandAdded = "Brand Added Successfully!";
@@ -24,5 +24,9 @@ namespace Business.Constants
         public const string UserAlreadyExists = "User Already Exist!";
         public const string AccessTokenCreated = "Token Created Successfully!";
         public const string ChangePasswordError = "Your Current Password Is Incorrect!";
+
+
+        //City Messages 
+        public const string CityNotExist = "City Not fount!";
     }
 }

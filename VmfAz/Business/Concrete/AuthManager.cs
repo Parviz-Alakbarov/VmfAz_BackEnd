@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation.UserValidators;
 using Core.Aspects.Autofac.Authorization;
+using Core.Aspects.Autofac.Validation;
 using Core.Entities.Concrete;
 using Core.Utilities.BusinessMotor;
 using Core.Utilities.Results;
@@ -20,29 +22,43 @@ namespace Business.Concrete
     {
         private IUserService _userService;
         private ITokenHelper _tokenHelper;
+        private ICountryService _countryService;
+        private ICityService _cityService;
 
-        public AuthManager(IUserService userService, ITokenHelper tokenHelper)
+        public AuthManager(IUserService userService,
+                            ITokenHelper tokenHelper,
+                            ICityService cityService,
+                            ICountryService countryService)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
+            _cityService = cityService;
+            _countryService = countryService;
         }
-
-        public IDataResult<AppUser> Register(UserRegisterDto userForRegisterDto)
+        [ValidationAspect(typeof(UserRegisterDtoValidator))]
+        public IDataResult<AppUser> Register(UserRegisterDto userRegisterDto)
         {
-            var result = BusinessRules.Run(UserExists(userForRegisterDto.Email));
+            var result = BusinessRules.Run(
+                UserExists(userRegisterDto.Email),
+                CheckCountryExist(userRegisterDto.CountryId),
+                CheckCityExist(userRegisterDto.CountryId, userRegisterDto.CityId));
 
             if (result != null)
-                return new ErrorDataResult<AppUser>(Messages.UserAlreadyExists);
+                return new ErrorDataResult<AppUser>(result.Message);
 
             byte[] passwordHash, passwordSalt;
-            HashingHelper.CreatePasswordHash(userForRegisterDto.Password, out passwordHash, out passwordSalt);
+            HashingHelper.CreatePasswordHash(userRegisterDto.Password, out passwordHash, out passwordSalt);
             var user = new AppUser
             {
-                Email = userForRegisterDto.Email,
-                FirstName = userForRegisterDto.FirstName,
-                LastName = userForRegisterDto.LastName,
+                Email = userRegisterDto.Email,
+                FirstName = userRegisterDto.FirstName,
+                LastName = userRegisterDto.LastName,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
+                Address = userRegisterDto.Address,
+                PhoneNumber = userRegisterDto.PhoneNumber,
+                CityId = userRegisterDto.CityId,
+                CountryId = userRegisterDto.CountryId,
                 IsDeleted = false
             };
             _userService.Add(user);
@@ -107,6 +123,15 @@ namespace Business.Concrete
             return new SuccessDataResult<AccessToken>(accessToken, Messages.AccessTokenCreated);
 
         }
+        private IResult CheckCountryExist(int countryId)
+        {
+            return _countryService.CheckCountryExists(countryId);
+        }
+        private IResult CheckCityExist(int countryId, int cityId)
+        {
+            return _cityService.CheckCityExistsOnCountry(countryId, cityId);
+        }
+
     }
 
 }

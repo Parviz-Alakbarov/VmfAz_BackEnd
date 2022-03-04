@@ -20,7 +20,6 @@ namespace DataAccess.Configurations.UserConfigurations
             builder.Property(x => x.CityId).IsRequired();
             builder.Property(x => x.CountryId).IsRequired();
             builder.Property(x => x.Address).IsRequired().HasMaxLength(500);
-            builder.Property(x => x.IsAdmin).HasDefaultValue(false);
             builder.Property(x => x.IsDeleted).HasDefaultValue(false);
             builder.HasOne(x=>x.Country).WithMany(x=>x.AppUsers).OnDelete(DeleteBehavior.NoAction);
 
