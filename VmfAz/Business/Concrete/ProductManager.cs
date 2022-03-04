@@ -2,6 +2,7 @@
 using Business.Abstract;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation.ProductValidators;
+using Core.Aspects.Autofac.Authorization;
 using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.BusinessMotor;
@@ -31,14 +32,14 @@ namespace Business.Concrete
             _countryService = countryService;
             _productEntryDal = productEntryDal;
         }
-
+        [AuthorizeOperation("SuperAdmin")]
         [ValidationAspect(typeof(ProductAddDtoValidator), Priority =1)]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(ProductAddDto productAddDto)
         {
             IResult result = BusinessRules.Run(
-                CheckIfProductLimitExceeded(),
-                CheckCountryExist(productAddDto.CountryId));
+                CheckCountryExist(productAddDto.CountryId),
+                CheckIfProductExistWithName(productAddDto.Name));
 
             if (result != null)
                 return result;
@@ -73,27 +74,26 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductsListedSuccessfully);
         }
 
-        public IDataResult<Product> GetProductById(int id)
+        public IDataResult<Product> GetProductById(int productId)
         {
-            throw new NotImplementedException();
-        }
-
-        public IDataResult<List<ProductDetailDto>> GetProductDetils(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-        private IResult CheckIfProductLimitExceeded()
-        {
-            if (_productDal.GetAll().Count>=10)
+            var result = _productDal.Get(p => p.Id == productId);
+            if (result==null)
             {
-                return new ErrorResult();
+                return new ErrorDataResult<Product>(Messages.ProductNotFound);
             }
-            return new SuccessResult();
+            return new SuccessDataResult<Product>(result);
+        }
+        public IDataResult<ProductDetailDto> GetProductDetils(int id)
+        {
+            var result = _productDal.GetProductDetails(id);
+            if (result == null)
+            {
+                return new ErrorDataResult<ProductDetailDto>(Messages.ProductNotFound);
+            }
+            return new SuccessDataResult<ProductDetailDto>(result);
         }
 
+    
         private IResult CheckCountryExist(int? countryId)
         {
             if (countryId==null)
@@ -101,6 +101,14 @@ namespace Business.Concrete
                 return new SuccessResult();
             }
             return _countryService.CheckCountryExists((int)countryId);
+        }
+
+        private IResult CheckIfProductExistWithName(string productName)
+        {
+            if (_productDal.Get(p => p.Name == productName) != null)
+                return new ErrorResult(Messages.ProductAlreadyExists);
+
+            return new SuccessResult();
         }
     }
 }

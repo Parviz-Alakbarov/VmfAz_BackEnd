@@ -78,7 +78,7 @@ namespace Business.Concrete
                 return new ErrorDataResult<AppUser>(Messages.PasswordError);
             }
 
-            return new SuccessDataResult<AppUser>(userToCheck.Data, Messages.SuccessfulLogin);
+            return new SuccessDataResult<AppUser>(userToCheck.Data, Messages.SuccessfullLogin);
         }
 
         public IResult UserExists(string email)
