@@ -12,10 +12,10 @@ namespace Entities.Concrete
     {
         public int Id { get; set; }
         public int ProductId { get; set; }
-        public int ProductBeltTypeId { get; set; }
-        public int ProductCaseSizeId { get; set; }
-        public int ProductBeltColorId { get; set; }
-        public int ProductDialColorId { get; set; }
+        public int? ProductBeltTypeId { get; set; }
+        public int? ProductCaseSizeId { get; set; }
+        public int? ProductBeltColorId { get; set; }
+        public int? ProductDialColorId { get; set; }
 
 
         public Product Product { get; set; }

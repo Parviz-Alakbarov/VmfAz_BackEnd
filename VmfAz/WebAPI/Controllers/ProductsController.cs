@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Entities.DTOs.ProductDTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -14,6 +15,19 @@ namespace WebAPI.Controllers
         {
             _productService = productService;
         }
+
+        [HttpPost("add")]
+        public IActionResult Add(ProductAddDto productAddDto)
+        {
+            var result = _productService.Add(productAddDto);
+            if (result.Success)
+            {
+                return StatusCode(201);
+            }
+            return BadRequest();
+        }
+
+
         [HttpGet("")]
         public IActionResult GetAll()
         {

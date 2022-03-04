@@ -22,6 +22,10 @@ namespace Business.DependecyResolvers.Autofac
             builder.RegisterType<ProductManager>().As<IProductService>().SingleInstance();
             builder.RegisterType<EfProductDal>().As<IProductDal>().SingleInstance();
 
+            builder.RegisterType<ProductEntryManager>().As<IProductEntryService>().SingleInstance();
+            builder.RegisterType<EfProductEntryDal>().As<IProductEntryDal>().SingleInstance();
+
+
             builder.RegisterType<CountryManager>().As<ICountryService>().SingleInstance();
             builder.RegisterType<EfCountryDal>().As<ICountryDal>().SingleInstance();
 

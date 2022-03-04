@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation.ProductValidators;
 using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.BusinessMotor;
@@ -20,28 +21,39 @@ namespace Business.Concrete
     public class ProductManager : IProductService
     {
         private readonly IProductDal _productDal;
+        private readonly ICountryService _countryService;
         private readonly IMapper _mapper;
-        public ProductManager(IProductDal productDal, IMapper mapper)
+        private readonly IProductEntryDal _productEntryDal;
+        public ProductManager(IProductDal productDal, IMapper mapper, ICountryService countryService, IProductEntryDal productEntryDal)
         {
             _productDal = productDal;
             _mapper = mapper;
+            _countryService = countryService;
+            _productEntryDal = productEntryDal;
         }
 
-        [ValidationAspect(typeof(ProductAddDto), Priority =1)]
+        [ValidationAspect(typeof(ProductAddDtoValidator), Priority =1)]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(ProductAddDto productAddDto)
         {
             IResult result = BusinessRules.Run(
-                CheckIfProductLimitExceeded());
+                CheckIfProductLimitExceeded(),
+                CheckCountryExist(productAddDto.CountryId));
 
             if (result != null)
                 return result;
 
             Product product = _mapper.Map<Product>(productAddDto);
-
             _productDal.Add(product);
+
+            ProductEntry productEntry = _mapper.Map<ProductEntry>(productAddDto);
+            productEntry.ProductId = product.Id;
+
+            _productEntryDal.Add(productEntry);
             return new SuccessResult(Messages.ProductAdded);
         }
+
+ 
 
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(ProductUpdateDto productUpdateDto)
@@ -80,6 +92,15 @@ namespace Business.Concrete
                 return new ErrorResult();
             }
             return new SuccessResult();
+        }
+
+        private IResult CheckCountryExist(int? countryId)
+        {
+            if (countryId==null)
+            {
+                return new SuccessResult();
+            }
+            return _countryService.CheckCountryExists((int)countryId);
         }
     }
 }
