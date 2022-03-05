@@ -12,8 +12,8 @@ namespace Entities.Concrete.ProductEntries
         public string Name { get; set; }
         public string HexValue { get; set; }
 
-        public List<ProductEntry> ProductEntriesForBelt { get; set; }
-        public List<ProductEntry> ProductEntriesForDial { get; set; }
+        public List<Product> ProductsBelt { get; set; }
+        public List<Product> ProductsDial { get; set; }
         
     }
 }

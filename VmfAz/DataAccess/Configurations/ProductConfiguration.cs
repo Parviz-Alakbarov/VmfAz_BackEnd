@@ -35,6 +35,11 @@ namespace DataAccess.Configurations
             builder.Property(x => x.ProductCaseMaterialId).IsRequired(false);
             builder.Property(x => x.ProductCaseShapeId).IsRequired(false);
 
+            builder.HasOne(x=>x.ProductBeltColor).WithMany(x=>x.ProductsBelt).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x=>x.ProductDialColor).WithMany(x=>x.ProductsDial).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x=>x.ProductCaseSize).WithMany(x=>x.Products).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x=>x.ProductBeltType).WithMany(x=>x.Products).OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }

@@ -13,7 +13,9 @@ namespace Business.Constants
         public static readonly string ProductsListedSuccessfully = "Products Listed Successfully!";
         public static readonly string ProductNotFound = "Product Not Found!";
         public static readonly string ProductAlreadyExists = "Product name alreary exist ";
-
+        public static readonly string ProductDeletedSuccessfully = "Product deleted successfully!";
+        public static readonly string ProductUpdatedSuccesfully = "Product updated successfully!";
+        
         //Brand Messages
         public static readonly string BrandAdded = "Brand Added Successfully!";
 

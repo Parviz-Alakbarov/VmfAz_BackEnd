@@ -15,7 +15,7 @@ namespace WebAPI.Controllers
         {
             _productService = productService;
         }
-        
+
         [HttpPost("add")]
         public IActionResult Add(ProductAddDto productAddDto)
         {
@@ -27,11 +27,33 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
+        [HttpDelete("delete")]
+        public IActionResult Remove(int id)
+        {
+            var result = _productService.Delete(id);
+            if (result.Success)
+            {
+                return StatusCode(204, result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpPut("update")]
+        public IActionResult Update(int id, ProductUpdateDto productUpdateDto)
+        {
+            var result = _productService.Update(id,productUpdateDto);
+            if (result.Success)
+            {
+                return StatusCode(204, result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+
 
         [HttpGet("")]
         public IActionResult GetAll()
         {
-            var result =  _productService.GetAll();
+            var result = _productService.GetAll();
             if (result.Success)
             {
                 return Ok(result);
@@ -49,6 +71,7 @@ namespace WebAPI.Controllers
             }
             return NotFound(result.Message);
         }
+
         [HttpGet("getProductDetail")]
         public IActionResult GetProductDetail(int id)
         {

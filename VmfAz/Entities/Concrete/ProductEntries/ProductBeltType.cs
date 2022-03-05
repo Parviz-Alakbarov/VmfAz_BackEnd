@@ -11,6 +11,6 @@ namespace Entities.Concrete.ProductEntries
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public List<ProductEntry> ProductEntries { get; set; }
+        public List<Product> Products { get; set; }
     }
 }

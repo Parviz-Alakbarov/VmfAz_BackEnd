@@ -10,7 +10,7 @@ namespace Entities.Concrete.ProductEntries
     {
         public int Id { get; set; }
         public string Size { get; set; }
-        public List<ProductEntry> ProductEntries { get; set; }
+        public List<Product> Products { get; set; }
 
     }
 }

@@ -27,11 +27,10 @@ namespace DataAccess.Concrete.EntityFramework
                              join style in context.ProductStyles on p.ProductStyleId equals style.Id
                              join waterRes in context.ProductWaterResistances on p.ProductWaterResistanceId equals waterRes.Id
                              join caseShape in context.ProductCaseShapes on p.ProductCaseShapeId equals caseShape.Id
-                             join pe in context.ProductEntries on p.Id equals pe.ProductId
-                             join beltType in context.ProductBeltTypes on pe.ProductBeltTypeId equals beltType.Id
-                             join caseSize in context.ProductCaseSizes on pe.ProductCaseSizeId equals caseSize.Id
-                             join beltcolor in context.Colors on pe.ProductBeltColorId equals beltcolor.Id
-                             join dialcolor in context.Colors on pe.ProductDialColorId equals dialcolor.Id
+                             join beltType in context.ProductBeltTypes on p.ProductBeltTypeId equals beltType.Id
+                             join caseSize in context.ProductCaseSizes on p.ProductCaseSizeId equals caseSize.Id
+                             join beltcolor in context.Colors on p.ProductBeltColorId equals beltcolor.Id
+                             join dialcolor in context.Colors on p.ProductDialColorId equals dialcolor.Id
                              where p.Id == id
                              select new ProductDetailDto
                              {

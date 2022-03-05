@@ -24,16 +24,14 @@ namespace Business.Concrete
         private readonly IProductDal _productDal;
         private readonly ICountryService _countryService;
         private readonly IMapper _mapper;
-        private readonly IProductEntryDal _productEntryDal;
-        public ProductManager(IProductDal productDal, IMapper mapper, ICountryService countryService, IProductEntryDal productEntryDal)
+        public ProductManager(IProductDal productDal, IMapper mapper, ICountryService countryService)
         {
             _productDal = productDal;
             _mapper = mapper;
             _countryService = countryService;
-            _productEntryDal = productEntryDal;
         }
         [AuthorizeOperation("SuperAdmin")]
-        [ValidationAspect(typeof(ProductAddDtoValidator), Priority =1)]
+        [ValidationAspect(typeof(ProductAddDtoValidator), Priority = 1)]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(ProductAddDto productAddDto)
         {
@@ -47,25 +45,57 @@ namespace Business.Concrete
             Product product = _mapper.Map<Product>(productAddDto);
             _productDal.Add(product);
 
-            ProductEntry productEntry = _mapper.Map<ProductEntry>(productAddDto);
-            productEntry.ProductId = product.Id;
-
-            _productEntryDal.Add(productEntry);
             return new SuccessResult(Messages.ProductAdded);
         }
 
- 
 
+        [AuthorizeOperation("Admin,SuperAdmin")]
+        [ValidationAspect(typeof(ProductUpdateDtoValidator))]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult Update(ProductUpdateDto productUpdateDto)
+        public IResult Update(int id, ProductUpdateDto productUpdateDto)
         {
-            throw new NotImplementedException();
+            Product product = _productDal.Get(x => !x.IsDeleted && x.Id == id);
+            if (product == null)
+            {
+                return new ErrorResult(Messages.ProductNotFound);
+            }
+            product.CostPrice = productUpdateDto.CostPrice;
+            product.SalePrice = productUpdateDto.SalePrice;
+            product.Name = productUpdateDto.Name;
+            product.Description = productUpdateDto.Description;
+            product.Image = productUpdateDto.Image;
+            product.DiscountPercent = productUpdateDto.DiscountPercent;
+
+            _productDal.Update(product);
+            return new SuccessResult(Messages.ProductUpdatedSuccesfully);
         }
 
+        [AuthorizeOperation("Admin,SuperAdmin")]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult Delete(Product product)
+        public IResult Delete(int productId)
         {
-            throw new NotImplementedException();
+            Product product = _productDal.Get(x => !x.IsDeleted && x.Id == productId);
+            if (product == null)
+            {
+                return new ErrorResult(Messages.ProductNotFound);
+            }
+            product.IsDeleted = true;
+            _productDal.Update(product);
+            return new SuccessResult(Messages.ProductDeletedSuccessfully);
+        }
+
+        [AuthorizeOperation("Admin,SuperAdmin")]
+        [CacheRemoveAspect("IProductService.Get")]
+        public IResult UnDelete(int productId)
+        {
+            Product product = _productDal.Get(x => x.Id == productId);
+            if (product == null)
+            {
+                return new ErrorResult(Messages.ProductNotFound);
+            }
+            product.IsDeleted = false;
+            _productDal.Update(product);
+            return new SuccessResult(Messages.ProductDeletedSuccessfully);
         }
 
         [CacheAspect]
@@ -77,7 +107,7 @@ namespace Business.Concrete
         public IDataResult<Product> GetProductById(int productId)
         {
             var result = _productDal.Get(p => p.Id == productId);
-            if (result==null)
+            if (result == null)
             {
                 return new ErrorDataResult<Product>(Messages.ProductNotFound);
             }
@@ -93,10 +123,10 @@ namespace Business.Concrete
             return new SuccessDataResult<ProductDetailDto>(result);
         }
 
-    
+
         private IResult CheckCountryExist(int? countryId)
         {
-            if (countryId==null)
+            if (countryId == null)
             {
                 return new SuccessResult();
             }

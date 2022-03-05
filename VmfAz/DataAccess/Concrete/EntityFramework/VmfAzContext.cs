@@ -26,7 +26,6 @@ namespace DataAccess.Concrete.EntityFramework
         public DbSet<AppUser> AppUsers { get; set; }
 
         ////ProductDetails
-        public DbSet<ProductEntry> ProductEntries { get; set; }
         public DbSet<Color> Colors { get; set; }
         public DbSet<Gender> Genders { get; set; }
         public DbSet<ProductBeltType> ProductBeltTypes { get; set; }
@@ -45,7 +44,6 @@ namespace DataAccess.Concrete.EntityFramework
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
-            modelBuilder.ApplyConfiguration(new ProductEntryConfiguration());
             modelBuilder.ApplyConfiguration(new BrandConfiguration());
 
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());

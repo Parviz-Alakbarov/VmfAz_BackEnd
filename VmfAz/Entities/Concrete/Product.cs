@@ -24,6 +24,11 @@ namespace Entities.Concrete
         public int? ProductGlassTypeId { get; set; }
         public int? ProductCaseMaterialId { get; set; }
         public int? ProductCaseShapeId { get; set; }
+        public int? ProductCaseSizeId { get; set; }
+        public int? ProductBeltTypeId { get; set; }
+        public int? ProductBeltColorId { get; set; }
+        public int? ProductDialColorId { get; set; }
+
 
         public string Name { get; set; }
         public string Image { get; set; }
@@ -37,7 +42,6 @@ namespace Entities.Concrete
         public bool IsDeleted { get; set; }
 
         public Brand Brand { get; set; }
-        public List<ProductEntry> ProductEntries { get; set; }
         public Gender Gender { get; set; }
         public ProductStyle ProductStyle { get; set; }
         public ProductWaterResistance ProductWaterResistance { get; set; }
@@ -46,6 +50,10 @@ namespace Entities.Concrete
         public ProductCaseShape ProductCaseShape { get; set; }
         public ProductCaseMaterial ProductCaseMaterial { get; set; }
         public Country Country { get; set; }
+        public ProductBeltType ProductBeltType { get; set; }
+        public ProductCaseSize ProductCaseSize { get; set; }
+        public Color ProductDialColor { get; set; }
+        public Color ProductBeltColor { get; set; }
     }
 
 }
