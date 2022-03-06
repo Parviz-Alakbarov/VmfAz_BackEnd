@@ -53,7 +53,6 @@ namespace DataAccess.Concrete.EntityFramework
                                  DiscountedPrice = p.SalePrice*(1-(decimal)p.DiscountPercent/100),
                                  DiscountPercent = p.DiscountPercent,
                                  SalePrice = p.SalePrice,
-                                 Image = p.Image,
                                  ToolCount = p.ToolCount,
                                  WarrantyLimit = p.WarrantyLimit,
                              };

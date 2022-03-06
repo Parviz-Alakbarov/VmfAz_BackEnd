@@ -48,12 +48,16 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ProductAdded);
         }
 
-
         [AuthorizeOperation("Admin,SuperAdmin")]
         [ValidationAspect(typeof(ProductUpdateDtoValidator))]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(int id, ProductUpdateDto productUpdateDto)
         {
+            IResult result = BusinessRules.Run(
+                CheckIfProductExistWithName(productUpdateDto.Name));
+            if (result != null)
+                return result;
+
             Product product = _productDal.Get(x => !x.IsDeleted && x.Id == id);
             if (product == null)
             {
@@ -63,7 +67,6 @@ namespace Business.Concrete
             product.SalePrice = productUpdateDto.SalePrice;
             product.Name = productUpdateDto.Name;
             product.Description = productUpdateDto.Description;
-            product.Image = productUpdateDto.Image;
             product.DiscountPercent = productUpdateDto.DiscountPercent;
 
             _productDal.Update(product);
@@ -74,7 +77,7 @@ namespace Business.Concrete
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Delete(int productId)
         {
-            Product product = _productDal.Get(x => !x.IsDeleted && x.Id == productId);
+            Product product = _productDal.Get(x => x.Id == productId);
             if (product == null)
             {
                 return new ErrorResult(Messages.ProductNotFound);
@@ -140,5 +143,6 @@ namespace Business.Concrete
 
             return new SuccessResult();
         }
+
     }
 }

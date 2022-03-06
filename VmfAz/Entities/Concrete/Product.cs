@@ -31,7 +31,6 @@ namespace Entities.Concrete
 
 
         public string Name { get; set; }
-        public string Image { get; set; }
         public decimal SalePrice { get; set; }
         public decimal CostPrice { get; set; }
         public int DiscountPercent { get; set; }
@@ -41,6 +40,7 @@ namespace Entities.Concrete
         public DateTime DeleteDate { get; set; }
         public bool IsDeleted { get; set; }
 
+        public List<ProductImage> ProductImages { get; set; }
         public Brand Brand { get; set; }
         public Gender Gender { get; set; }
         public ProductStyle ProductStyle { get; set; }

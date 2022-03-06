@@ -14,7 +14,6 @@ namespace DataAccess.Configurations
         public void Configure(EntityTypeBuilder<Product> builder)
         {
             builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
-            builder.Property(x => x.Image).HasMaxLength(100).IsRequired();
             builder.Property(x => x.Description).HasMaxLength(1000).IsRequired();
             builder.Property(x => x.SalePrice).HasColumnType("decimal(18,2)").IsRequired();
             builder.Property(x => x.CostPrice).HasColumnType("decimal(18,2)").IsRequired();

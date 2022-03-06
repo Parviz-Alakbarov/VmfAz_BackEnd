@@ -24,6 +24,7 @@ namespace DataAccess.Concrete.EntityFramework
         public DbSet<OperationClaim> OperationClaims { get; set; }
         public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
 
         ////ProductDetails
         public DbSet<Color> Colors { get; set; }
@@ -45,6 +46,7 @@ namespace DataAccess.Concrete.EntityFramework
         {
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new BrandConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
 
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
             modelBuilder.ApplyConfiguration(new OperationClaimConfiguration());

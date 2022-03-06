@@ -11,10 +11,24 @@ namespace WebAPI.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
-        public ProductsController(IProductService productService)
+        private readonly IProductImageService _productImageService;
+        public ProductsController(IProductService productService, IProductImageService productImageService)
         {
             _productService = productService;
+            _productImageService = productImageService;
         }
+
+        [HttpPost("addImage")]
+        public IActionResult AddImage([FromForm] int productId, [FromForm] IFormFile file)
+        {
+            var result = _productImageService.Add(productId, file);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
 
         [HttpPost("add")]
         public IActionResult Add(ProductAddDto productAddDto)
@@ -44,7 +58,7 @@ namespace WebAPI.Controllers
             var result = _productService.Update(id,productUpdateDto);
             if (result.Success)
             {
-                return StatusCode(204, result.Message);
+                return Ok(result.Message);
             }
             return BadRequest(result.Message);
         }
