@@ -1,6 +1,9 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation.ProductValidators;
+using Core.Aspects.Autofac.Authorization;
 using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.BusinessMotor;
 using Core.Utilities.FileHelper;
 using Core.Utilities.Results;
@@ -26,11 +29,13 @@ namespace Business.Concrete
         }
 
         //[AuthorizeOperation("Admin,SuperAdmin")]
+        [ValidationAspect(typeof(ProductImageValidator))]
         [CacheRemoveAspect("IProductImageService.Get")]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(int productId, IFormFile file)
         {
-            IResult result = BusinessRules.Run();
+            IResult result = BusinessRules.Run(
+                CheckIfProductImageLimitExceeded(productId));
             if (result != null)
                 return result;
 
@@ -50,29 +55,95 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ProductImageAddedSuccessfully);
         }
 
+
+        [AuthorizeOperation("Admin,SuperAdmin")]
+        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IProductImageService.Get")]
         public IResult Delete(ProductImage productImage)
         {
-            throw new NotImplementedException();
+            ProductImage deletedImage = _productImageDal.Get(x => x.Id == productImage.Id);
+            if (deletedImage == null)
+            {
+                return new ErrorResult(Messages.ProductImageNotFound);
+            }
+
+            var deleteResult = FileHelper.Delete(productImage.ImagePath);
+            if (!deleteResult.Success)
+            {
+                return new ErrorResult(Messages.ErrorDeletingImage);
+            }
+            _productImageDal.Delete(deletedImage);
+            return new SuccessResult(Messages.ProductimageDeletedSuccessfully);
         }
 
+
+        [CacheAspect(15)]
         public IDataResult<List<ProductImage>> GetAll()
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<List<ProductImage>>(_productImageDal.GetAll(), Messages.ProductsListedSuccessfully);
         }
 
         public IDataResult<ProductImage> GetById(int imageId)
         {
-            throw new NotImplementedException();
+            var result = _productImageDal.Get(x => x.Id == imageId);
+            if (result == null)
+            {
+                return new ErrorDataResult<ProductImage>(Messages.ProductImageNotFound);
+            }
+            return new SuccessDataResult<ProductImage>(result);
         }
 
-        public IDataResult<List<ProductImage>> GetByProductId(int productId)
+        public IDataResult<List<ProductImage>> GetProductImages(int productId)
         {
-            throw new NotImplementedException();
+            var result = _productImageDal.GetAll(p => p.ProductId == productId);
+            return new SuccessDataResult<List<ProductImage>>(result.Count == 0 ?
+                (new List<ProductImage>
+                {
+                    new ProductImage
+                    {
+                        ProductId = productId,
+                        ImagePath = "images/default.jpg",
+                        UploadDate = DateTime.Now
+                    }
+                })
+                : result);
         }
 
         public IResult Update(ProductImage productImage, IFormFile file)
         {
-            throw new NotImplementedException();
+            var image = _productImageDal.Get(x => x.Id == productImage.Id);
+            if (image == null)
+            {
+                return new ErrorResult(Messages.ProductImageNotFound);
+            }
+            var updateResult = FileHelper.Update(file, image.ImagePath);
+            if (!updateResult.Success)
+            {
+                return new ErrorResult(updateResult.Message);
+            }
+            image.ImagePath = updateResult.Message;
+            image.UploadDate = DateTime.Now;
+            _productImageDal.Update(image);
+
+            return new SuccessResult(Messages.ProductImageUpdatedSuccessfully);
         }
+
+        //Business Rules
+        private IResult CheckIfProductImageLimitExceeded(int productId)
+        {
+            var result = _productImageDal.GetAll(p => p.ProductId == productId).Count;
+            if (result > 5)
+                return new ErrorResult(Messages.ProductImageLimitExceeded);
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfProdcutImageIdExist(int productImageId)
+        {
+            ProductImage image = _productImageDal.Get(i => i.Id == productImageId);
+            if (image == null)
+                return new ErrorResult(Messages.ProductImageNotFound);
+            return new SuccessResult();
+        }
+
     }
 }

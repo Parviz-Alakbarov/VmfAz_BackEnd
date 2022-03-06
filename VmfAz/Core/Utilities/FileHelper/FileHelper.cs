@@ -74,7 +74,7 @@ namespace Core.Utilities.FileHelper
             return new SuccessResult(ImagePathForDb.Replace("\\", "/"));
         }
 
-        private static IResult Delete(string directory)
+        public static IResult Delete(string directory)
         {
             string newDirector = $"{RootDirectory}\\{directory.Replace("\\", "/")}";
             if (!File.Exists(newDirector))

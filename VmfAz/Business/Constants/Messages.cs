@@ -18,6 +18,12 @@ namespace Business.Constants
 
         //Product Image Messages
         public static readonly string ProductImageAddedSuccessfully = "Product Image Added Successfully!";
+        public static readonly string ProductImageNotFound = "Product Image Not Found!";
+        public static readonly string ProductImagesListedSuccessfully = "Product Images Listed Successfully!";
+        public static readonly string ProductImageLimitExceeded = "Product Image Limit Exceeded!";
+        public static readonly string ProductImageUpdatedSuccessfully = "Product Image Updated Successfully!";
+        public static readonly string ErrorDeletingImage = "Error occurred while image deletion!";
+        public static readonly string ProductimageDeletedSuccessfully = "Product Image Deleted Successfully!";
 
         //Brand Messages
         public static readonly string BrandAdded = "Brand Added Successfully!";
