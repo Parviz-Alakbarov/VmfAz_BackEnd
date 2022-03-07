@@ -15,6 +15,8 @@ namespace Business.Constants
         public static readonly string ProductAlreadyExists = "Product name alreary exist";
         public static readonly string ProductDeletedSuccessfully = "Product deleted successfully!";
         public static readonly string ProductUpdatedSuccesfully = "Product updated successfully!";
+        public static readonly string ProductUndeletedSuccessfully = "Product Undeleted successfully!";
+
 
         //Product Image Messages
         public static readonly string ProductImageAddedSuccessfully = "Product Image Added Successfully!";
@@ -27,6 +29,14 @@ namespace Business.Constants
 
         //Brand Messages
         public static readonly string BrandAdded = "Brand Added Successfully!";
+        public static readonly string BrandsListedSuccessfully = "Brands Listed Successfully!";
+        public static readonly string BrandNotFound = "Brand Not Found!";
+        public static readonly string BrandAlreadyExists = "Brand name alreary exist";
+        public static readonly string BrandDeletedSuccessfully = "Brand deleted successfully!";
+        public static readonly string BrandUpdatedSuccesfully = "Brand updated successfully!";
+        public static readonly string BrandUndeletedSuccessfully = "Brand Undeleted successfully!";
+        
+
 
         //User Messages 
 

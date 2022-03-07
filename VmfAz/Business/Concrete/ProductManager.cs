@@ -98,7 +98,7 @@ namespace Business.Concrete
             }
             product.IsDeleted = false;
             _productDal.Update(product);
-            return new SuccessResult(Messages.ProductDeletedSuccessfully);
+            return new SuccessResult(Messages.ProductUndeletedSuccessfully);
         }
 
         [CacheAspect]

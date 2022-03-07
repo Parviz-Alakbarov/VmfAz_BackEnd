@@ -25,31 +25,7 @@ namespace Core.Utilities.FileHelper
         };
 
 
-        public static IResult Upload(IFormFile file)
-        {
-            var checkFileResult = CheckFile(file);
-            if (!checkFileResult.Success)
-                return new ErrorResult(checkFileResult.Message);
-
-            string fileName = file.FileName;
-            string randomGuid = Guid.NewGuid().ToString();
-            string newFileName = randomGuid + "--" + (fileName.Length > 62 ? TrimFileName(fileName) : fileName);
-
-            string folderForFileUpload = $"{checkFileResult.Data.FolderName}\\";
-
-            string folderFullPath = $"{RootDirectory}\\{folderForFileUpload}";
-
-            string fileFullPath = folderFullPath + newFileName;
-
-            CheckAndCreateDirector(folderFullPath);
-            CreateFile(fileFullPath, file);
-
-            string ImagePathForDb = folderForFileUpload + newFileName;
-            return new SuccessResult(ImagePathForDb.Replace("\\", "/"));
-
-        }
-
-        public static IResult Update(IFormFile file, string imagePath)
+        public static IResult Upload(string ImageCategory,IFormFile file)
         {
             var checkFileResult = CheckFile(file);
             if (!checkFileResult.Success)
@@ -59,25 +35,49 @@ namespace Core.Utilities.FileHelper
             string randomGuid = Guid.NewGuid().ToString();
             string newFileName = randomGuid + "--" + (fileName.Length > 55 ? TrimFileName(fileName) : fileName);
 
-            string folderForFileUpload = $"{checkFileResult.Data.FolderName}\\";
+            string folderForFileUpload = $"{checkFileResult.Data.FolderName}\\{ImageCategory}\\";
 
             string folderFullPath = $"{RootDirectory}\\{folderForFileUpload}";
 
             string fileFullPath = folderFullPath + newFileName;
 
-            Delete((RootDirectory + imagePath).Replace("/", "\\"));
+            CheckAndCreateDirector(folderFullPath);
+            CreateFile(fileFullPath, file);
+
+            //string ImagePathForDb = folderForFileUpload + newFileName;
+            return new SuccessResult(newFileName);
+
+        }
+
+        public static IResult Update(string ImageCategory,IFormFile file, string imagePath)
+        {
+            var checkFileResult = CheckFile(file);
+            if (!checkFileResult.Success)
+                return new ErrorResult(checkFileResult.Message);
+
+            string fileName = file.FileName;
+            string randomGuid = Guid.NewGuid().ToString();
+            string newFileName = randomGuid + "--" + (fileName.Length > 55 ? TrimFileName(fileName) : fileName);
+
+            string folderForFileUpload = $"{checkFileResult.Data.FolderName}\\{ImageCategory}\\";
+
+            string folderFullPath = $"{RootDirectory}\\{folderForFileUpload}";
+
+            string fileFullPath = folderFullPath + newFileName;
+
+            Delete(folderForFileUpload + imagePath);
 
             CheckAndCreateDirector(folderFullPath);
             CreateFile(fileFullPath, file);
 
-            string ImagePathForDb = folderForFileUpload + newFileName;
-            return new SuccessResult(ImagePathForDb.Replace("\\", "/"));
+            //string ImagePathForDb = folderForFileUpload + newFileName;
+            return new SuccessResult(newFileName);
         }
 
         public static IResult Delete(string directory)
         {
-            string newDirector = $"{RootDirectory}\\{directory.Replace("\\", "/")}";
-            if (!File.Exists(newDirector))
+            string newDirector = $"{RootDirectory}\\{directory.Replace("/", "\\")}";
+            if (File.Exists(newDirector))
             {
                 File.Delete(newDirector);
                 return new SuccessResult();

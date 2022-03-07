@@ -39,7 +39,7 @@ namespace Business.Concrete
             if (result != null)
                 return result;
 
-            var imageResult = FileHelper.Upload(file);
+            var imageResult = FileHelper.Upload("Products",file);
             if (!imageResult.Success)
             {
                 return new ErrorResult(imageResult.Message);
@@ -67,7 +67,7 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.ProductImageNotFound);
             }
 
-            var deleteResult = FileHelper.Delete(productImage.ImagePath);
+            var deleteResult = FileHelper.Delete("images/Products/"+productImage.ImagePath);
             if (!deleteResult.Success)
             {
                 return new ErrorResult(Messages.ErrorDeletingImage);
@@ -116,7 +116,7 @@ namespace Business.Concrete
             {
                 return new ErrorResult(Messages.ProductImageNotFound);
             }
-            var updateResult = FileHelper.Update(file, image.ImagePath);
+            var updateResult = FileHelper.Update("Products",file, image.ImagePath);
             if (!updateResult.Success)
             {
                 return new ErrorResult(updateResult.Message);
