@@ -54,6 +54,7 @@ namespace Entities.Concrete
         public ProductCaseSize ProductCaseSize { get; set; }
         public Color ProductDialColor { get; set; }
         public Color ProductBeltColor { get; set; }
+        public List<OrderItem> OrderItems { get; set; }
     }
 
 }

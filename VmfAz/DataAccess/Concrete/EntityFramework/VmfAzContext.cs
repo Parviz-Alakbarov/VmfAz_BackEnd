@@ -25,6 +25,10 @@ namespace DataAccess.Concrete.EntityFramework
         public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<Setting> Settings { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<ShippingType> ShippingTypes { get; set; }
 
         ////ProductDetails
         public DbSet<Color> Colors { get; set; }
@@ -51,6 +55,12 @@ namespace DataAccess.Concrete.EntityFramework
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
             modelBuilder.ApplyConfiguration(new OperationClaimConfiguration());
             modelBuilder.ApplyConfiguration(new UserOperationClaimConfiguration());
+
+            modelBuilder.ApplyConfiguration(new SettingConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
+            modelBuilder.ApplyConfiguration(new ShippingTypeConfiguration());
+
             base.OnModelCreating(modelBuilder);
         }
     }

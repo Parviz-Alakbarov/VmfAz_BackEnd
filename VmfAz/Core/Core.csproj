@@ -15,8 +15,4 @@
     <PackageReference Include="Mime-Detective" Version="22.7.19" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Enums\" />
-  </ItemGroup>
-
 </Project>
