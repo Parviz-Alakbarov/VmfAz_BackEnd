@@ -25,6 +25,9 @@ namespace Business.DependecyResolvers.Autofac
             builder.RegisterType<BrandManager>().As<IBrandService>().SingleInstance();
             builder.RegisterType<EfBrandDal>().As<IBrandDal>().SingleInstance();
 
+            builder.RegisterType<BasketItemManager>().As<IBasketItemService>().SingleInstance();
+            builder.RegisterType<EfBasketItemDal>().As<IBasketItemDal>().SingleInstance();
+
             builder.RegisterType<CountryManager>().As<ICountryService>().SingleInstance();
             builder.RegisterType<EfCountryDal>().As<ICountryDal>().SingleInstance();
 

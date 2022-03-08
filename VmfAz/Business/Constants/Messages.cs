@@ -35,7 +35,6 @@ namespace Business.Constants
         public static readonly string BrandDeletedSuccessfully = "Brand deleted successfully!";
         public static readonly string BrandUpdatedSuccesfully = "Brand updated successfully!";
         public static readonly string BrandUndeletedSuccessfully = "Brand Undeleted successfully!";
-        
 
 
         //User Messages 
@@ -47,6 +46,14 @@ namespace Business.Constants
         public const string UserAlreadyExists = "User Already Exist!";
         public const string AccessTokenCreated = "Token Created Successfully!";
         public const string ChangePasswordError = "Your Current Password Is Incorrect!";
+
+        //BasketItem Messages
+        public static readonly string ProductAddedToBasket = "Product Added to Basket Successfully!";
+        public static readonly string BasketItemNotFound = "Basket Item Not Found!";
+        public static readonly string BasketItemLimitExceeded = "You can buy up to 10 items.";
+        public static readonly string BasketItemDeletedSuccessfully = "Basket item Deleted Successfully!";
+        
+
 
 
         //City Messages 

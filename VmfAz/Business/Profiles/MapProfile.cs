@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Entities.Concrete;
+using Entities.DTOs.OrderDTOs;
 using Entities.DTOs.ProductDTOs;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Business.Profiles
         public MapProfile()
         {
             CreateMap<Product, ProductAddDto>().ReverseMap();
-            
+            CreateMap<BasketItem, BasketItemAddDto>().ReverseMap();
         }
     }
 }

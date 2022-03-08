@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Entities.DTOs.OrderDTOs;
 using Entities.DTOs.ProductDTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,37 @@ namespace WebAPI.Controllers
     {
         private readonly IProductService _productService;
         private readonly IProductImageService _productImageService;
-        public ProductsController(IProductService productService, IProductImageService productImageService)
+        private readonly IBasketItemService _basketItemService;
+
+        public ProductsController(IProductService productService, IProductImageService productImageService, IBasketItemService basketItemService)
         {
             _productService = productService;
             _productImageService = productImageService;
+            _basketItemService = basketItemService;
         }
+
+        [HttpPost("addtobasket")]
+        public IActionResult AddToBasket(BasketItemAddDto basketItemAddDto)
+        {
+            var result = _basketItemService.Add(basketItemAddDto);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        //[HttpPost("")]
+        //public IActionResult IcreaseCountOfProduct()
+        //{
+        //    var result = _basketItemService.IncreaseCount(int );
+        //    if (result.Success)
+        //    {
+        //        return Ok(result);
+        //    }
+        //    return BadRequest(result.Message);
+        //}
+
 
         [HttpPost("addImage")]
         public IActionResult AddImage([FromForm] int productId, [FromForm] IFormFile file)

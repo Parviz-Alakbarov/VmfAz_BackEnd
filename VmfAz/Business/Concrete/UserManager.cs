@@ -41,5 +41,12 @@ namespace Business.Concrete
             _userDal.Update(user);
             return new SuccessResult();
         }
+
+        public IDataResult<AppUser> GetById(int userId)
+        {
+            var result = _userDal.Get(x=>x.Id== userId);
+          
+            return new SuccessDataResult<AppUser>(result);
+        }
     }
 }
