@@ -1,7 +1,9 @@
 ﻿using Business.Abstract;
+using Core.Utilities.Security.JWT;
 using Entities.DTOs.UserDTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace WebAPI.Controllers
 {
@@ -10,10 +12,12 @@ namespace WebAPI.Controllers
     public class AuthController : Controller
     {
         private IAuthService _authService;
+        private IConfiguration _configuration;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IConfiguration configuration)
         {
             _authService = authService;
+            _configuration = configuration;
         }
 
         [HttpPost("login")]
@@ -62,6 +66,16 @@ namespace WebAPI.Controllers
                 return BadRequest(result.Message);
             }
             return Ok(result);
+        }
+
+
+        [HttpPost("test")]
+        public IActionResult LoginTest()
+        {
+            var auth = Request.Headers["Authorization"];
+            var token = new JwtHelper(_configuration).DecodeToken(auth);
+
+            return Ok(token);
         }
     }
 }

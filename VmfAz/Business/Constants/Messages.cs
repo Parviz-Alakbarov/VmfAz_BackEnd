@@ -52,11 +52,16 @@ namespace Business.Constants
         public static readonly string BasketItemNotFound = "Basket Item Not Found!";
         public static readonly string BasketItemLimitExceeded = "You can buy up to 10 items.";
         public static readonly string BasketItemDeletedSuccessfully = "Basket item Deleted Successfully!";
-        
-
-
 
         //City Messages 
         public const string CityNotExist = "City Not fount!";
+
+        //Setting Messages
+        public static readonly string SettingUpdated = "Setting Updated Successfully";
+        public static readonly string SettingAlreadyExist = "Setting Key Already Exists!";
+        public static readonly string SettingListed = "Settings Listed Successfully"!;
+        public static readonly string SettingDataNotFound = "Setting Data not Found!";
+
+
     }
 }

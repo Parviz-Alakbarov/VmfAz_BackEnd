@@ -1,4 +1,4 @@
-﻿using Business.Abstract;
+﻿ using Business.Abstract;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation.UserValidators;
 using Core.Aspects.Autofac.Authorization;

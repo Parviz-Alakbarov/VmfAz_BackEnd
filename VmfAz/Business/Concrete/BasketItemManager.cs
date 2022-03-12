@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation.BasketItemValidators;
 using Core.Aspects.Autofac.Authorization;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.BusinessMotor;
 using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
@@ -31,6 +33,7 @@ namespace Business.Concrete
             _productService = productService;
         }
 
+        [ValidationAspect(typeof(BasketItemAddDtoValidator), Priority = 1)]
         public IDataResult<List<BasketItem>> Add(BasketItemAddDto basketItemAddDto)
         {
             IResult result = BusinessRules.Run(

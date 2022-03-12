@@ -24,6 +24,19 @@ namespace Core.Utilities.Security.JWT
             _tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
         }
+
+        public string DecodeToken(string input)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            if (input.StartsWith("Bearer "))
+            {
+                input = input.Substring("Bearer ".Length);
+            }
+
+            return handler.ReadJwtToken(input).ToString();
+        }
+
+
         public AccessToken CreateToken(AppUser user, List<OperationClaim> operationClaims)
         {
             _accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOptions.AccessTokenExpiration);

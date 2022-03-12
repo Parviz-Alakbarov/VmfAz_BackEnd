@@ -27,12 +27,16 @@ namespace Business.DependecyResolvers.Autofac
 
             builder.RegisterType<BasketItemManager>().As<IBasketItemService>().SingleInstance();
             builder.RegisterType<EfBasketItemDal>().As<IBasketItemDal>().SingleInstance();
+            //Single Instance olmali deyil
 
             builder.RegisterType<CountryManager>().As<ICountryService>().SingleInstance();
             builder.RegisterType<EfCountryDal>().As<ICountryDal>().SingleInstance();
 
             builder.RegisterType<CityManager>().As<ICityService>().SingleInstance();
             builder.RegisterType<EfCityDal>().As<ICityDal>().SingleInstance();
+
+            builder.RegisterType<SettingManager>().As<ISettingService>().SingleInstance();
+            builder.RegisterType<EfSettingDal>().As<ISettingDal>().SingleInstance();
 
             builder.RegisterType<ProductImageManager>().As<IProductImageService>().SingleInstance();
             builder.RegisterType<EfProductImageDal>().As<IProductImageDal>().SingleInstance();
