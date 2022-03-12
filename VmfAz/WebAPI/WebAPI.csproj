@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\assets\" />
+    <Folder Include="wwwroot\images\Settings\" />
   </ItemGroup>
 
 </Project>

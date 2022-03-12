@@ -1,5 +1,6 @@
 ﻿using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,6 @@ namespace Business.Abstract
     {
         IDataResult<List<Setting>> GetAll();
         IDataResult<Setting> GetByKey(string key);
-        IResult Update(Setting setting);
+        IResult Update(SettingPostDto settingPostDto);
     }
 }

@@ -2,10 +2,12 @@
 using Business.Constants;
 using Core.Aspects.Autofac.Authorization;
 using Core.Aspects.Autofac.Caching;
+using Core.Utilities.FileHelper;
 using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,26 +28,39 @@ namespace Business.Concrete
         [CacheAspect]
         public IDataResult<List<Setting>> GetAll()
         {
-            return new SuccessDataResult<List<Setting>>(_settingDal.GetAll(),Messages.SettingListed);
+            return new SuccessDataResult<List<Setting>>(_settingDal.GetAll(), Messages.SettingListed);
         }
 
         public IDataResult<Setting> GetByKey(string key)
         {
             var result = _settingDal.GetByKey(key);
-            if (result==null)
+            if (result == null)
             {
                 return new ErrorDataResult<Setting>(Messages.SettingDataNotFound);
             }
-            return new SuccessDataResult<Setting>(result,Messages.SettingListed);
+            return new SuccessDataResult<Setting>(result, Messages.SettingListed);
         }
         [AuthorizeOperation("SuperAdmin,Admin")]
         [CacheRemoveAspect("ISettingService.Get")]
-        public IResult Update(Setting setting)
+        public IResult Update(SettingPostDto settingPostDto)
         {
-            if (_settingDal.GetByKey(setting.Key)!=null)
+            Setting setting = _settingDal.GetByKey(settingPostDto.Key);
+            if (setting == null)
+                return new ErrorResult(Messages.SettingDataNotFound);
+            if (settingPostDto.File == null)
             {
-                return new ErrorResult(Messages.SettingAlreadyExist);
+                setting.Value = settingPostDto.Value;
             }
+            else
+            {
+                var uploadResult = FileHelper.Update("Settings", settingPostDto.File, setting.Value);
+                if (!uploadResult.Success)
+                {
+                    return new ErrorResult(uploadResult.Message);
+                }
+                setting.Value = uploadResult.Message;
+            }
+
             _settingDal.Update(setting);
             return new SuccessResult(Messages.SettingUpdated);
         }

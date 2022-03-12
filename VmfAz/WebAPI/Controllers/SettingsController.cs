@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,11 +20,35 @@ namespace WebAPI.Controllers
         public IActionResult GetAll()
         {
             var result = _settingService.GetAll();
-            if (result!=null)
+            if (result != null)
             {
                 return Ok(result);
             }
             return BadRequest(result.Message);
         }
+
+        [HttpGet]
+        public IActionResult GetByKey(string key)
+        {
+            var result = _settingService.GetByKey(key);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+
+        [HttpPut("update")]
+        public IActionResult Update([FromForm] SettingPostDto settingPostDto)
+        {
+            var result = _settingService.Update(settingPostDto);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
     }
 }
