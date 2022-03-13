@@ -63,5 +63,15 @@ namespace Business.Constants
         public static readonly string SettingDataNotFound = "Setting Data not Found!";
 
 
+        //Slider Messages
+        public static readonly string SliderImageIsRequired = "Slider Image is Required!";
+        public static readonly string SliderAddedSuccessfully = "Slider Added Successfully!";
+        public static readonly string SliderNotFound = "Slider Not Found!";
+        public static readonly string SliderDeletedSuccessfully = "Slider Deleted Successfully!";
+        public static readonly string SliderUpdatedSuccessfully = "Slider Updated Successfully!";
+        
+
+
+
     }
 }

@@ -38,6 +38,9 @@ namespace Business.DependecyResolvers.Autofac
             builder.RegisterType<SettingManager>().As<ISettingService>().SingleInstance();
             builder.RegisterType<EfSettingDal>().As<ISettingDal>().SingleInstance();
 
+            builder.RegisterType<SliderManager>().As<ISliderService>().SingleInstance();
+            builder.RegisterType<EfSliderDal>().As<ISliderDal>().SingleInstance();
+
             builder.RegisterType<ProductImageManager>().As<IProductImageService>().SingleInstance();
             builder.RegisterType<EfProductImageDal>().As<IProductImageDal>().SingleInstance();
 
