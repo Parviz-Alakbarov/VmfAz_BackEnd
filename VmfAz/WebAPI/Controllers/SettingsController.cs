@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
-        [HttpGet]
+        [HttpGet("getbykey")]
         public IActionResult GetByKey(string key)
         {
             var result = _settingService.GetByKey(key);
