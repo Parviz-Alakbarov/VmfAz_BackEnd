@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Entities.DTOs.ProductDTOs
         public int DiscountPercent { get; set; }
         public decimal SalePrice { get; set; }
         public decimal CostPrice { get; set; }
-        
+
+        public IFormFile PosterImage { get; set; }
     }
 }

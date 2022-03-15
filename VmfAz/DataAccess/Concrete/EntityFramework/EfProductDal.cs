@@ -5,6 +5,7 @@ using Entities.DTOs.ProductDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,7 +32,7 @@ namespace DataAccess.Concrete.EntityFramework
                              join caseSize in context.ProductCaseSizes on p.ProductCaseSizeId equals caseSize.Id
                              join beltcolor in context.Colors on p.ProductBeltColorId equals beltcolor.Id
                              join dialcolor in context.Colors on p.ProductDialColorId equals dialcolor.Id
-                             where p.Id == id
+                             where p.Id == id && p.IsDeleted == false
                              select new ProductDetailDto
                              {
                                  Name = p.Name,
@@ -50,13 +51,35 @@ namespace DataAccess.Concrete.EntityFramework
                                  CaseShape = caseShape.Shape,
                                  CaseSize = caseSize.Size,
                                  Description = p.Description,
-                                 DiscountedPrice = p.SalePrice*(1-(decimal)p.DiscountPercent/100),
+                                 DiscountedPrice = p.SalePrice * (1 - (decimal)p.DiscountPercent / 100),
                                  DiscountPercent = p.DiscountPercent,
                                  SalePrice = p.SalePrice,
                                  ToolCount = p.ToolCount,
                                  WarrantyLimit = p.WarrantyLimit,
                              };
                 return result.SingleOrDefault();
+            }
+        }
+
+        public List<ProductGetDto> GetProductsInGetDto(Expression<Func<ProductGetDto, bool>> expression)
+        {
+            using (VmfAzContext context = new VmfAzContext())
+            {
+                var result = from p in context.Products
+                             where p.IsDeleted == false
+                             select new ProductGetDto
+                             {
+                                 Id = p.Id,
+                                 DiscountPersent = p.DiscountPercent,
+                                 Image = p.PosterImage,
+                                 Name = p.Name,
+                                 SalePrice = p.SalePrice,
+                                 BrandId = p.BrandId,
+                                 CreateDate = p.CreateDate,
+                                 GenderId = p.GenderId,
+                                 ProductFunctionalityId = p.ProductFunctionalityId,
+                             };
+                return expression == null ? result.ToList() : result.Where(expression).ToList();
             }
         }
     }

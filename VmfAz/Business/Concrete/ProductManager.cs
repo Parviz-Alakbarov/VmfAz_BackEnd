@@ -6,6 +6,7 @@ using Core.Aspects.Autofac.Authorization;
 using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.BusinessMotor;
+using Core.Utilities.FileHelper;
 using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
 using DataAccess.Abstract;
@@ -22,13 +23,15 @@ namespace Business.Concrete
     public class ProductManager : IProductService
     {
         private readonly IProductDal _productDal;
+        private readonly IBrandService _brandService;
         private readonly ICountryService _countryService;
         private readonly IMapper _mapper;
-        public ProductManager(IProductDal productDal, IMapper mapper, ICountryService countryService)
+        public ProductManager(IProductDal productDal, IMapper mapper, ICountryService countryService, IBrandService brandService)
         {
             _productDal = productDal;
             _mapper = mapper;
             _countryService = countryService;
+            _brandService = brandService;
         }
         [AuthorizeOperation("SuperAdmin")]
         [ValidationAspect(typeof(ProductAddDtoValidator), Priority = 1)]
@@ -42,7 +45,12 @@ namespace Business.Concrete
             if (result != null)
                 return result;
 
+            var posterImageResult = FileHelper.Upload("Products",productAddDto.PosterImage);
+            if (!posterImageResult.Success)
+                return new ErrorResult(posterImageResult.Message);
+
             Product product = _mapper.Map<Product>(productAddDto);
+            product.PosterImage = posterImageResult.Message;
             _productDal.Add(product);
 
             return new SuccessResult(Messages.ProductAdded);
@@ -63,6 +71,15 @@ namespace Business.Concrete
             {
                 return new ErrorResult(Messages.ProductNotFound);
             }
+
+            if (productUpdateDto.PosterImage!=null)
+            {
+                var imageUploadResult = FileHelper.Update("Products", productUpdateDto.PosterImage, product.PosterImage);
+                if (!imageUploadResult.Success)
+                    return new ErrorResult(imageUploadResult.Message);
+                product.PosterImage = imageUploadResult.Message;
+            }
+
             product.CostPrice = productUpdateDto.CostPrice;
             product.SalePrice = productUpdateDto.SalePrice;
             product.Name = productUpdateDto.Name;
@@ -77,7 +94,7 @@ namespace Business.Concrete
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Delete(int productId)
         {
-            Product product = _productDal.Get(x => x.Id == productId);
+            Product product = _productDal.Get(x => x.Id == productId && !x.IsDeleted);
             if (product == null)
             {
                 return new ErrorResult(Messages.ProductNotFound);
@@ -91,7 +108,7 @@ namespace Business.Concrete
         [CacheRemoveAspect("IProductService.Get")]
         public IResult UnDelete(int productId)
         {
-            Product product = _productDal.Get(x => x.Id == productId);
+            Product product = _productDal.Get(x => x.Id == productId && x.IsDeleted);
             if (product == null)
             {
                 return new ErrorResult(Messages.ProductNotFound);
@@ -101,15 +118,15 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ProductUndeletedSuccessfully);
         }
 
-        [CacheAspect]
+        [CacheAspect(15)]
         public IDataResult<List<Product>> GetAll()
         {
-            return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductsListedSuccessfully);
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(x=>!x.IsDeleted), Messages.ProductsListedSuccessfully);
         }
 
         public IDataResult<Product> GetProductById(int productId)
         {
-            var result = _productDal.Get(p => p.Id == productId);
+            var result = _productDal.Get(p => p.Id == productId && !p.IsDeleted);
             if (result == null)
             {
                 return new ErrorDataResult<Product>(Messages.ProductNotFound);
@@ -126,7 +143,29 @@ namespace Business.Concrete
             return new SuccessDataResult<ProductDetailDto>(result);
         }
 
+        public IDataResult<List<ProductGetDto>> GetProductsByBrandId(int brandId)
+        {
+            IResult businessResult = BusinessRules.Run(CheckIfBrandExistsById(brandId));
+            if (businessResult != null)
+                return new ErrorDataResult<List<ProductGetDto>>(businessResult.Message);
 
+            var result = _productDal.GetProductsInGetDto(x=>x.BrandId == brandId);
+            if (result == null)
+            {
+                return new ErrorDataResult<List<ProductGetDto>>(Messages.ProductNotFound);
+            }
+
+            return new SuccessDataResult<List<ProductGetDto>>(result);
+        }
+
+        [CacheAspect]
+        public IDataResult<List<ProductGetDto>> GetProcutsInGetDto()
+        {
+            return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetProductsInGetDto(), Messages.ProductsListedSuccessfully);
+        }
+
+
+        //Business Rules
         private IResult CheckCountryExist(int? countryId)
         {
             if (countryId == null)
@@ -144,5 +183,15 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        private IResult CheckIfBrandExistsById(int brandId)
+        {
+            if (_brandService.GetBrandById(brandId)==null)
+            {
+                return new ErrorResult(Messages.BrandNotFound);
+            }
+            return new SuccessResult();
+        }
+
+        
     }
 }

@@ -14,6 +14,7 @@ namespace Entities.Concrete
         public int Id { get; set; }
         public int BrandId { get; set; }
         public int GenderId { get; set; }
+        public string PosterImage { get; set; }
         public int ProductFunctionalityId { get; set; }
         public int? ToolCount { get; set; }
         public decimal WarrantyLimit { get; set; }//decimal(3,1)

@@ -16,6 +16,7 @@ namespace Business.Profiles
         {
             CreateMap<Product, ProductAddDto>().ReverseMap();
             CreateMap<BasketItem, BasketItemAddDto>().ReverseMap();
+            CreateMap<ProductGetDto, Product>();
         }
     }
 }

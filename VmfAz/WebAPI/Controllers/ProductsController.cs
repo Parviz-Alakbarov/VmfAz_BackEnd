@@ -123,5 +123,16 @@ namespace WebAPI.Controllers
             }
             return NotFound(result.Message);
         }
+
+        [HttpGet("getbybrand")]
+        public IActionResult GetByBrand(int brandId)
+        {
+            var result = _productService.GetProductsByBrandId(brandId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return NotFound(result.Message);
+        }
     }
 }

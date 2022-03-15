@@ -84,9 +84,9 @@ namespace Business.Concrete
         [CacheAspect]
         public IDataResult<List<Slider>> GetAll()
         {
-            return new SuccessDataResult<List<Slider>>(_sliderDal.GetAll());   
+            return new SuccessDataResult<List<Slider>>(_sliderDal.GetAll().OrderBy(x=>x.Order).ToList());   
         }
-
+    
         public IDataResult<Slider> GetById(int id)
         {
             Slider slider = _sliderDal.Get(x => x.Id == id);
