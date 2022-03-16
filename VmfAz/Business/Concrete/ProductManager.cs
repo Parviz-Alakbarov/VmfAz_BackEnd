@@ -164,6 +164,15 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetProductsInGetDto(), Messages.ProductsListedSuccessfully);
         }
 
+        public IDataResult<List<ProductGetDto>> GetBestSellerProducts(int count)
+        {
+            return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetBestSellerProducts(count), Messages.ProductsListedSuccessfully);
+        }
+
+
+
+
+
 
         //Business Rules
         private IResult CheckCountryExist(int? countryId)

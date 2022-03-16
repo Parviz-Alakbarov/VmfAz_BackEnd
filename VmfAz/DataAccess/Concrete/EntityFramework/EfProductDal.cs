@@ -82,5 +82,39 @@ namespace DataAccess.Concrete.EntityFramework
                 return expression == null ? result.ToList() : result.Where(expression).ToList();
             }
         }
+
+
+
+
+
+        public List<ProductGetDto> GetBestSellerProducts(int count, Expression<Func<ProductGetDto, bool>> expression)
+        {
+            using (VmfAzContext context = new VmfAzContext())
+            {
+                var firstQuery = from o in context.OrderItems
+                                 group o.Count by o.ProductId into g
+                                 orderby g.Sum() descending
+                                 select g.Key ;
+
+                var idArr =  firstQuery.Take(count).ToList();
+
+
+                var result = from p in context.Products
+                             where p.IsDeleted == false &&  idArr.Contains(p.Id)
+                             select new ProductGetDto
+                             {
+                                 Id = p.Id,
+                                 DiscountPersent = p.DiscountPercent,
+                                 Image = p.PosterImage,
+                                 Name = p.Name,
+                                 SalePrice = p.SalePrice,
+                                 BrandId = p.BrandId,
+                                 CreateDate = p.CreateDate,
+                                 GenderId = p.GenderId,
+                                 ProductFunctionalityId = p.ProductFunctionalityId,
+                             };
+                return expression == null ? result.ToList() : result.Where(expression).ToList();
+            }
+        }
     }
 }

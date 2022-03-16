@@ -14,6 +14,6 @@ namespace DataAccess.Abstract
     {
         ProductDetailDto GetProductDetails(int id);
         List<ProductGetDto> GetProductsInGetDto(Expression<Func<ProductGetDto, bool>> expression = null);
-        
+        List<ProductGetDto> GetBestSellerProducts(int count , Expression<Func<ProductGetDto, bool>> expression = null);
     }
 }

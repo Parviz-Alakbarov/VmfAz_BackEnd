@@ -134,5 +134,17 @@ namespace WebAPI.Controllers
             }
             return NotFound(result.Message);
         }
+
+
+        [HttpGet("getbestseller")]
+        public IActionResult GetBestSellers(int count=5)
+        {
+            var result = _productService.GetBestSellerProducts(count);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return NotFound(result.Message);
+        }
     }
 }
