@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
             var result = _settingService.GetByKey(key);
             if (result != null)
             {
-                return Ok(result);
+                return StatusCode(200,result);
             }
             return BadRequest(result.Message);
         }

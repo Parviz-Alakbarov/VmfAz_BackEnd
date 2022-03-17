@@ -169,6 +169,11 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetBestSellerProducts(count), Messages.ProductsListedSuccessfully);
         }
 
+        public IDataResult<List<ProductGetDto>> GetBestSellerProductsByBrandId(int brandId, int count)
+        {
+            return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetBestSellerProducts(count,x=>x.BrandId==brandId), Messages.ProductsListedSuccessfully);
+        }
+
 
 
 
