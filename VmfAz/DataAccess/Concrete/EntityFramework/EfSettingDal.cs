@@ -1,4 +1,5 @@
-﻿using Core.Utilities.Results;
+﻿using Core.Entities.Concrete;
+using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -37,6 +38,27 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
+        public List<City> GetCitiesByCountry(int countryId)
+        {
+            using (VmfAzContext context = new VmfAzContext())
+            {
+                var result = from c in context.Cities
+                             where c.CountryId == countryId
+                             select c;
+                return result.ToList();
+            }
+        }
+
+        public List<Country> GetCountries()
+        {
+            using (VmfAzContext context = new VmfAzContext())
+            {
+                var result = from c in context.Countries
+                             select c;
+                return result.ToList();
+            }
+        }
+
         public void Update(Setting setting)
         {
             using (VmfAzContext context = new VmfAzContext())
@@ -46,6 +68,8 @@ namespace DataAccess.Concrete.EntityFramework
                 context.SaveChanges();
             }
         }
+
+
 
     }
 }

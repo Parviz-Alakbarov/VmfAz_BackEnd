@@ -39,13 +39,13 @@ namespace Business.Constants
 
         //User Messages 
 
-        public const string UserRegistered = "User Registered Successfully";
-        public const string UserNotFound = "Username or Password is Incorrect!";
-        public const string PasswordError = "Username or Password is Incorrect!";
-        public const string SuccessfullLogin = "User Loged in Succesfully";
-        public const string UserAlreadyExists = "User Already Exist!";
-        public const string AccessTokenCreated = "Token Created Successfully!";
-        public const string ChangePasswordError = "Your Current Password Is Incorrect!";
+        public static readonly string UserRegistered = "User Registered Successfully";
+        public static readonly string UserNotFound = "Username or Password is Incorrect!";
+        public static readonly string PasswordError = "Username or Password is Incorrect!";
+        public static readonly string SuccessfullLogin = "User Loged in Succesfully";
+        public static readonly string UserAlreadyExists = "User Already Exist!";
+        public static readonly string AccessTokenCreated = "Token Created Successfully!";
+        public static readonly string ChangePasswordError = "Your Current Password Is Incorrect!";
 
         //BasketItem Messages
         public static readonly string ProductAddedToBasket = "Product Added to Basket Successfully!";
@@ -53,8 +53,10 @@ namespace Business.Constants
         public static readonly string BasketItemLimitExceeded = "You can buy up to 10 items.";
         public static readonly string BasketItemDeletedSuccessfully = "Basket item Deleted Successfully!";
 
-        //City Messages 
-        public const string CityNotExist = "City Not fount!";
+        //City and Country Messages 
+        public static readonly string CityNotExist = "City Not fount!";
+        public static readonly string CitiesListed = "Cities Listed Successfully!";
+        public static readonly string CountriesListed = "Countries Listed Successfully!";
 
         //Setting Messages
         public static readonly string SettingUpdated = "Setting Updated Successfully";

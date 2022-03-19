@@ -50,5 +50,28 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
+
+        [HttpGet("getCountries")]
+        public IActionResult GetCountries()
+        {
+            var result = _settingService.GetCountries();
+            if (result != null)
+            {
+                return StatusCode(200, result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getCitiesByCountry/{countryId}")]
+        public IActionResult GetCitiesByCountry(int countryId)
+        {
+            var result = _settingService.GetCitiesByCountry(countryId);
+            if (result != null)
+            {
+                return StatusCode(200, result);
+            }
+            return BadRequest(result.Message);
+        }
+
     }
 }

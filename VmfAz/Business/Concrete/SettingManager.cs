@@ -2,6 +2,7 @@
 using Business.Constants;
 using Core.Aspects.Autofac.Authorization;
 using Core.Aspects.Autofac.Caching;
+using Core.Entities.Concrete;
 using Core.Utilities.FileHelper;
 using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
@@ -40,6 +41,23 @@ namespace Business.Concrete
             }
             return new SuccessDataResult<Setting>(result, Messages.SettingListed);
         }
+
+        public IDataResult<List<Country>> GetCountries()
+        {
+            
+            return new SuccessDataResult<List<Country>>(_settingDal.GetCountries(), Messages.CountriesListed);
+        }
+
+        public IDataResult<List<City>> GetCitiesByCountry(int countryId)
+        {
+            var result = _settingDal.GetCitiesByCountry(countryId);
+            if (result == null)
+            {
+                return new ErrorDataResult<List<City>>(Messages.CityNotExist);
+            }
+            return new SuccessDataResult<List<City>>(result, Messages.CitiesListed);
+        }
+
         [AuthorizeOperation("SuperAdmin,Admin")]
         [CacheRemoveAspect("ISettingService.Get")]
         public IResult Update(SettingPostDto settingPostDto)

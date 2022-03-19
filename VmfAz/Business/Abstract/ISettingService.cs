@@ -1,4 +1,5 @@
-﻿using Core.Utilities.Results.Abstract;
+﻿using Core.Entities.Concrete;
+using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
 using System;
@@ -14,5 +15,7 @@ namespace Business.Abstract
         IDataResult<List<Setting>> GetAll();
         IDataResult<Setting> GetByKey(string key);
         IResult Update(SettingPostDto settingPostDto);
+        IDataResult<List<Country>> GetCountries();
+        IDataResult<List<City>> GetCitiesByCountry(int countryId);
     }
 }
