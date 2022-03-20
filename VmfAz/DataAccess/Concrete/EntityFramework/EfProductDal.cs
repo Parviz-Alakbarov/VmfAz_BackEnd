@@ -61,7 +61,7 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
-        public List<ProductGetDto> GetProductsInGetDto(Expression<Func<ProductGetDto, bool>> expression)
+        public List<ProductGetDto> GetProductsInGetDto(int? count, Expression<Func<ProductGetDto, bool>> expression)
         {
             using (VmfAzContext context = new VmfAzContext())
             {
@@ -79,7 +79,13 @@ namespace DataAccess.Concrete.EntityFramework
                                  GenderId = p.GenderId,
                                  ProductFunctionalityId = p.ProductFunctionalityId,
                              };
-                return expression == null ? result.ToList() : result.Where(expression).ToList();
+                if (expression != null)
+                   result = result.Where(expression);
+
+                if (count!=null)
+                    result = result.Take((int)count);
+
+                return result.ToList();
             }
         }
 

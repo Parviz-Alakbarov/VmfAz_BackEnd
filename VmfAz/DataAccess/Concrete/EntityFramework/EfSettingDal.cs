@@ -45,7 +45,7 @@ namespace DataAccess.Concrete.EntityFramework
                 var result = from c in context.Cities
                              where c.CountryId == countryId
                              select c;
-                return result.ToList();
+                return result.OrderBy(x=>x.Name).ToList();
             }
         }
 
@@ -55,7 +55,7 @@ namespace DataAccess.Concrete.EntityFramework
             {
                 var result = from c in context.Countries
                              select c;
-                return result.ToList();
+                return result.OrderBy(x=>x.Name).ToList();
             }
         }
 

@@ -45,7 +45,7 @@ namespace Business.Concrete
             if (result != null)
                 return result;
 
-            var posterImageResult = FileHelper.Upload("Products",productAddDto.PosterImage);
+            var posterImageResult = FileHelper.Upload("Products", productAddDto.PosterImage);
             if (!posterImageResult.Success)
                 return new ErrorResult(posterImageResult.Message);
 
@@ -72,7 +72,7 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.ProductNotFound);
             }
 
-            if (productUpdateDto.PosterImage!=null)
+            if (productUpdateDto.PosterImage != null)
             {
                 var imageUploadResult = FileHelper.Update("Products", productUpdateDto.PosterImage, product.PosterImage);
                 if (!imageUploadResult.Success)
@@ -121,7 +121,7 @@ namespace Business.Concrete
         [CacheAspect(15)]
         public IDataResult<List<Product>> GetAll()
         {
-            return new SuccessDataResult<List<Product>>(_productDal.GetAll(x=>!x.IsDeleted), Messages.ProductsListedSuccessfully);
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(x => !x.IsDeleted), Messages.ProductsListedSuccessfully);
         }
 
         public IDataResult<Product> GetProductById(int productId)
@@ -149,7 +149,7 @@ namespace Business.Concrete
             if (businessResult != null)
                 return new ErrorDataResult<List<ProductGetDto>>(businessResult.Message);
 
-            var result = _productDal.GetProductsInGetDto(x=>x.BrandId == brandId);
+            var result = _productDal.GetProductsInGetDto(x => x.BrandId == brandId);
             if (result == null)
             {
                 return new ErrorDataResult<List<ProductGetDto>>(Messages.ProductNotFound);
@@ -171,7 +171,12 @@ namespace Business.Concrete
 
         public IDataResult<List<ProductGetDto>> GetBestSellerProductsByBrandId(int brandId, int count)
         {
-            return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetBestSellerProducts(count,x=>x.BrandId==brandId), Messages.ProductsListedSuccessfully);
+            return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetBestSellerProducts(count, x => x.BrandId == brandId), Messages.ProductsListedSuccessfully);
+        }
+
+        public IDataResult<List<ProductGetDto>> GetDiscountedProducts(int? count)
+        {
+            return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetProductsInGetDto(x => x.DiscountPersent > 0), Messages.ProductsListedSuccessfully);
         }
 
 
@@ -199,13 +204,11 @@ namespace Business.Concrete
 
         private IResult CheckIfBrandExistsById(int brandId)
         {
-            if (_brandService.GetBrandById(brandId)==null)
+            if (_brandService.GetBrandById(brandId) == null)
             {
                 return new ErrorResult(Messages.BrandNotFound);
             }
             return new SuccessResult();
         }
-
-        
     }
 }

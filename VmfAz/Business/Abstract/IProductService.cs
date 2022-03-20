@@ -18,6 +18,7 @@ namespace Business.Abstract
         IDataResult<List<ProductGetDto>> GetProductsByBrandId(int brandId);
         IDataResult<List<ProductGetDto>> GetBestSellerProducts(int count);
         IDataResult<List<ProductGetDto>> GetBestSellerProductsByBrandId(int brandId,int count);
+        IDataResult<List<ProductGetDto>> GetDiscountedProducts(int? count);
 
 
         IResult Add(ProductAddDto productAddDto);
