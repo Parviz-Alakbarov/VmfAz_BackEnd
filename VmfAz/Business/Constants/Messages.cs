@@ -71,9 +71,14 @@ namespace Business.Constants
         public static readonly string SliderNotFound = "Slider Not Found!";
         public static readonly string SliderDeletedSuccessfully = "Slider Deleted Successfully!";
         public static readonly string SliderUpdatedSuccessfully = "Slider Updated Successfully!";
+
+        //Shop Messsages
+        public static readonly string ShopAdded = "Shop Added Successfully";
+        public static readonly string ShopListed = "Shop Listed Successfully";
+        public static readonly string ShopNotFound = "Shop Not Found!";
+        public static readonly string ShopDeleted = "Shop Deleted Successfully!";
+        public static readonly string ShopUpdated = "Shop Updated Successfully!";
         
-
-
 
     }
 }

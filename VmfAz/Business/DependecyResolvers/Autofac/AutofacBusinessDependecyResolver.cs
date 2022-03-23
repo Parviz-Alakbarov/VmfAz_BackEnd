@@ -44,6 +44,8 @@ namespace Business.DependecyResolvers.Autofac
             builder.RegisterType<ProductImageManager>().As<IProductImageService>().SingleInstance();
             builder.RegisterType<EfProductImageDal>().As<IProductImageDal>().SingleInstance();
 
+            builder.RegisterType<ShopManager>().As<IShopService>().SingleInstance();
+            builder.RegisterType<EfShopDal>().As<IShopDal>().SingleInstance();
 
             builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
             builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();

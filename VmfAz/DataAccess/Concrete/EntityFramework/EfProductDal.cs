@@ -36,6 +36,7 @@ namespace DataAccess.Concrete.EntityFramework
                              select new ProductDetailDto
                              {
                                  Name = p.Name,
+                                 PosterImage = p.PosterImage,
                                  BrandId = b.Id,
                                  BrandName = b.Name,
                                  ProductionCountry = country.Name,

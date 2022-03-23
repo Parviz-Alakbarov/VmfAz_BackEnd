@@ -113,7 +113,7 @@ namespace WebAPI.Controllers
             return NotFound(result.Message);
         }
 
-        [HttpGet("getProductDetail")]
+        [HttpGet("getProductDetail/{id}")]
         public IActionResult GetProductDetail(int id)
         {
             var result = _productService.GetProductDetils(id);

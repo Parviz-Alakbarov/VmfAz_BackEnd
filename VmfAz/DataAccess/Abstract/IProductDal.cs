@@ -13,7 +13,7 @@ namespace DataAccess.Abstract
     public interface IProductDal : IEntityRepository<Product>
     {
         ProductDetailDto GetProductDetails(int id);
-        List<ProductGetDto> GetProductsInGetDto(int? count,Expression<Func<ProductGetDto, bool>> expression = null);
+        List<ProductGetDto> GetProductsInGetDto(int? count=null,Expression<Func<ProductGetDto, bool>> expression = null);
         List<ProductGetDto> GetBestSellerProducts(int count , Expression<Func<ProductGetDto, bool>> expression = null);
     }
 }

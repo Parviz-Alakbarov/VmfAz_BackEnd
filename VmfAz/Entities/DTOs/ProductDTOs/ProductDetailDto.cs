@@ -10,6 +10,7 @@ namespace Entities.DTOs.ProductDTOs
     public class ProductDetailDto : IDto
     {
         public string Name { get; set; }
+        public string PosterImage { get; set; }
         public decimal SalePrice { get; set; }
         public decimal DiscountedPrice { get; set; }
         public int DiscountPercent { get; set; }

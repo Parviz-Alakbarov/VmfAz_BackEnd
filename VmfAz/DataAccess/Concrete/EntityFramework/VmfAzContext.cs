@@ -31,6 +31,8 @@ namespace DataAccess.Concrete.EntityFramework
         public DbSet<ShippingType> ShippingTypes { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
         public DbSet<Slider> Sliders { get; set; }
+        public DbSet<ProductShop> ProductShops { get; set; }
+        public DbSet<Shop> Shops { get; set; }
 
         ////ProductDetails
         public DbSet<Color> Colors { get; set; }
@@ -65,6 +67,8 @@ namespace DataAccess.Concrete.EntityFramework
             modelBuilder.ApplyConfiguration(new BasketItemConfiguration());
 
             modelBuilder.ApplyConfiguration(new SliderConfiguration());
+            modelBuilder.ApplyConfiguration(new ShopConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductShopConfiguration());
 
 
             base.OnModelCreating(modelBuilder);

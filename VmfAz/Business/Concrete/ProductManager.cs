@@ -149,7 +149,7 @@ namespace Business.Concrete
             if (businessResult != null)
                 return new ErrorDataResult<List<ProductGetDto>>(businessResult.Message);
 
-            var result = _productDal.GetProductsInGetDto(x => x.BrandId == brandId);
+            var result = _productDal.GetProductsInGetDto(null,x => x.BrandId == brandId);
             if (result == null)
             {
                 return new ErrorDataResult<List<ProductGetDto>>(Messages.ProductNotFound);
@@ -176,7 +176,7 @@ namespace Business.Concrete
 
         public IDataResult<List<ProductGetDto>> GetDiscountedProducts(int? count)
         {
-            return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetProductsInGetDto(x => x.DiscountPersent > 0), Messages.ProductsListedSuccessfully);
+            return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetProductsInGetDto(count,x => x.DiscountPersent > 0), Messages.ProductsListedSuccessfully);
         }
 
 

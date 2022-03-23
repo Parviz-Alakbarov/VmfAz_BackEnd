@@ -57,6 +57,7 @@ namespace Entities.Concrete
         public Color ProductBeltColor { get; set; }
         public List<OrderItem> OrderItems { get; set; }
         public List<BasketItem> BasketItems { get; set; }
+        public List<ProductShop> ProductShops { get; set; }
     }
 
 }
