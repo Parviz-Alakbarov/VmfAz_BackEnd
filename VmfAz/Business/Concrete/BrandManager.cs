@@ -35,7 +35,7 @@ namespace Business.Concrete
         [AuthorizeOperation("SuperAdmin")]
         [ValidationAspect(typeof(BrandPostDtoValidator), Priority = 1)]
         [CacheRemoveAspect("IBrandService.Get")]
-        public IResult Add(BrandPostDto brandPostDto)
+        public async Task<IResult> Add(BrandPostDto brandPostDto)
         {
             IResult result = BusinessRules.Run(
                CheckIfBrandExistWithName(brandPostDto.Name));
@@ -63,7 +63,7 @@ namespace Business.Concrete
         [AuthorizeOperation("SuperAdmin")]
         [ValidationAspect(typeof(BrandPostDtoValidator), Priority = 1)]
         [CacheRemoveAspect("IBrandService.Get")]
-        public IResult Update(int id, BrandPostDto brandPostDto)
+        public async Task<IResult> Update(int id, BrandPostDto brandPostDto)
         {
             IResult result = BusinessRules.Run(
               CheckIfBrandExistWithName(brandPostDto.Name));
@@ -71,7 +71,7 @@ namespace Business.Concrete
             if (result != null)
                 return result;
 
-            Brand brand = _brandDal.Get(x => !x.IsDeleted && x.Id == id);
+            Brand brand = await _brandDal.Get(x => !x.IsDeleted && x.Id == id);
             if (brand == null)
             {
                 return new ErrorResult(Messages.BrandNotFound);
@@ -101,9 +101,9 @@ namespace Business.Concrete
 
         [AuthorizeOperation("SuperAdmin")]
         [CacheRemoveAspect("IBrandService.Get")]
-        public IResult Delete(int brandId)
+        public async Task<IResult> Delete(int brandId)
         {
-            var result = _brandDal.Get(p => p.Id == brandId);
+            var result = await _brandDal.Get(p => p.Id == brandId);
             if (result == null)
             {
                 return new ErrorResult(Messages.BrandNotFound);
@@ -116,9 +116,9 @@ namespace Business.Concrete
 
         [AuthorizeOperation("Admin,SuperAdmin")]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult UnDelete(int brandId)
+        public async  Task<IResult> UnDelete(int brandId)
         {
-            Brand brand = _brandDal.Get(x => x.Id == brandId);
+            Brand brand = await _brandDal.Get(x => x.Id == brandId);
             if (brand == null)
             {
                 return new ErrorResult(Messages.ProductNotFound);
@@ -129,9 +129,9 @@ namespace Business.Concrete
         }
 
 
-        public IDataResult<Brand> GetBrandById(int brandId)
+        public async Task<IDataResult<Brand>> GetBrandById(int brandId)
         {
-            var result = _brandDal.Get(p => p.Id == brandId);
+            var result = await _brandDal.Get(p => p.Id == brandId);
             if (result == null)
             {
                 return new ErrorDataResult<Brand>(Messages.BrandNotFound);
@@ -140,12 +140,33 @@ namespace Business.Concrete
         }
 
         [CacheAspect]
-        public IDataResult<List<Brand>> GetAll()
+        public async Task< IDataResult<List<Brand>>> GetAll()
         {
-            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(), Messages.BrandsListedSuccessfully);
+            return new SuccessDataResult<List<Brand>>(await _brandDal.GetAll(), Messages.BrandsListedSuccessfully);
         }
 
 
+
+
+        public async Task<IDataResult<List<BrandWithNameDto>>> GetBrandsOnlyWithName()
+        {
+            return new SuccessDataResult<List<BrandWithNameDto>>((await _brandDal.GetBrandsOnlyWithName()), Messages.BrandsListedSuccessfully);
+        }
+
+        public async Task<IDataResult<List<BrandWithImageDto>>> GetBrandsWithImage()
+        {
+            return new SuccessDataResult<List<BrandWithImageDto>>(await _brandDal.GetBrandsWithImage(),Messages.BrandsListedSuccessfully);
+        }
+
+        public async Task<IDataResult<BrandDetailDto>> GetBrandDetail(int brandId)
+        {
+            var result = await _brandDal.GetBrandDetail(brandId);
+            if (result == null)
+            {
+                return new ErrorDataResult<BrandDetailDto>(Messages.BrandNotFound);
+            }
+            return new SuccessDataResult<BrandDetailDto>(result);
+        }
 
 
 
@@ -189,5 +210,6 @@ namespace Business.Concrete
 
             return new SuccessResult();
         }
+
     }
 }

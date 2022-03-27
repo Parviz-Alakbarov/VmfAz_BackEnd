@@ -23,9 +23,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("addtobasket")]
-        public IActionResult AddToBasket(BasketItemAddDto basketItemAddDto)
+        public async Task<IActionResult> AddToBasket(BasketItemAddDto basketItemAddDto)
         {
-            var result = _basketItemService.Add(basketItemAddDto);
+            var result = await _basketItemService.Add(basketItemAddDto);
             if (result.Success)
             {
                 return Ok(result);
@@ -45,22 +45,10 @@ namespace WebAPI.Controllers
         //}
 
 
-        [HttpPost("addImage")]
-        public IActionResult AddImage([FromForm] int productId, [FromForm] IFormFile file)
-        {
-            var result = _productImageService.Add(productId, file);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
-
         [HttpPost("add")]
-        public IActionResult Add(ProductAddDto productAddDto)
+        public async Task<IActionResult> Add(ProductAddDto productAddDto)
         {
-            var result = _productService.Add(productAddDto);
+            var result = await _productService.Add(productAddDto);
             if (result.Success)
             {
                 return StatusCode(201, result.Message);
@@ -69,9 +57,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("delete")]
-        public IActionResult Remove(int id)
+        public async Task<IActionResult> Remove(int id)
         {
-            var result = _productService.Delete(id);
+            var result = await _productService.Delete(id);
             if (result.Success)
             {
                 return StatusCode(204, result.Message);
@@ -80,9 +68,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("update")]
-        public IActionResult Update(int id, ProductUpdateDto productUpdateDto)
+        public async Task<IActionResult> Update(int id, ProductUpdateDto productUpdateDto)
         {
-            var result = _productService.Update(id,productUpdateDto);
+            var result = await _productService.Update(id, productUpdateDto);
             if (result.Success)
             {
                 return Ok(result.Message);
@@ -91,10 +79,22 @@ namespace WebAPI.Controllers
         }
 
 
-        [HttpGet("")]
-        public IActionResult GetAll()
+        [HttpGet("getall")]//admin
+        public async Task<IActionResult> GetAllDetail()
         {
-            var result = _productService.GetAll();
+            var result = await _productService.GetAll();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+
+        [HttpGet("")]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _productService.GetProductsInGetDto();
             if (result.Success)
             {
                 return Ok(result);
@@ -103,9 +103,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getbyid")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var result = _productService.GetProductById(id);
+            var result = await _productService.GetProductById(id);
             if (result.Success)
             {
                 return Ok(result);
@@ -114,9 +114,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getProductDetail/{id}")]
-        public IActionResult GetProductDetail(int id)
+        public async Task<IActionResult> GetProductDetail(int id)
         {
-            var result = _productService.GetProductDetils(id);
+            var result = await _productService.GetProductDetils(id);
             if (result.Success)
             {
                 return Ok(result);
@@ -124,10 +124,10 @@ namespace WebAPI.Controllers
             return NotFound(result.Message);
         }
 
-        [HttpGet("getbybrand")]
-        public IActionResult GetByBrand(int brandId)
+        [HttpGet("getbybrand/{brandId}")]
+        public async Task<IActionResult> GetByBrand(int brandId)
         {
-            var result = _productService.GetProductsByBrandId(brandId);
+            var result = await _productService.GetProductsByBrandId(brandId);
             if (result.Success)
             {
                 return Ok(result);
@@ -136,9 +136,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getbestseller")]
-        public IActionResult GetBestSellers(int count=5)
+        public async Task<IActionResult> GetBestSellers(int count = 5)
         {
-            var result = _productService.GetBestSellerProducts(count);
+            var result = await _productService.GetBestSellerProducts(count);
             if (result.Success)
             {
                 return Ok(result);
@@ -147,9 +147,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getbrandbestseller")]
-        public IActionResult GetBestSellers(int brandId,int count = 5)
+        public async Task<IActionResult> GetBestSellers(int brandId, int count = 5)
         {
-            var result = _productService.GetBestSellerProductsByBrandId(brandId,count);
+            var result = await _productService.GetBestSellerProductsByBrandId(brandId, count);
             if (result.Success)
             {
                 return Ok(result);
@@ -158,9 +158,20 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getdiscountedproducts")]
-        public IActionResult GetDiscountedProducts(int? count)
+        public async Task<IActionResult> GetDiscountedProducts(int? count)
         {
-            var result = _productService.GetDiscountedProducts(count);
+            var result = await _productService.GetDiscountedProducts(count);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return NotFound(result.Message);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchProduct(string text)
+        {
+            var result = await _productService.SearchProducts(text);
             if (result.Success)
             {
                 return Ok(result);

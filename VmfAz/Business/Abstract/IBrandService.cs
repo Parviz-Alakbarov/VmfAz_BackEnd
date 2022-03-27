@@ -11,12 +11,14 @@ namespace Business.Abstract
 {
     public interface IBrandService
     {
-        IResult Add(BrandPostDto brandPostDto);
-        IResult Update(int id,BrandPostDto brandPostDto);
-        IResult Delete(int brandId);
-        IDataResult<List<Brand>> GetAll();
-        IDataResult<Brand> GetBrandById(int brandId);
-        
+        Task<IResult> Add(BrandPostDto brandPostDto);
+        Task<IResult> Update(int id,BrandPostDto brandPostDto);
+        Task<IResult> Delete(int brandId);
+        Task<IDataResult<List<Brand>>> GetAll();
+        Task<IDataResult<Brand>> GetBrandById(int brandId);
+        Task<IDataResult<List<BrandWithNameDto>>> GetBrandsOnlyWithName();
+        Task<IDataResult<List<BrandWithImageDto>>> GetBrandsWithImage();
+        Task<IDataResult<BrandDetailDto>> GetBrandDetail(int brandId);
 
     }
 }

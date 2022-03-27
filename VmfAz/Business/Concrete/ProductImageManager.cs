@@ -32,10 +32,10 @@ namespace Business.Concrete
         [ValidationAspect(typeof(ProductImageValidator))]
         [CacheRemoveAspect("IProductImageService.Get")]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult Add(int productId, IFormFile file)
+        public async Task<IResult> Add(int productId, IFormFile file)
         {
             IResult result = BusinessRules.Run(
-                CheckIfProductImageLimitExceeded(productId));
+                await CheckIfProductImageLimitExceeded(productId));
             if (result != null)
                 return result;
 
@@ -59,9 +59,9 @@ namespace Business.Concrete
         [AuthorizeOperation("Admin,SuperAdmin")]
         [CacheRemoveAspect("IProductService.Get")]
         [CacheRemoveAspect("IProductImageService.Get")]
-        public IResult Delete(ProductImage productImage)
+        public async Task<IResult> Delete(ProductImage productImage)
         {
-            ProductImage deletedImage = _productImageDal.Get(x => x.Id == productImage.Id);
+            ProductImage deletedImage = await _productImageDal.Get(x => x.Id == productImage.Id);
             if (deletedImage == null)
             {
                 return new ErrorResult(Messages.ProductImageNotFound);
@@ -78,14 +78,14 @@ namespace Business.Concrete
 
 
         [CacheAspect(15)]
-        public IDataResult<List<ProductImage>> GetAll()
+        public async Task<IDataResult<List<ProductImage>>> GetAll()
         {
-            return new SuccessDataResult<List<ProductImage>>(_productImageDal.GetAll(), Messages.ProductsListedSuccessfully);
+            return new SuccessDataResult<List<ProductImage>>(await _productImageDal.GetAll(), Messages.ProductsListedSuccessfully);
         }
 
-        public IDataResult<ProductImage> GetById(int imageId)
+        public async Task<IDataResult<ProductImage>> GetById(int imageId)
         {
-            var result = _productImageDal.Get(x => x.Id == imageId);
+            var result = await _productImageDal.Get(x => x.Id == imageId);
             if (result == null)
             {
                 return new ErrorDataResult<ProductImage>(Messages.ProductImageNotFound);
@@ -93,9 +93,9 @@ namespace Business.Concrete
             return new SuccessDataResult<ProductImage>(result);
         }
 
-        public IDataResult<List<ProductImage>> GetProductImages(int productId)
+        public async Task<IDataResult<List<ProductImage>>> GetProductImages(int productId)
         {
-            var result = _productImageDal.GetAll(p => p.ProductId == productId);
+            var result = await _productImageDal.GetAll(p => p.ProductId == productId);
             return new SuccessDataResult<List<ProductImage>>(result.Count == 0 ?
                 (new List<ProductImage>
                 {
@@ -109,9 +109,9 @@ namespace Business.Concrete
                 : result);
         }
 
-        public IResult Update(ProductImage productImage, IFormFile file)
+        public async Task<IResult> Update(ProductImage productImage, IFormFile file)
         {
-            var image = _productImageDal.Get(x => x.Id == productImage.Id);
+            var image = await _productImageDal.Get(x => x.Id == productImage.Id);
             if (image == null)
             {
                 return new ErrorResult(Messages.ProductImageNotFound);
@@ -129,17 +129,17 @@ namespace Business.Concrete
         }
 
         //Business Rules
-        private IResult CheckIfProductImageLimitExceeded(int productId)
+        private async Task<IResult>CheckIfProductImageLimitExceeded(int productId)
         {
-            var result = _productImageDal.GetAll(p => p.ProductId == productId).Count;
+            var result = (await _productImageDal.GetAll(p => p.ProductId == productId)).Count;
             if (result > 5)
                 return new ErrorResult(Messages.ProductImageLimitExceeded);
             return new SuccessResult();
         }
 
-        private IResult CheckIfProdcutImageIdExist(int productImageId)
+        private async Task<IResult> CheckIfProdcutImageIdExist(int productImageId)
         {
-            ProductImage image = _productImageDal.Get(i => i.Id == productImageId);
+            ProductImage image = (await _productImageDal.Get(i => i.Id == productImageId));
             if (image == null)
                 return new ErrorResult(Messages.ProductImageNotFound);
             return new SuccessResult();

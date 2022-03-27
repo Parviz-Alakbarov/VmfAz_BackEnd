@@ -2,6 +2,7 @@
 using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
@@ -17,9 +18,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var result = _settingService.GetAll();
+            var result = await _settingService.GetAll();
             if (result != null)
             {
                 return Ok(result);
@@ -28,9 +29,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getbykey")]
-        public IActionResult GetByKey(string key)
+        public async Task<IActionResult> GetByKey(string key)
         {
-            var result = _settingService.GetByKey(key);
+            var result = await _settingService.GetByKey(key);
             if (result != null)
             {
                 return StatusCode(200,result);
@@ -40,9 +41,9 @@ namespace WebAPI.Controllers
 
 
         [HttpPut("update")]
-        public IActionResult Update([FromForm] SettingPostDto settingPostDto)
+        public async Task<IActionResult> Update([FromForm] SettingPostDto settingPostDto)
         {
-            var result = _settingService.Update(settingPostDto);
+            var result = await _settingService.Update(settingPostDto);
             if (result.Success)
             {
                 return Ok(result);
@@ -52,9 +53,9 @@ namespace WebAPI.Controllers
 
 
         [HttpGet("getCountries")]
-        public IActionResult GetCountries()
+        public async Task<IActionResult> GetCountries()
         {
-            var result = _settingService.GetCountries();
+            var result = await _settingService.GetCountries();
             if (result != null)
             {
                 return StatusCode(200, result);
@@ -63,9 +64,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getCitiesByCountry/{countryId}")]
-        public IActionResult GetCitiesByCountry(int countryId)
+        public async Task<IActionResult> GetCitiesByCountry(int countryId)
         {
-            var result = _settingService.GetCitiesByCountry(countryId);
+            var result = await _settingService.GetCitiesByCountry(countryId);
             if (result != null)
             {
                 return StatusCode(200, result);

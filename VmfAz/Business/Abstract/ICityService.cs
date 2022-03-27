@@ -10,8 +10,8 @@ namespace Business.Abstract
 {
     public interface ICityService
     {
-        IResult CheckCityExists(int cityId);
-        IResult CheckCityExistsOnCountry(int countryId, int cityId);
-        IDataResult<List<City>> GetCitiesByCountry(int countryId);
+        Task<IResult> CheckCityExists(int cityId);
+        Task<IResult> CheckCityExistsOnCountry(int countryId, int cityId);
+        Task<IDataResult<List<City>>> GetCitiesByCountry(int countryId);
     }
 }

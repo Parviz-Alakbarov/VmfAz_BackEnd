@@ -19,9 +19,9 @@ namespace Business.Concrete
             _countryDal = countryDal;
         }
 
-        public IResult CheckCountryExists(int countryId)
+        public async Task<IResult> CheckCountryExists(int countryId)
         {
-            return _countryDal.CheckCountryExists(countryId) ? new SuccessResult() : new ErrorResult();
+            return await _countryDal.CheckCountryExists(countryId) ? new SuccessResult() : new ErrorResult();
         }
     }
 }

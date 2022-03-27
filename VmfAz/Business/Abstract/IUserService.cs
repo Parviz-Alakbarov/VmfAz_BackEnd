@@ -10,10 +10,10 @@ namespace Business.Abstract
 {
     public interface IUserService
     {
-        IDataResult<List<OperationClaim>> GetClaims(AppUser user);
+        Task<IDataResult<List<OperationClaim>>> GetClaims(AppUser user);
         IResult Add(AppUser user);
         IResult Update(AppUser user);
-        IDataResult<AppUser> GetByMail(string email);
-        IDataResult<AppUser> GetById(int userId);
+        Task<IDataResult<AppUser>> GetByMail(string email);
+        Task<IDataResult<AppUser>> GetById(int userId);
     }
 }

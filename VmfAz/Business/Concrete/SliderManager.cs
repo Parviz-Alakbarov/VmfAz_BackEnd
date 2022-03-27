@@ -47,9 +47,9 @@ namespace Business.Concrete
         }
         [AuthorizeOperation("Admin,SuperAdmin")]
         [CacheRemoveAspect("ISliderService.Get")]
-        public IResult Delete(int id)
+        public async Task<IResult> Delete(int id)
         {
-            Slider slider = _sliderDal.Get(x => x.Id == id);
+            Slider slider = await _sliderDal.Get(x => x.Id == id);
             if (slider==null)
             {
                 return new ErrorResult(Messages.SliderNotFound);
@@ -59,9 +59,9 @@ namespace Business.Concrete
         }
         [AuthorizeOperation("Admin,SuperAdmin")]
         [CacheRemoveAspect("ISliderService.Get")]
-        public IResult Update(int id, SliderPostDto sliderPostDto)
+        public async Task<IResult> Update(int id, SliderPostDto sliderPostDto)
         {
-            Slider slider = _sliderDal.Get(x => x.Id == id);
+            Slider slider = await _sliderDal.Get(x => x.Id == id);
             if (slider == null)
             {
                 return new ErrorResult(Messages.SliderNotFound);
@@ -82,20 +82,19 @@ namespace Business.Concrete
         }
 
         [CacheAspect]
-        public IDataResult<List<Slider>> GetAll()
+        public async Task<IDataResult<List<Slider>>> GetAll()
         {
-            return new SuccessDataResult<List<Slider>>(_sliderDal.GetAll().OrderBy(x=>x.Order).ToList());   
+            return new SuccessDataResult<List<Slider>>((await _sliderDal.GetAll()).OrderBy(x=>x.Order).ToList());   
         }
     
-        public IDataResult<Slider> GetById(int id)
+        public async Task<IDataResult<Slider>> GetById(int id)
         {
-            Slider slider = _sliderDal.Get(x => x.Id == id);
+            Slider slider = await _sliderDal.Get(x => x.Id == id);
             if (slider == null)
             {
                 return new ErrorDataResult<Slider>(Messages.SliderNotFound);
             }
             return new SuccessDataResult<Slider>(slider);
         }
-
     }
 }

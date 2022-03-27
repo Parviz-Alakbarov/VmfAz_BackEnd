@@ -10,12 +10,12 @@ namespace Business.Abstract
 {
     public interface IShopService
     {
-        IDataResult<List<Shop>> GetAll();
-        IDataResult<List<Shop>> GetShopsByProduct(int productId);
+        Task<IDataResult<List<Shop>>> GetAll();
+        Task<IDataResult<List<Shop>>> GetShopsByProduct(int productId);
 
         IResult Add(Shop shop);
         IResult Update(Shop shop);
-        IResult Delete(int id);
+        Task<IResult> Delete(int id);
 
 
     }

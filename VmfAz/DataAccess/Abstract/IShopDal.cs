@@ -10,6 +10,6 @@ namespace DataAccess.Abstract
 {
     public interface IShopDal : IEntityRepository<Shop>
     {
-        List<Shop> GetShopsByProduct(int productId);
+        Task<List<Shop>> GetShopsByProduct(int productId);
     }
 }

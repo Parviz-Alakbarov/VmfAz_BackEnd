@@ -2,6 +2,7 @@
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs.ProductDTOs;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace DataAccess.Concrete.EntityFramework
     public class EfProductDal : EfEntityRepositoryBase<Product, VmfAzContext>, IProductDal
     {
 
-        public ProductDetailDto GetProductDetails(int id)
+        public async Task<ProductDetailDto> GetProductDetails(int id)
         {
             using (VmfAzContext context = new())
             {
@@ -58,11 +59,11 @@ namespace DataAccess.Concrete.EntityFramework
                                  ToolCount = p.ToolCount,
                                  WarrantyLimit = p.WarrantyLimit,
                              };
-                return result.SingleOrDefault();
+                return await result.SingleOrDefaultAsync();
             }
         }
 
-        public List<ProductGetDto> GetProductsInGetDto(int? count, Expression<Func<ProductGetDto, bool>> expression)
+        public async Task<List<ProductGetDto>> GetProductsInGetDto(int? count, Expression<Func<ProductGetDto, bool>> expression)
         {
             using (VmfAzContext context = new VmfAzContext())
             {
@@ -86,7 +87,7 @@ namespace DataAccess.Concrete.EntityFramework
                 if (count!=null)
                     result = result.Take((int)count);
 
-                return result.ToList();
+                return await result.ToListAsync();
             }
         }
 
@@ -94,7 +95,7 @@ namespace DataAccess.Concrete.EntityFramework
 
 
 
-        public List<ProductGetDto> GetBestSellerProducts(int count, Expression<Func<ProductGetDto, bool>> expression)
+        public async Task<List<ProductGetDto>>GetBestSellerProducts(int count, Expression<Func<ProductGetDto, bool>> expression)
         {
             using (VmfAzContext context = new VmfAzContext())
             {
@@ -120,7 +121,7 @@ namespace DataAccess.Concrete.EntityFramework
                                  GenderId = p.GenderId,
                                  ProductFunctionalityId = p.ProductFunctionalityId,
                              };
-                return expression == null ? result.ToList() : result.Where(expression).ToList();
+                return expression == null ? await result.ToListAsync() : await result.Where(expression).ToListAsync();
             }
         }
     }

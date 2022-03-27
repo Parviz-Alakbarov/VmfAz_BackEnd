@@ -9,7 +9,7 @@ namespace Business.Abstract
 {
     public interface ICountryService
     {
-        IResult CheckCountryExists(int countryId);
+        Task<IResult> CheckCountryExists(int countryId);
 
     }
 }

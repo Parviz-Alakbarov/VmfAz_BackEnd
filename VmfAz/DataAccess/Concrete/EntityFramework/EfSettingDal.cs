@@ -14,7 +14,7 @@ namespace DataAccess.Concrete.EntityFramework
 {
     public class EfSettingDal : ISettingDal
     {
-        public List<Setting> GetAll()
+        public async Task<List<Setting>> GetAll()
         {
             using (VmfAzContext context = new VmfAzContext())
             {
@@ -22,7 +22,7 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
-        public Setting GetByKey(string key)
+        public async Task<Setting> GetByKey(string key)
         {
             using (VmfAzContext context = new VmfAzContext())
             {
@@ -34,42 +34,39 @@ namespace DataAccess.Concrete.EntityFramework
                                  Key = s.Key,
                                  Value = s.Value
                              };
-                return result.SingleOrDefault();
+                return await result.SingleOrDefaultAsync();
             }
         }
 
-        public List<City> GetCitiesByCountry(int countryId)
+        public async Task<List<City>> GetCitiesByCountry(int countryId)
         {
             using (VmfAzContext context = new VmfAzContext())
             {
                 var result = from c in context.Cities
                              where c.CountryId == countryId
                              select c;
-                return result.OrderBy(x=>x.Name).ToList();
+                return await result.OrderBy(x=>x.Name).ToListAsync();
             }
         }
 
-        public List<Country> GetCountries()
+        public async Task<List<Country>> GetCountries()
         {
             using (VmfAzContext context = new VmfAzContext())
             {
                 var result = from c in context.Countries
                              select c;
-                return result.OrderBy(x=>x.Name).ToList();
+                return await result.OrderBy(x=>x.Name).ToListAsync();
             }
         }
 
-        public void Update(Setting setting)
+        public async void Update(Setting setting)
         {
             using (VmfAzContext context = new VmfAzContext())
             {
                 var updateEntity = context.Entry(setting);
                 updateEntity.State = EntityState.Modified;
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
-
-
-
     }
 }

@@ -11,10 +11,10 @@ namespace DataAccess.Abstract
 {
     public interface ISettingDal
     {
-        List<Setting> GetAll();
-        Setting GetByKey(string key);
+        Task<List<Setting>> GetAll();
+        Task<Setting> GetByKey(string key);
         void Update(Setting setting);
-        List<Country> GetCountries();
-        List<City> GetCitiesByCountry(int countryId);
+        Task<List<Country>> GetCountries();
+        Task<List<City>> GetCitiesByCountry(int countryId);
     }
 }

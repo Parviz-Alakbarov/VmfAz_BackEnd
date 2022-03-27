@@ -1,5 +1,6 @@
 ﻿using Core.Entities.Concrete;
 using DataAccess.Abstract;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,29 +11,29 @@ namespace DataAccess.Concrete.EntityFramework
 {
     public class EfCityDal : ICityDal
     {
-        public bool CheckCityExists(int id)
+        public async Task<bool> CheckCityExists(int id)
         {
             using (VmfAzContext context = new VmfAzContext())
             {
                 var result = from city in context.Cities
                              where city.Id == id
                              select city;
-                return result != null;
+                return await result.SingleOrDefaultAsync() != null;
             }
         }
 
-        public bool CheckCityExistsOnCountry(int countryId, int cityId)
+        public async  Task<bool> CheckCityExistsOnCountry(int countryId, int cityId)
         {
             using (VmfAzContext context = new VmfAzContext())
             {
                 var result = from city in context.Cities
                              where city.CountryId == countryId && city.Id == cityId
                              select city;
-                return result != null;
+                return await result.SingleOrDefaultAsync() != null;
             }
         }
 
-        public List<City> GetCitiesByCountry(int countryId)
+        public async Task<List<City>> GetCitiesByCountry(int countryId)
         {
             using (VmfAzContext context = new VmfAzContext())
             {
@@ -40,7 +41,7 @@ namespace DataAccess.Concrete.EntityFramework
 
                              where city.CountryId == countryId
                              select new City { Id = city.Id, Name = city.Name, CountryId = city.CountryId };
-                return result.ToList();
+                return await result.ToListAsync();
             }
         }
     }

@@ -9,8 +9,8 @@ namespace DataAccess.Abstract
 {
     public interface ICityDal
     {
-        bool CheckCityExists(int id);
-        bool CheckCityExistsOnCountry(int countryId, int cityId);
-        List<City> GetCitiesByCountry(int countryId);
+        Task<bool> CheckCityExists(int id);
+        Task<bool> CheckCityExistsOnCountry(int countryId, int cityId);
+        Task<List<City>> GetCitiesByCountry(int countryId);
     }
 }

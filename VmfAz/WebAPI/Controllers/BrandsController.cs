@@ -3,6 +3,7 @@ using Entities.DTOs.BrandDTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
@@ -17,19 +18,10 @@ namespace WebAPI.Controllers
             _brandService = brandService;
         }
 
-
-
         [HttpPost("add")]
-        public IActionResult Add([FromForm] BrandPostDto dto)
+        public async Task<IActionResult> Add([FromForm] BrandPostDto dto)
         {
-        /*    BrandPostDto dto = new BrandPostDto()
-            {
-                Name = name,
-                Description = description,
-                Image = image,
-                PosterImage = posterImage
-            };*/
-            var result = _brandService.Add(dto);
+            var result = await _brandService.Add(dto);
             if (result.Success)
             {
                 return StatusCode(201, result.Message);
@@ -38,9 +30,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var result = _brandService.GetAll();
+            var result = await _brandService.GetAll();
             if (result.Success)
             {
                 return Ok(result);
@@ -48,17 +40,47 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
-        [HttpPut("update")]
-        public ActionResult Update([FromForm] int id,[FromForm] BrandPostDto dto)
+
+        [HttpGet("getbrandsonlywithname")]
+        public async Task<IActionResult> GetBrandsOnlyWithName()
         {
-            //BrandPostDto dto = new BrandPostDto()
-            //{
-            //    Name = name,
-            //    Description = description,
-            //    Image = image,
-            //    PosterImage = posterImage
-            //};
-            var result = _brandService.Update(id, dto);
+            var result = await _brandService.GetBrandsOnlyWithName();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getbrandswithimage")]
+        public async Task<IActionResult> GetBrandsWithImage()
+        {
+            var result = await _brandService.GetBrandsWithImage();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getbrandDetail/{id}")]
+        public async Task<IActionResult> GetBrandDetail(int id)
+        {
+            var result = await _brandService.GetBrandDetail(id);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+
+
+
+        [HttpPut("update")]
+        public async Task<IActionResult> Update([FromForm] int id,[FromForm] BrandPostDto dto)
+        {
+            var result = await _brandService.Update(id, dto);
             if (result.Success) 
             {
                 return StatusCode(201, result.Message);

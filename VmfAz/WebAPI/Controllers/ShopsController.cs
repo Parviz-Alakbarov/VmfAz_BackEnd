@@ -2,6 +2,7 @@
 using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
@@ -17,9 +18,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var result = _shopService.GetAll();
+            var result = await _shopService.GetAll();
             if (result.Success)
             {
                 return Ok(result);
@@ -28,9 +29,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getshopbyproduct/{id}")]
-        public IActionResult GetShopsByProduct(int id)
+        public async Task<IActionResult> GetShopsByProduct(int id)
         {
-            var result = _shopService.GetShopsByProduct(id);
+            var result = await _shopService.GetShopsByProduct(id);
             if (result.Success)
             {
                 return Ok(result);
@@ -40,7 +41,7 @@ namespace WebAPI.Controllers
 
 
         [HttpPost("add")]
-        public IActionResult Add(Shop shop)
+        public async Task<IActionResult> Add(Shop shop)
         {
             var result = _shopService.Add(shop);
             if (result.Success)
@@ -52,9 +53,9 @@ namespace WebAPI.Controllers
 
 
         [HttpDelete("delete")]
-        public IActionResult Remove(int id)
+        public async Task<IActionResult> Remove(int id)
         {
-            var result = _shopService.Delete(id);
+            var result = await _shopService.Delete(id);
             if (result.Success)
             {
                 return StatusCode(204, result.Message);

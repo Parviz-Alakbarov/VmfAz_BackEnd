@@ -36,12 +36,12 @@ namespace Business.Concrete
             _countryService = countryService;
         }
         [ValidationAspect(typeof(UserRegisterDtoValidator))]
-        public IDataResult<AppUser> Register(UserRegisterDto userRegisterDto)
+        public async Task<IDataResult<AppUser>> Register(UserRegisterDto userRegisterDto)
         {
             var result = BusinessRules.Run(
-                UserExists(userRegisterDto.Email),
-                CheckCountryExist(userRegisterDto.CountryId),
-                CheckCityExist(userRegisterDto.CountryId, userRegisterDto.CityId));
+                await UserExists(userRegisterDto.Email),
+                await CheckCountryExist(userRegisterDto.CountryId),
+                await CheckCityExist(userRegisterDto.CountryId, userRegisterDto.CityId));
 
             if (result != null)
                 return new ErrorDataResult<AppUser>(result.Message);
@@ -65,9 +65,9 @@ namespace Business.Concrete
             return new SuccessDataResult<AppUser>(user, Messages.UserRegistered);
         }
 
-        public IDataResult<AppUser> Login(UserLoginDto userForLoginDto)
+        public async Task<IDataResult<AppUser>> Login(UserLoginDto userForLoginDto)
         {
-            var userToCheck = _userService.GetByMail(userForLoginDto.Email);
+            var userToCheck = await _userService.GetByMail(userForLoginDto.Email);
             if (userToCheck.Data == null)
             {
                 return new ErrorDataResult<AppUser>(Messages.UserNotFound);
@@ -81,30 +81,30 @@ namespace Business.Concrete
             return new SuccessDataResult<AppUser>(userToCheck.Data, Messages.SuccessfullLogin);
         }
 
-        public IResult UserExists(string email)
+        public async Task<IResult> UserExists(string email)
         {
-            if (_userService.GetByMail(email).Data != null)
+            if ((await _userService.GetByMail(email)).Data != null)
             {
                 return new ErrorResult(Messages.UserAlreadyExists);
             }
             return new SuccessResult();
         }
 
-        public IDataResult<AccessToken> CreateAccessToken(AppUser user)
+        public async Task<IDataResult<AccessToken>> CreateAccessToken(AppUser user)
         {
-            var claims = _userService.GetClaims(user);
+            var claims = await _userService.GetClaims(user);
             var accessToken = _tokenHelper.CreateToken(user, claims.Data);
             return new SuccessDataResult<AccessToken>(accessToken, Messages.AccessTokenCreated);
         }
 
-        public IResult ResetPassword(UserResetPasswordDto userForRPDto)
+        public async Task<IResult> ResetPassword(UserResetPasswordDto userForRPDto)
         {
             throw new NotImplementedException();
         }
         [AuthorizeOperation("Member")]
-        public IResult ChangePassword(UserChangePasswordDto userForChangePasswordDto)
+        public async Task<IResult> ChangePassword(UserChangePasswordDto userForChangePasswordDto)
         {
-            var user = _userService.GetByMail(userForChangePasswordDto.Email);
+            var user = await _userService.GetByMail(userForChangePasswordDto.Email);
             if (user.Data == null)
                 return new ErrorResult(Messages.UserNotFound);
 
@@ -118,18 +118,18 @@ namespace Business.Concrete
             user.Data.PasswordSalt = passwordSalt;
             _userService.Update(user.Data);
 
-            var claims = _userService.GetClaims(user.Data);
+            var claims = await _userService.GetClaims(user.Data);
             var accessToken = _tokenHelper.CreateToken(user.Data, claims.Data);
             return new SuccessDataResult<AccessToken>(accessToken, Messages.AccessTokenCreated);
 
         }
-        private IResult CheckCountryExist(int countryId)
+        private async Task<IResult> CheckCountryExist(int countryId)
         {
-            return _countryService.CheckCountryExists(countryId);
+            return await _countryService.CheckCountryExists(countryId);
         }
-        private IResult CheckCityExist(int countryId, int cityId)
+        private async Task<IResult> CheckCityExist(int countryId, int cityId)
         {
-            return _cityService.CheckCityExistsOnCountry(countryId, cityId);
+            return await _cityService.CheckCityExistsOnCountry(countryId, cityId);
         }
 
     }

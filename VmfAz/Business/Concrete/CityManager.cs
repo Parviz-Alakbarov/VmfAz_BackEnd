@@ -21,19 +21,19 @@ namespace Business.Concrete
             _cityDal = cityDal;
         }
 
-        public IResult CheckCityExists(int cityId)
+        public async Task<IResult> CheckCityExists(int cityId)
         {
-            return _cityDal.CheckCityExists(cityId)? new SuccessResult():new ErrorResult();
+            return await _cityDal.CheckCityExists(cityId)? new SuccessResult():new ErrorResult();
         }
 
-        public IResult CheckCityExistsOnCountry(int countryId, int cityId)
+        public async Task<IResult> CheckCityExistsOnCountry(int countryId, int cityId)
         {
-            return _cityDal.CheckCityExistsOnCountry(countryId,cityId) ? new SuccessResult() : new ErrorResult();
+            return await _cityDal.CheckCityExistsOnCountry(countryId,cityId) ? new SuccessResult() : new ErrorResult();
         }
 
-        public IDataResult<List<City>> GetCitiesByCountry(int countryId)
+        public async Task<IDataResult<List<City>>> GetCitiesByCountry(int countryId)
         {
-            List<City> result = _cityDal.GetCitiesByCountry(countryId);
+            List<City> result = await _cityDal.GetCitiesByCountry(countryId);
             if (result==null)
             {
                 return new ErrorDataResult<List<City>>(Messages.CityNotExist);

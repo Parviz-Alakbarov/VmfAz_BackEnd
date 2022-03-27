@@ -34,7 +34,7 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(BasketItemAddDtoValidator), Priority = 1)]
-        public IDataResult<List<BasketItem>> Add(BasketItemAddDto basketItemAddDto)
+        public async Task<IDataResult<List<BasketItem>>> Add(BasketItemAddDto basketItemAddDto)
         {
             IResult result = BusinessRules.Run(
                 CheckIfAppUserExists(basketItemAddDto.AppUserId),
@@ -42,7 +42,7 @@ namespace Business.Concrete
             if (result != null)
                 return new ErrorDataResult<List<BasketItem>>(result.Message);
 
-            BasketItem item = _basketItemDal.Get(x => x.ProductId == basketItemAddDto.ProductId && x.AppUserId == basketItemAddDto.AppUserId);
+            BasketItem item = await _basketItemDal.Get(x => x.ProductId == basketItemAddDto.ProductId && x.AppUserId == basketItemAddDto.AppUserId);
             if (item == null)
             {
                 item = _mapper.Map<BasketItem>(basketItemAddDto);
@@ -53,13 +53,13 @@ namespace Business.Concrete
                 item.Count += basketItemAddDto.Count;
                 _basketItemDal.Update(item);
             }
-            List<BasketItem> basketItems = _basketItemDal.GetAll(x => x.AppUserId == basketItemAddDto.AppUserId);
+            List<BasketItem> basketItems = await _basketItemDal.GetAll(x => x.AppUserId == basketItemAddDto.AppUserId);
             return new SuccessDataResult<List<BasketItem>>(basketItems, Messages.ProductAddedToBasket);
         }
 
-        public IResult DecreaseCount(int basketItemId)
+        public async Task<IResult> DecreaseCount(int basketItemId)
         {
-            var item = _basketItemDal.Get(x => x.Id == basketItemId);
+            var item = await _basketItemDal.Get(x => x.Id == basketItemId);
             if (item == null)
             {
                 return new ErrorResult(Messages.BasketItemNotFound);
@@ -73,9 +73,9 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        public IResult Delete(int basketItemId)
+        public async Task<IResult> Delete(int basketItemId)
         {
-            var item = _basketItemDal.Get(x => x.Id == basketItemId);
+            var item = await _basketItemDal.Get(x => x.Id == basketItemId);
             if (item == null)
             {
                 return new ErrorResult(Messages.BasketItemNotFound);
@@ -84,14 +84,14 @@ namespace Business.Concrete
             return new SuccessResult(Messages.BasketItemDeletedSuccessfully);
         }
 
-        public IDataResult<List<BasketItem>> GetAllBasketItemsByUserId(int userId)
+        public async  Task<IDataResult<List<BasketItem>>> GetAllBasketItemsByUserId(int userId)
         {
-            return new SuccessDataResult<List<BasketItem>>(_basketItemDal.GetAll(x => x.AppUserId == userId));
+            return new SuccessDataResult<List<BasketItem>>(await _basketItemDal.GetAll(x => x.AppUserId == userId));
         }
 
-        public IResult IncreaseCount(int basketItemId)
+        public async Task<IResult> IncreaseCount(int basketItemId)
         {
-            var item = _basketItemDal.Get(x => x.Id == basketItemId);
+            var item =await _basketItemDal.Get(x => x.Id == basketItemId);
             if (item == null)
             {
                 return new ErrorResult(Messages.BasketItemNotFound);

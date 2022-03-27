@@ -8,6 +8,6 @@ namespace DataAccess.Abstract
 {
     public interface ICountryDal
     {
-        bool CheckCountryExists(int countryId);
+        Task<bool> CheckCountryExists(int countryId);
     }
 }

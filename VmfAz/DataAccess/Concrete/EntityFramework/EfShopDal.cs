@@ -1,6 +1,7 @@
 ﻿using Core.DataAccess.EntityFramework;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace DataAccess.Concrete.EntityFramework
 {
     public class EfShopDal : EfEntityRepositoryBase<Shop, VmfAzContext>, IShopDal
     {
-        public List<Shop> GetShopsByProduct(int productId)
+        public async Task<List<Shop>> GetShopsByProduct(int productId)
         {
             using (VmfAzContext context = new VmfAzContext())
             {
@@ -20,7 +21,7 @@ namespace DataAccess.Concrete.EntityFramework
                                 on shop.Id equals productShop.ShopId
                              where productShop.ProductId == productId
                              select shop;
-                return result.ToList();
+                return await result.ToListAsync();
             }
         }
     }

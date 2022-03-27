@@ -20,9 +20,9 @@ namespace Business.Concrete
             _userDal = userDal;
         }
 
-        public IDataResult<List<OperationClaim>> GetClaims(AppUser user)
+        public async Task<IDataResult<List<OperationClaim>>> GetClaims(AppUser user)
         {
-            return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user));
+            return new SuccessDataResult<List<OperationClaim>>(await _userDal.GetClaims(user));
         }
 
         public IResult Add(AppUser user)
@@ -31,9 +31,9 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        public IDataResult<AppUser> GetByMail(string email)
+        public async Task<IDataResult<AppUser>> GetByMail(string email)
         {
-            return new SuccessDataResult<AppUser>(_userDal.Get(u => u.Email == email));
+            return new SuccessDataResult<AppUser>(await _userDal.Get(u => u.Email == email));
         }
 
         public IResult Update(AppUser user)
@@ -42,9 +42,9 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        public IDataResult<AppUser> GetById(int userId)
+        public async Task<IDataResult<AppUser>> GetById(int userId)
         {
-            var result = _userDal.Get(x=>x.Id== userId);
+            var result = await _userDal.Get(x=>x.Id== userId);
           
             return new SuccessDataResult<AppUser>(result);
         }

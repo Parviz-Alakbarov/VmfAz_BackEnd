@@ -29,23 +29,23 @@ namespace Business.Concrete
         }
         [AuthorizeOperation("Admin,SuperAdmin")]
 
-        public IResult Delete(int id)
+        public async Task<IResult> Delete(int id)
         {
-            Shop shop = _shopDal.Get(x => x.Id == id);
+            Shop shop = await _shopDal.Get(x => x.Id == id);
             if (shop == null)
                 return new ErrorResult(Messages.ShopNotFound);
             _shopDal.Delete(shop);
             return new SuccessResult(Messages.ShopDeleted);
         }
 
-        public IDataResult<List<Shop>> GetAll()
+        public async Task<IDataResult<List<Shop>>> GetAll()
         {
-            return new SuccessDataResult<List<Shop>>(_shopDal.GetAll(),Messages.ShopListed);
+            return new SuccessDataResult<List<Shop>>(await _shopDal.GetAll(),Messages.ShopListed);
         }
 
-        public IDataResult<List<Shop>> GetShopsByProduct(int productId)
+        public async Task<IDataResult<List<Shop>>> GetShopsByProduct(int productId)
         {
-            return new SuccessDataResult<List<Shop>>(_shopDal.GetShopsByProduct(productId),Messages.ShopListed);
+            return new SuccessDataResult<List<Shop>>( await _shopDal.GetShopsByProduct(productId),Messages.ShopListed);
         }
 
         [AuthorizeOperation("Admin,SuperAdmin")]

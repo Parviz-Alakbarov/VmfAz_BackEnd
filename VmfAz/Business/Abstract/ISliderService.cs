@@ -11,10 +11,10 @@ namespace Business.Abstract
 {
     public interface ISliderService 
     {
-        IDataResult<List<Slider>> GetAll();
-        IDataResult<Slider> GetById(int id);
-        IResult Delete(int id);
-        IResult Update(int id,SliderPostDto sliderPostDto);
+        Task<IDataResult<List<Slider>>> GetAll();
+        Task<IDataResult<Slider>> GetById(int id);
+        Task<IResult> Delete(int id);
+        Task<IResult> Update(int id,SliderPostDto sliderPostDto);
         IResult Add(SliderPostDto sliderPostDto);
 
     }

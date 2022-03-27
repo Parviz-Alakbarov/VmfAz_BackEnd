@@ -2,6 +2,7 @@
 using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
@@ -17,9 +18,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var result = _sliderService.GetAll();
+            var result = await _sliderService.GetAll();
             if (result.Success)
             {
                 return Ok(result);
@@ -28,9 +29,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getbyid/{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var result = _sliderService.GetById(id);
+            var result = await _sliderService.GetById(id);
             if (result.Success)
             {
                 return Ok(result);
@@ -39,7 +40,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add([FromForm] SliderPostDto sliderPostDto)
+        public async Task<IActionResult> Add([FromForm] SliderPostDto sliderPostDto)
         {
             var result = _sliderService.Add(sliderPostDto);
             if (result.Success)
@@ -50,9 +51,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update([FromForm] int id, [FromForm] SliderPostDto sliderPostDto)
+        public async Task<IActionResult> Update([FromForm] int id, [FromForm] SliderPostDto sliderPostDto)
         {
-            var result = _sliderService.Update(id, sliderPostDto);
+            var result = await _sliderService.Update(id, sliderPostDto);
             if (result.Success)
             {
                 return Ok(result);
@@ -61,9 +62,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = _sliderService.Delete(id);
+            var result = await _sliderService.Delete(id);
             if (result.Success)
             {
                 return Ok(result);

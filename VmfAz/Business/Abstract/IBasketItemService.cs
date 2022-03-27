@@ -11,10 +11,10 @@ namespace Business.Abstract
 {
     public interface IBasketItemService
     {
-        IDataResult<List<BasketItem>> Add(BasketItemAddDto basketItemAddDto);
-        IResult IncreaseCount(int basketItemId);
-        IResult DecreaseCount(int basketItemId);
-        IResult Delete(int basketItemId);
-        IDataResult<List<BasketItem>> GetAllBasketItemsByUserId(int userId);
+        Task<IDataResult<List<BasketItem>>> Add(BasketItemAddDto basketItemAddDto);
+        Task<IResult> IncreaseCount(int basketItemId);
+        Task<IResult> DecreaseCount(int basketItemId);
+        Task<IResult> Delete(int basketItemId);
+        Task<IDataResult<List<BasketItem>>> GetAllBasketItemsByUserId(int userId);
     }
 }

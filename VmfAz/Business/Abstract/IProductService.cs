@@ -11,19 +11,20 @@ namespace Business.Abstract
 {
     public interface IProductService 
     {
-        IDataResult<List<Product>> GetAll();
-        IDataResult<List<ProductGetDto>> GetProcutsInGetDto();
-        IDataResult<ProductDetailDto> GetProductDetils(int id);
-        IDataResult<Product> GetProductById(int id);
-        IDataResult<List<ProductGetDto>> GetProductsByBrandId(int brandId);
-        IDataResult<List<ProductGetDto>> GetBestSellerProducts(int count);
-        IDataResult<List<ProductGetDto>> GetBestSellerProductsByBrandId(int brandId,int count);
-        IDataResult<List<ProductGetDto>> GetDiscountedProducts(int? count);
+        Task<IDataResult<Product>> GetProductById(int id);
+        Task<IDataResult<List<Product>>> GetAll();
+        Task<IDataResult<ProductDetailDto>> GetProductDetils(int id);
+        Task<IDataResult<List<ProductGetDto>>> GetProductsInGetDto();
+        Task<IDataResult<List<ProductGetDto>>> GetProductsByBrandId(int brandId);
+        Task<IDataResult<List<ProductGetDto>>> GetBestSellerProducts(int count);
+        Task<IDataResult<List<ProductGetDto>>> GetBestSellerProductsByBrandId(int brandId,int count);
+        Task<IDataResult<List<ProductGetDto>>> GetDiscountedProducts(int? count);
+        Task<IDataResult<List<ProductGetDto>>> SearchProducts(string name);
 
 
-        IResult Add(ProductAddDto productAddDto);
-        IResult Update(int id,ProductUpdateDto productUpdateDto);
-        IResult Delete(int id);
-        IResult UnDelete(int id);
+        Task<IResult> Add(ProductAddDto productAddDto);
+        Task<IResult> Update(int id,ProductUpdateDto productUpdateDto);
+        Task<IResult> Delete(int id);
+        Task<IResult> UnDelete(int id);
     }
 }

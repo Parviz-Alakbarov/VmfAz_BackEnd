@@ -12,10 +12,10 @@ namespace Business.Abstract
 {
     public interface ISettingService
     {
-        IDataResult<List<Setting>> GetAll();
-        IDataResult<Setting> GetByKey(string key);
-        IResult Update(SettingPostDto settingPostDto);
-        IDataResult<List<Country>> GetCountries();
-        IDataResult<List<City>> GetCitiesByCountry(int countryId);
+        Task<IDataResult<List<Setting>>> GetAll();
+        Task<IDataResult<Setting>> GetByKey(string key);
+        Task<IResult> Update(SettingPostDto settingPostDto);
+        Task<IDataResult<List<Country>>> GetCountries();
+        Task<IDataResult<List<City>>> GetCitiesByCountry(int countryId);
     }
 }

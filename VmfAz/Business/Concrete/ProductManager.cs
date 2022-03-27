@@ -36,7 +36,7 @@ namespace Business.Concrete
         [AuthorizeOperation("SuperAdmin")]
         [ValidationAspect(typeof(ProductAddDtoValidator), Priority = 1)]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult Add(ProductAddDto productAddDto)
+        public async Task<IResult> Add(ProductAddDto productAddDto)
         {
             IResult result = BusinessRules.Run(
                 CheckCountryExist(productAddDto.CountryId),
@@ -59,14 +59,14 @@ namespace Business.Concrete
         [AuthorizeOperation("Admin,SuperAdmin")]
         [ValidationAspect(typeof(ProductUpdateDtoValidator))]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult Update(int id, ProductUpdateDto productUpdateDto)
+        public async Task<IResult> Update(int id, ProductUpdateDto productUpdateDto)
         {
             IResult result = BusinessRules.Run(
                 CheckIfProductExistWithName(productUpdateDto.Name));
             if (result != null)
                 return result;
 
-            Product product = _productDal.Get(x => !x.IsDeleted && x.Id == id);
+            Product product = await _productDal.Get(x => !x.IsDeleted && x.Id == id);
             if (product == null)
             {
                 return new ErrorResult(Messages.ProductNotFound);
@@ -92,9 +92,9 @@ namespace Business.Concrete
 
         [AuthorizeOperation("Admin,SuperAdmin")]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult Delete(int productId)
+        public async Task<IResult> Delete(int productId)
         {
-            Product product = _productDal.Get(x => x.Id == productId && !x.IsDeleted);
+            Product product = await _productDal.Get(x => x.Id == productId && !x.IsDeleted);
             if (product == null)
             {
                 return new ErrorResult(Messages.ProductNotFound);
@@ -106,9 +106,9 @@ namespace Business.Concrete
 
         [AuthorizeOperation("Admin,SuperAdmin")]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult UnDelete(int productId)
+        public async Task<IResult> UnDelete(int productId)
         {
-            Product product = _productDal.Get(x => x.Id == productId && x.IsDeleted);
+            Product product = await _productDal.Get(x => x.Id == productId && x.IsDeleted);
             if (product == null)
             {
                 return new ErrorResult(Messages.ProductNotFound);
@@ -119,23 +119,23 @@ namespace Business.Concrete
         }
 
         [CacheAspect(15)]
-        public IDataResult<List<Product>> GetAll()
+        public async Task<IDataResult<List<Product>>> GetAll()
         {
-            return new SuccessDataResult<List<Product>>(_productDal.GetAll(x => !x.IsDeleted), Messages.ProductsListedSuccessfully);
+            return new SuccessDataResult<List<Product>>( await _productDal.GetAll(x => !x.IsDeleted), Messages.ProductsListedSuccessfully);
         }
 
-        public IDataResult<Product> GetProductById(int productId)
+        public async Task<IDataResult<Product>> GetProductById(int productId)
         {
-            var result = _productDal.Get(p => p.Id == productId && !p.IsDeleted);
+            var result = await _productDal.Get(p => p.Id == productId && !p.IsDeleted);
             if (result == null)
             {
                 return new ErrorDataResult<Product>(Messages.ProductNotFound);
             }
             return new SuccessDataResult<Product>(result);
         }
-        public IDataResult<ProductDetailDto> GetProductDetils(int id)
+        public async Task<IDataResult<ProductDetailDto>> GetProductDetils(int id)
         {
-            var result = _productDal.GetProductDetails(id);
+            var result = await _productDal.GetProductDetails(id);
             if (result == null)
             {
                 return new ErrorDataResult<ProductDetailDto>(Messages.ProductNotFound);
@@ -143,13 +143,13 @@ namespace Business.Concrete
             return new SuccessDataResult<ProductDetailDto>(result);
         }
 
-        public IDataResult<List<ProductGetDto>> GetProductsByBrandId(int brandId)
+        public  async Task<IDataResult<List<ProductGetDto>>> GetProductsByBrandId(int brandId)
         {
             IResult businessResult = BusinessRules.Run(CheckIfBrandExistsById(brandId));
             if (businessResult != null)
                 return new ErrorDataResult<List<ProductGetDto>>(businessResult.Message);
 
-            var result = _productDal.GetProductsInGetDto(null,x => x.BrandId == brandId);
+            var result = await _productDal.GetProductsInGetDto(null, x => x.BrandId == brandId);
             if (result == null)
             {
                 return new ErrorDataResult<List<ProductGetDto>>(Messages.ProductNotFound);
@@ -158,25 +158,30 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductGetDto>>(result);
         }
 
+        public async Task<IDataResult<List<ProductGetDto>>> SearchProducts(string name)
+        {
+            return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetProductsInGetDto(null, x => x.Name.IndexOf(name) != -1));
+        }
+
         [CacheAspect]
-        public IDataResult<List<ProductGetDto>> GetProcutsInGetDto()
+        public async Task<IDataResult<List<ProductGetDto>>> GetProductsInGetDto()
         {
-            return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetProductsInGetDto(), Messages.ProductsListedSuccessfully);
+            return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetProductsInGetDto(), Messages.ProductsListedSuccessfully);
         }
 
-        public IDataResult<List<ProductGetDto>> GetBestSellerProducts(int count)
-        {
-            return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetBestSellerProducts(count), Messages.ProductsListedSuccessfully);
+        public async Task<IDataResult<List<ProductGetDto>>> GetBestSellerProducts(int count)
+        { 
+            return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetBestSellerProducts(count), Messages.ProductsListedSuccessfully);
         }
 
-        public IDataResult<List<ProductGetDto>> GetBestSellerProductsByBrandId(int brandId, int count)
+        public async Task<IDataResult<List<ProductGetDto>>> GetBestSellerProductsByBrandId(int brandId, int count)
         {
-            return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetBestSellerProducts(count, x => x.BrandId == brandId), Messages.ProductsListedSuccessfully);
+            return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetBestSellerProducts(count, x => x.BrandId == brandId), Messages.ProductsListedSuccessfully);
         }
 
-        public IDataResult<List<ProductGetDto>> GetDiscountedProducts(int? count)
+        public async Task<IDataResult<List<ProductGetDto>>> GetDiscountedProducts(int? count)
         {
-            return new SuccessDataResult<List<ProductGetDto>>(_productDal.GetProductsInGetDto(count,x => x.DiscountPersent > 0), Messages.ProductsListedSuccessfully);
+            return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetProductsInGetDto(count, x => x.DiscountPersent > 0), Messages.ProductsListedSuccessfully);
         }
 
 
@@ -191,7 +196,7 @@ namespace Business.Concrete
             {
                 return new SuccessResult();
             }
-            return _countryService.CheckCountryExists((int)countryId);
+            return _countryService.CheckCountryExists((int)countryId).Result;
         }
 
         private IResult CheckIfProductExistWithName(string productName)

@@ -27,14 +27,14 @@ namespace Business.Concrete
         }
 
         [CacheAspect]
-        public IDataResult<List<Setting>> GetAll()
+        public async Task<IDataResult<List<Setting>>> GetAll()
         {
-            return new SuccessDataResult<List<Setting>>(_settingDal.GetAll(), Messages.SettingListed);
+            return new SuccessDataResult<List<Setting>>(await _settingDal.GetAll(), Messages.SettingListed);
         }
 
-        public IDataResult<Setting> GetByKey(string key)
+        public async Task<IDataResult<Setting>> GetByKey(string key)
         {
-            var result = _settingDal.GetByKey(key);
+            var result = await _settingDal.GetByKey(key);
             if (result == null)
             {
                 return new ErrorDataResult<Setting>(Messages.SettingDataNotFound);
@@ -42,15 +42,15 @@ namespace Business.Concrete
             return new SuccessDataResult<Setting>(result, Messages.SettingListed);
         }
 
-        public IDataResult<List<Country>> GetCountries()
+        public async Task<IDataResult<List<Country>>> GetCountries()
         {
             
-            return new SuccessDataResult<List<Country>>(_settingDal.GetCountries(), Messages.CountriesListed);
+            return new SuccessDataResult<List<Country>>(await _settingDal.GetCountries(), Messages.CountriesListed);
         }
 
-        public IDataResult<List<City>> GetCitiesByCountry(int countryId)
+        public async Task<IDataResult<List<City>>> GetCitiesByCountry(int countryId)
         {
-            var result = _settingDal.GetCitiesByCountry(countryId);
+            var result = await _settingDal.GetCitiesByCountry(countryId);
             if (result == null)
             {
                 return new ErrorDataResult<List<City>>(Messages.CityNotExist);
@@ -60,9 +60,9 @@ namespace Business.Concrete
 
         [AuthorizeOperation("SuperAdmin,Admin")]
         [CacheRemoveAspect("ISettingService.Get")]
-        public IResult Update(SettingPostDto settingPostDto)
+        public async Task<IResult> Update(SettingPostDto settingPostDto)
         {
-            Setting setting = _settingDal.GetByKey(settingPostDto.Key);
+            Setting setting = await _settingDal.GetByKey(settingPostDto.Key);
             if (setting == null)
                 return new ErrorResult(Messages.SettingDataNotFound);
             if (settingPostDto.File == null)

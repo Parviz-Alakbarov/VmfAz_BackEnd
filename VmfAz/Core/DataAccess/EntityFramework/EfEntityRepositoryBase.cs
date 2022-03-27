@@ -13,51 +13,51 @@ namespace Core.DataAccess.EntityFramework
         where TEntity : class, IEntity, new()
         where TContext : DbContext, new()
     {
-        public void Add(TEntity entity)
+        public async void Add(TEntity entity)
         {
             using (TContext context = new TContext())
             {
                 var addEntity = context.Entry(entity);
                 addEntity.State = EntityState.Added;
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
 
-        public void Delete(TEntity entity)
+        public async void Delete(TEntity entity)
         {
             using (TContext context= new TContext())
             {
                 var deleteEntity = context.Entry(entity);
                 deleteEntity.State = EntityState.Deleted;
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
 
-        public List<TEntity> GetAll(Expression<Func<TEntity, bool>> expression)
+        public async Task<List<TEntity>> GetAll(Expression<Func<TEntity, bool>> expression)
         {
             using (TContext context = new TContext())
             {
                 return expression == null
-                    ? context.Set<TEntity>().ToList()
-                    : context.Set<TEntity>().Where(expression).ToList();
+                    ? await context.Set<TEntity>().ToListAsync()
+                    : await context.Set<TEntity>().Where(expression).ToListAsync();
             }
         }
 
-        public TEntity Get(Expression<Func<TEntity, bool>> expression)
+        public async Task<TEntity> Get(Expression<Func<TEntity, bool>> expression)
         {
             using (TContext context = new TContext())
             {
-                return context.Set<TEntity>().SingleOrDefault(expression);
+                return await context.Set<TEntity>().SingleOrDefaultAsync(expression);
             }
         }
 
-        public void Update(TEntity entity)
+        public async void Update(TEntity entity)
         {
             using (TContext context = new TContext())
             {
                 var updateEntity = context.Entry(entity);
                 updateEntity.State = EntityState.Modified;
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
     }
