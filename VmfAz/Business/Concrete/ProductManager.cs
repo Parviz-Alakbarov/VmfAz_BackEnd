@@ -197,7 +197,7 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<List<ProductGetDto>>(Messages.ProductNotFound);
             }
-            return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetProductsInGetDto(5, x => x.BrandId == result[0].BrandId));
+            return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetProductsInGetDto(5, x => x.BrandId == result[0].BrandId && x.Id != productId));
         }
 
 
