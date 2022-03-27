@@ -14,7 +14,7 @@ namespace Core.Extensions
         public static void AddPaginationHeader(this HttpResponse response,
             int currentPage, int totalItems, int itemsPerPage, int totalPages)
         {
-            var paginationHeader = new PaginationHeader(currentPage, totalItems, itemsPerPage, totalPages);
+            var paginationHeader = new PaginationHeader(currentPage,totalPages ,totalItems, itemsPerPage);
 
             var options = new JsonSerializerOptions
             {

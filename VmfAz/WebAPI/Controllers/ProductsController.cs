@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Core.Extensions;
+using Core.Utilities.PaginationHelper;
 using Entities.DTOs.OrderDTOs;
 using Entities.DTOs.ProductDTOs;
 using Microsoft.AspNetCore.Http;
@@ -90,7 +92,6 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
-
         [HttpGet("")]
         public async Task<IActionResult> GetAll()
         {
@@ -178,5 +179,30 @@ namespace WebAPI.Controllers
             }
             return NotFound(result.Message);
         }
+        [HttpGet("getrelatedproducts/{productId}")]
+        public async Task<IActionResult> GetRelatedProducts(int productId)
+        {
+            var result = await _productService.GetRelatedProducts(productId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return NotFound(result.Message);
+        }
+
+        [HttpGet("getpaginatedlist")]
+        public async Task<IActionResult> GetPaginatedProducts([FromQuery] UserParams userParams)
+        {
+            var result = await _productService.GetProductsPagination(userParams);
+            if (result.Success)
+            {
+                Response.AddPaginationHeader(
+                    result.Data.CurrentPage, result.Data.TotalItems, result.Data.PageSize, result.Data.TotalPage);
+
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
     }
 }

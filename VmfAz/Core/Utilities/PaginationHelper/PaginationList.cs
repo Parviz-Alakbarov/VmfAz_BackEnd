@@ -23,11 +23,11 @@ namespace Core.Utilities.PaginationHelper
         public int PageSize { get; set; }
         public int TotalPage { get; set; }
 
-        public async Task<PaginationList<T>> CreateAsync(IQueryable<T> query, int currentPage, int pageSize)
+        public static async Task<PaginationList<T>> CreateAsync(IQueryable<T> query, int currentPage, int itemPerPage)
         {
             var count = await query.CountAsync();
-            var items = await query.Skip((currentPage - 1) * pageSize).Take(pageSize).ToListAsync();
-            return new PaginationList<T>(items, count, currentPage, pageSize);
+            var items = await query.Skip((currentPage - 1) * itemPerPage).Take(itemPerPage).ToListAsync();
+            return new PaginationList<T>(items, count, currentPage, itemPerPage);
         }
     }
 }

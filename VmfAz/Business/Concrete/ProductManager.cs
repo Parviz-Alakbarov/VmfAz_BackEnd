@@ -7,6 +7,7 @@ using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.BusinessMotor;
 using Core.Utilities.FileHelper;
+using Core.Utilities.PaginationHelper;
 using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
 using DataAccess.Abstract;
@@ -121,7 +122,7 @@ namespace Business.Concrete
         [CacheAspect(15)]
         public async Task<IDataResult<List<Product>>> GetAll()
         {
-            return new SuccessDataResult<List<Product>>( await _productDal.GetAll(x => !x.IsDeleted), Messages.ProductsListedSuccessfully);
+            return new SuccessDataResult<List<Product>>(await _productDal.GetAll(x => !x.IsDeleted), Messages.ProductsListedSuccessfully);
         }
 
         public async Task<IDataResult<Product>> GetProductById(int productId)
@@ -143,7 +144,7 @@ namespace Business.Concrete
             return new SuccessDataResult<ProductDetailDto>(result);
         }
 
-        public  async Task<IDataResult<List<ProductGetDto>>> GetProductsByBrandId(int brandId)
+        public async Task<IDataResult<List<ProductGetDto>>> GetProductsByBrandId(int brandId)
         {
             IResult businessResult = BusinessRules.Run(CheckIfBrandExistsById(brandId));
             if (businessResult != null)
@@ -170,7 +171,7 @@ namespace Business.Concrete
         }
 
         public async Task<IDataResult<List<ProductGetDto>>> GetBestSellerProducts(int count)
-        { 
+        {
             return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetBestSellerProducts(count), Messages.ProductsListedSuccessfully);
         }
 
@@ -184,7 +185,20 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetProductsInGetDto(count, x => x.DiscountPersent > 0), Messages.ProductsListedSuccessfully);
         }
 
+        public async Task<IDataResult<PaginationList<ProductGetDto>>> GetProductsPagination(UserParams userParams)
+        {
+            return new SuccessDataResult<PaginationList<ProductGetDto>>(await _productDal.GetProductsPaginated(userParams), Messages.ProductsListedSuccessfully);
+        }
 
+        public async Task<IDataResult<List<ProductGetDto>>> GetRelatedProducts(int productId)
+        {
+            var result = await _productDal.GetProductsInGetDto(1, x => x.Id == productId);
+            if (result == null)
+            {
+                return new ErrorDataResult<List<ProductGetDto>>(Messages.ProductNotFound);
+            }
+            return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetProductsInGetDto(5, x => x.BrandId == result[0].BrandId));
+        }
 
 
 

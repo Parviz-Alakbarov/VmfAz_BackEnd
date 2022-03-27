@@ -20,5 +20,6 @@ namespace Business.Abstract
         Task<IDataResult<List<BrandWithImageDto>>> GetBrandsWithImage();
         Task<IDataResult<BrandDetailDto>> GetBrandDetail(int brandId);
 
+
     }
 }

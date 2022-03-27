@@ -1,4 +1,5 @@
 ﻿using Core.DataAccess;
+using Core.Utilities.PaginationHelper;
 using Entities.Concrete;
 using Entities.DTOs.ProductDTOs;
 using System;
@@ -15,5 +16,6 @@ namespace DataAccess.Abstract
         Task<ProductDetailDto> GetProductDetails(int id);
         Task<List<ProductGetDto>> GetProductsInGetDto(int? count=null,Expression<Func<ProductGetDto, bool>> expression = null);
         Task<List<ProductGetDto>> GetBestSellerProducts(int count , Expression<Func<ProductGetDto, bool>> expression = null);
+        Task<PaginationList<ProductGetDto>> GetProductsPaginated(UserParams userParams);
     }
 }

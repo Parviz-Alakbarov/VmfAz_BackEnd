@@ -1,4 +1,5 @@
 ﻿using Core.DataAccess.EntityFramework;
+using Core.Utilities.PaginationHelper;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs.ProductDTOs;
@@ -91,10 +92,6 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
-
-
-
-
         public async Task<List<ProductGetDto>>GetBestSellerProducts(int count, Expression<Func<ProductGetDto, bool>> expression)
         {
             using (VmfAzContext context = new VmfAzContext())
@@ -124,5 +121,29 @@ namespace DataAccess.Concrete.EntityFramework
                 return expression == null ? await result.ToListAsync() : await result.Where(expression).ToListAsync();
             }
         }
+
+
+        public async Task<PaginationList<ProductGetDto>> GetProductsPaginated(UserParams userParams)
+        {
+            using (VmfAzContext context = new VmfAzContext())
+            {
+                var query = (from p in context.Products
+                             where p.IsDeleted == false
+                             select new ProductGetDto
+                             {
+                                 Id = p.Id,
+                                 DiscountPersent = p.DiscountPercent,
+                                 Image = p.PosterImage,
+                                 Name = p.Name,
+                                 SalePrice = p.SalePrice,
+                                 BrandId = p.BrandId,
+                                 CreateDate = p.CreateDate,
+                                 GenderId = p.GenderId,
+                                 ProductFunctionalityId = p.ProductFunctionalityId,
+                             }).AsNoTracking();
+                return await PaginationList<ProductGetDto>.CreateAsync(query,userParams.PageNumber,userParams.PageSize);
+            }
+        }
+
     }
 }
