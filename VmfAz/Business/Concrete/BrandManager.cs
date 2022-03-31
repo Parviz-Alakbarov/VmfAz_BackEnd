@@ -38,7 +38,7 @@ namespace Business.Concrete
         public async Task<IResult> Add(BrandPostDto brandPostDto)
         {
             IResult result = BusinessRules.Run(
-               CheckIfBrandExistWithName(brandPostDto.Name));
+               await CheckIfBrandExistWithName(brandPostDto.Name));
 
             if (result != null)
                 return result;
@@ -66,7 +66,7 @@ namespace Business.Concrete
         public async Task<IResult> Update(int id, BrandPostDto brandPostDto)
         {
             IResult result = BusinessRules.Run(
-              CheckIfBrandExistWithName(brandPostDto.Name));
+              CheckIfBrandExistWithName(brandPostDto.Name).Result);
 
             if (result != null)
                 return result;
@@ -93,7 +93,7 @@ namespace Business.Concrete
                     return new ErrorResult(imageResult.Message);
                 brand.PosterImage = imageResult.Message;
             }
-            _brandDal.Update(brand);
+            await _brandDal.Update(brand);
             return new SuccessResult(Messages.BrandUpdatedSuccesfully);
         }
 
@@ -109,7 +109,7 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.BrandNotFound);
             }
             result.IsDeleted = true;
-            _brandDal.Update(result);
+            await _brandDal.Update(result);
             return new SuccessResult(Messages.BrandDeletedSuccessfully);
         }
 
@@ -124,7 +124,7 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.ProductNotFound);
             }
             brand.IsDeleted = false;
-            _brandDal.Update(brand);
+            await _brandDal.Update(brand);
             return new SuccessResult(Messages.BrandUndeletedSuccessfully);
         }
 
@@ -202,14 +202,12 @@ namespace Business.Concrete
 
 
 
-
-        private IResult CheckIfBrandExistWithName(string name)
+        private async Task<IResult> CheckIfBrandExistWithName(string name)
         {
-            if (_brandDal.Get(p => p.Name == name) != null)
+            if (await _brandDal.Get(p => p.Name == name) != null)
                 return new ErrorResult(Messages.BrandAlreadyExists);
 
             return new SuccessResult();
         }
-
     }
 }

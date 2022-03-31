@@ -61,10 +61,11 @@ namespace Business.Concrete
                 CountryId = userRegisterDto.CountryId,
                 IsDeleted = false
             };
-            _userService.Add(user);
+            await _userService.Add(user);
             return new SuccessDataResult<AppUser>(user, Messages.UserRegistered);
         }
 
+        [ValidationAspect(typeof(UserLoginDtoValidator))]
         public async Task<IDataResult<AppUser>> Login(UserLoginDto userForLoginDto)
         {
             var userToCheck = await _userService.GetByMail(userForLoginDto.Email);
@@ -101,6 +102,8 @@ namespace Business.Concrete
         {
             throw new NotImplementedException();
         }
+
+        [ValidationAspect(typeof(UserLoginDtoValidator))]
         [AuthorizeOperation("Member")]
         public async Task<IResult> ChangePassword(UserChangePasswordDto userForChangePasswordDto)
         {

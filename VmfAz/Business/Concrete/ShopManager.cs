@@ -22,9 +22,9 @@ namespace Business.Concrete
             _shopDal = shopDal;
         }
         [AuthorizeOperation("Admin,SuperAdmin")]
-        public IResult Add(Shop shop)
+        public async Task<IResult> Add(Shop shop)
         {
-            _shopDal.Add(shop);
+            await _shopDal.Add(shop);
             return new SuccessResult(Messages.ShopAdded);
         }
         [AuthorizeOperation("Admin,SuperAdmin")]
@@ -34,7 +34,7 @@ namespace Business.Concrete
             Shop shop = await _shopDal.Get(x => x.Id == id);
             if (shop == null)
                 return new ErrorResult(Messages.ShopNotFound);
-            _shopDal.Delete(shop);
+            await _shopDal.Delete(shop);
             return new SuccessResult(Messages.ShopDeleted);
         }
 
@@ -49,9 +49,9 @@ namespace Business.Concrete
         }
 
         [AuthorizeOperation("Admin,SuperAdmin")]
-        public IResult Update(Shop shop)
+        public async Task<IResult> Update(Shop shop)
         {
-            _shopDal.Update(shop);
+            await _shopDal.Update(shop);
             return new SuccessResult(Messages.ShopUpdated);
         }
     }

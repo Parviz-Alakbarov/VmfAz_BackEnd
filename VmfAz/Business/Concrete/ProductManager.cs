@@ -41,7 +41,7 @@ namespace Business.Concrete
         {
             IResult result = BusinessRules.Run(
                 CheckCountryExist(productAddDto.CountryId),
-                CheckIfProductExistWithName(productAddDto.Name));
+                await CheckIfProductExistWithName(productAddDto.Name));
 
             if (result != null)
                 return result;
@@ -52,7 +52,7 @@ namespace Business.Concrete
 
             Product product = _mapper.Map<Product>(productAddDto);
             product.PosterImage = posterImageResult.Message;
-            _productDal.Add(product);
+            await _productDal.Add(product);
 
             return new SuccessResult(Messages.ProductAdded);
         }
@@ -63,7 +63,7 @@ namespace Business.Concrete
         public async Task<IResult> Update(int id, ProductUpdateDto productUpdateDto)
         {
             IResult result = BusinessRules.Run(
-                CheckIfProductExistWithName(productUpdateDto.Name));
+                await CheckIfProductExistWithName(productUpdateDto.Name));
             if (result != null)
                 return result;
 
@@ -87,7 +87,7 @@ namespace Business.Concrete
             product.Description = productUpdateDto.Description;
             product.DiscountPercent = productUpdateDto.DiscountPercent;
 
-            _productDal.Update(product);
+            await _productDal.Update(product);
             return new SuccessResult(Messages.ProductUpdatedSuccesfully);
         }
 
@@ -101,7 +101,7 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.ProductNotFound);
             }
             product.IsDeleted = true;
-            _productDal.Update(product);
+            await _productDal.Update(product);
             return new SuccessResult(Messages.ProductDeletedSuccessfully);
         }
 
@@ -115,7 +115,7 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.ProductNotFound);
             }
             product.IsDeleted = false;
-            _productDal.Update(product);
+            await _productDal.Update(product);
             return new SuccessResult(Messages.ProductUndeletedSuccessfully);
         }
 
@@ -146,7 +146,7 @@ namespace Business.Concrete
 
         public async Task<IDataResult<List<ProductGetDto>>> GetProductsByBrandId(int brandId)
         {
-            IResult businessResult = BusinessRules.Run(CheckIfBrandExistsById(brandId));
+            IResult businessResult = BusinessRules.Run( await CheckIfBrandExistsById(brandId));
             if (businessResult != null)
                 return new ErrorDataResult<List<ProductGetDto>>(businessResult.Message);
 
@@ -161,7 +161,7 @@ namespace Business.Concrete
 
         public async Task<IDataResult<List<ProductGetDto>>> SearchProducts(string name)
         {
-            return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetProductsInGetDto(null, x => x.Name.IndexOf(name) != -1));
+            return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetProductsInGetDto(null, x => x.Name.IndexOf(name) != -1   ));
         }
 
         [CacheAspect]
@@ -213,17 +213,17 @@ namespace Business.Concrete
             return _countryService.CheckCountryExists((int)countryId).Result;
         }
 
-        private IResult CheckIfProductExistWithName(string productName)
+        private async Task<IResult> CheckIfProductExistWithName(string productName)
         {
-            if (_productDal.Get(p => p.Name == productName) != null)
+            if (await _productDal.Get(p => p.Name == productName) != null)
                 return new ErrorResult(Messages.ProductAlreadyExists);
 
             return new SuccessResult();
         }
 
-        private IResult CheckIfBrandExistsById(int brandId)
+        private async Task<IResult> CheckIfBrandExistsById(int brandId)
         {
-            if (_brandService.GetBrandById(brandId) == null)
+            if (await _brandService.GetBrandById(brandId) == null)
             {
                 return new ErrorResult(Messages.BrandNotFound);
             }

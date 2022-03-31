@@ -43,7 +43,7 @@ namespace WebAPI.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> Add(Shop shop)
         {
-            var result = _shopService.Add(shop);
+            var result = await _shopService.Add(shop);
             if (result.Success)
             {
                 return StatusCode(201, result.Message);

@@ -74,5 +74,15 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
+        [HttpGet("getproductfunctionality")]
+        public async Task<IActionResult> GetProductFuntionalities()
+        {
+            var result = await _settingService.GetProductFuntionalities();
+            if (result != null)
+            {
+                return StatusCode(200, result);
+            }
+            return BadRequest(result.Message);
+        }
     }
 }

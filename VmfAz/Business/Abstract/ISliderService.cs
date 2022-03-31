@@ -15,7 +15,7 @@ namespace Business.Abstract
         Task<IDataResult<Slider>> GetById(int id);
         Task<IResult> Delete(int id);
         Task<IResult> Update(int id,SliderPostDto sliderPostDto);
-        IResult Add(SliderPostDto sliderPostDto);
+        Task<IResult> Add(SliderPostDto sliderPostDto);
 
     }
 }

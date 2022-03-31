@@ -8,6 +8,7 @@ using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.Concrete.ProductEntries;
 using Entities.DTOs;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,6 @@ namespace Business.Concrete
 
         public async Task<IDataResult<List<Country>>> GetCountries()
         {
-            
             return new SuccessDataResult<List<Country>>(await _settingDal.GetCountries(), Messages.CountriesListed);
         }
 
@@ -79,8 +79,13 @@ namespace Business.Concrete
                 setting.Value = uploadResult.Message;
             }
 
-            _settingDal.Update(setting);
+            await _settingDal.Update(setting);
             return new SuccessResult(Messages.SettingUpdated);
+        }
+
+        public async Task<IDataResult<List<ProductFunctionality>>> GetProductFuntionalities()
+        {
+            return new SuccessDataResult<List<ProductFunctionality>> (await _settingDal.GetProductFunctionalities(), Messages.CountriesListed);
         }
     }
 }

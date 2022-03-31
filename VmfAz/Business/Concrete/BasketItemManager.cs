@@ -46,12 +46,12 @@ namespace Business.Concrete
             if (item == null)
             {
                 item = _mapper.Map<BasketItem>(basketItemAddDto);
-                _basketItemDal.Add(item);
+                await _basketItemDal.Add(item);
             }
             else
             {
                 item.Count += basketItemAddDto.Count;
-                _basketItemDal.Update(item);
+                await _basketItemDal.Update(item);
             }
             List<BasketItem> basketItems = await _basketItemDal.GetAll(x => x.AppUserId == basketItemAddDto.AppUserId);
             return new SuccessDataResult<List<BasketItem>>(basketItems, Messages.ProductAddedToBasket);

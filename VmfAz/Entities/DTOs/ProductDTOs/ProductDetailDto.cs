@@ -9,6 +9,7 @@ namespace Entities.DTOs.ProductDTOs
 {
     public class ProductDetailDto : IDto
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string PosterImage { get; set; }
         public decimal SalePrice { get; set; }

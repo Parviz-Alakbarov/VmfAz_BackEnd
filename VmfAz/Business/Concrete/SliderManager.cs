@@ -27,7 +27,7 @@ namespace Business.Concrete
 
         [AuthorizeOperation("Admin,SuperAdmin")]
         [CacheRemoveAspect("ISliderService.Get")]
-        public IResult Add(SliderPostDto sliderPostDto)
+        public async Task<IResult> Add(SliderPostDto sliderPostDto)
         {
             if (sliderPostDto.File == null)
                 return new ErrorResult(Messages.SliderImageIsRequired);
@@ -42,7 +42,7 @@ namespace Business.Concrete
                 Order = sliderPostDto.Order,
                 Image = uploadResult.Message
             };
-           _sliderDal.Add(slider);
+            await _sliderDal.Add(slider);
             return new SuccessResult(Messages.SliderAddedSuccessfully);
         }
         [AuthorizeOperation("Admin,SuperAdmin")]
@@ -54,7 +54,7 @@ namespace Business.Concrete
             {
                 return new ErrorResult(Messages.SliderNotFound);
             }
-            _sliderDal.Delete(slider);
+            await _sliderDal.Delete(slider);
             return new SuccessResult(Messages.SliderDeletedSuccessfully);
         }
         [AuthorizeOperation("Admin,SuperAdmin")]
@@ -77,7 +77,7 @@ namespace Business.Concrete
             }
             slider.Order = sliderPostDto.Order;
             slider.RedirectURL = sliderPostDto.RedirectURL;
-            _sliderDal.Update(slider);
+            await _sliderDal.Update(slider);
             return new SuccessResult(Messages.SliderUpdatedSuccessfully);
         }
 

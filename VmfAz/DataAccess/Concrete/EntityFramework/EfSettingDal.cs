@@ -3,6 +3,7 @@ using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.Concrete.ProductEntries;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace DataAccess.Concrete.EntityFramework
         {
             using (VmfAzContext context = new VmfAzContext())
             {
-                return context.Settings.ToList();
+                return await context.Settings.ToListAsync();
             }
         }
 
@@ -59,7 +60,17 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
-        public async void Update(Setting setting)
+        public async Task<List<ProductFunctionality>> GetProductFunctionalities()
+        {
+            using (VmfAzContext context = new VmfAzContext())
+            {
+                var result = from f in context.ProductFunctionalities
+                             select f;
+                return await result.ToListAsync();
+            }
+        }
+
+        public async Task Update(Setting setting)
         {
             using (VmfAzContext context = new VmfAzContext())
             {

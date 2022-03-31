@@ -169,7 +169,7 @@ namespace WebAPI.Controllers
             return NotFound(result.Message);
         }
 
-        [HttpGet("search")]
+        [HttpGet("search/{text}")]
         public async Task<IActionResult> SearchProduct(string text)
         {
             var result = await _productService.SearchProducts(text);

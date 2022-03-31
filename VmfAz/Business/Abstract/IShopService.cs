@@ -13,8 +13,8 @@ namespace Business.Abstract
         Task<IDataResult<List<Shop>>> GetAll();
         Task<IDataResult<List<Shop>>> GetShopsByProduct(int productId);
 
-        IResult Add(Shop shop);
-        IResult Update(Shop shop);
+        Task<IResult> Add(Shop shop);
+        Task<IResult> Update(Shop shop);
         Task<IResult> Delete(int id);
 
 

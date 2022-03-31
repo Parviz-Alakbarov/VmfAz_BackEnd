@@ -42,7 +42,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromForm] SliderPostDto sliderPostDto)
         {
-            var result = _sliderService.Add(sliderPostDto);
+            var result = await _sliderService.Add(sliderPostDto);
             if (result.Success)
             {
                 return Ok(result);

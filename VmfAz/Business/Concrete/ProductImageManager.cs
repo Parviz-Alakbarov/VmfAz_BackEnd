@@ -51,7 +51,7 @@ namespace Business.Concrete
                 ImagePath = imageResult.Message,
                 UploadDate = DateTime.Now
             };
-            _productImageDal.Add(productImage);
+            await _productImageDal.Add(productImage);
             return new SuccessResult(Messages.ProductImageAddedSuccessfully);
         }
 
@@ -72,7 +72,7 @@ namespace Business.Concrete
             {
                 return new ErrorResult(Messages.ErrorDeletingImage);
             }
-            _productImageDal.Delete(deletedImage);
+            await _productImageDal.Delete(deletedImage);
             return new SuccessResult(Messages.ProductimageDeletedSuccessfully);
         }
 
@@ -123,7 +123,7 @@ namespace Business.Concrete
             }
             image.ImagePath = updateResult.Message;
             image.UploadDate = DateTime.Now;
-            _productImageDal.Update(image);
+            await _productImageDal.Update(image);
 
             return new SuccessResult(Messages.ProductImageUpdatedSuccessfully);
         }

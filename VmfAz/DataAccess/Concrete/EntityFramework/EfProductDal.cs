@@ -37,6 +37,7 @@ namespace DataAccess.Concrete.EntityFramework
                              where p.Id == id && p.IsDeleted == false
                              select new ProductDetailDto
                              {
+                                 Id = id,
                                  Name = p.Name,
                                  PosterImage = p.PosterImage,
                                  BrandId = b.Id,

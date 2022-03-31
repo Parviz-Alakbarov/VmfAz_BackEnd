@@ -25,9 +25,9 @@ namespace Business.Concrete
             return new SuccessDataResult<List<OperationClaim>>(await _userDal.GetClaims(user));
         }
 
-        public IResult Add(AppUser user)
+        public async Task<IResult> Add(AppUser user)
         {
-            _userDal.Add(user);
+            await _userDal.Add(user);
             return new SuccessResult();
         }
 
@@ -36,9 +36,9 @@ namespace Business.Concrete
             return new SuccessDataResult<AppUser>(await _userDal.Get(u => u.Email == email));
         }
 
-        public IResult Update(AppUser user)
+        public async Task<IResult> Update(AppUser user)
         {
-            _userDal.Update(user);
+            await _userDal.Update(user);
             return new SuccessResult();
         }
 
