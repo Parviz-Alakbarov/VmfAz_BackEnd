@@ -57,21 +57,6 @@ namespace Business.Concrete
             return new SuccessDataResult<List<BasketItem>>(basketItems, Messages.ProductAddedToBasket);
         }
 
-        public async Task<IResult> DecreaseCount(int basketItemId)
-        {
-            var item = await _basketItemDal.Get(x => x.Id == basketItemId);
-            if (item == null)
-            {
-                return new ErrorResult(Messages.BasketItemNotFound);
-            }
-            if (item.Count == 1)
-            {
-                _basketItemDal.Delete(item);
-            }
-            item.Count--;
-            _basketItemDal.Update(item);
-            return new SuccessResult();
-        }
 
         public async Task<IResult> Delete(int basketItemId)
         {
@@ -80,28 +65,28 @@ namespace Business.Concrete
             {
                 return new ErrorResult(Messages.BasketItemNotFound);
             }
-            _basketItemDal.Delete(item);
+            await _basketItemDal.Delete(item);
             return new SuccessResult(Messages.BasketItemDeletedSuccessfully);
         }
 
-        public async  Task<IDataResult<List<BasketItem>>> GetAllBasketItemsByUserId(int userId)
+        public async Task<IDataResult<List<BasketItem>>> GetAllBasketItemsByUserId(int userId)
         {
             return new SuccessDataResult<List<BasketItem>>(await _basketItemDal.GetAll(x => x.AppUserId == userId));
         }
-
-        public async Task<IResult> IncreaseCount(int basketItemId)
+        [AuthorizeOperation("AppUser")]
+        public async Task<IResult> Update(BasketItemUpdateDto basketItemUpdateDto)
         {
-            var item =await _basketItemDal.Get(x => x.Id == basketItemId);
+            var item = await _basketItemDal.Get(x => x.Id == basketItemUpdateDto.Id);
             if (item == null)
             {
                 return new ErrorResult(Messages.BasketItemNotFound);
             }
-            if (item.Count == 10)
+            if (item.Count > 10 || item.Count < 1)
             {
                 return new ErrorResult(Messages.BasketItemLimitExceeded);
             }
-            item.Count++;
-            _basketItemDal.Update(item);
+            item.Count = basketItemUpdateDto.Count;
+            await _basketItemDal.Update(item);
             return new SuccessResult();
         }
 

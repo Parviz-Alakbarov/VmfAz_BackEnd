@@ -26,7 +26,8 @@ namespace Business.ValidationRules.FluentValidation.ProductValidators
             RuleFor(x => x.Description).MaximumLength(1000).WithMessage("Description must be less than 1000 character!");
             RuleFor(x => x.DiscountPercent).GreaterThanOrEqualTo(0).WithMessage("Discont price can't be less than 0!");
             RuleFor(x => x.DiscountPercent).LessThanOrEqualTo(100).WithMessage("Invalid Discount Percent!");
-            RuleFor(x => x.PosterImage).NotEmpty().WithMessage("Product Poster Image is Required!");            RuleFor(x => x).Custom((x, content) =>
+            RuleFor(x => x.PosterImage).NotEmpty().WithMessage("Product Poster Image is Required!");
+            RuleFor(x => x).Custom((x, content) =>
             {
                 if (x.CostPrice > x.SalePrice)
                 {

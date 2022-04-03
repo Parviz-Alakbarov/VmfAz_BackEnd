@@ -16,7 +16,7 @@ namespace Business.Constants
         public static readonly string ProductDeletedSuccessfully = "Product deleted successfully!";
         public static readonly string ProductUpdatedSuccesfully = "Product updated successfully!";
         public static readonly string ProductUndeletedSuccessfully = "Product Undeleted successfully!";
-
+        public static readonly string EntriesListed = "Product Entries Listed.";
 
         //Product Image Messages
         public static readonly string ProductImageAddedSuccessfully = "Product Image Added Successfully!";
@@ -78,7 +78,15 @@ namespace Business.Constants
         public static readonly string ShopNotFound = "Shop Not Found!";
         public static readonly string ShopDeleted = "Shop Deleted Successfully!";
         public static readonly string ShopUpdated = "Shop Updated Successfully!";
-        
 
+        //Order Messages 
+        public static readonly string OrderAdded = "Order created Successfully!";
+        public static readonly string OrderNotFound = "Order Not Found";
+        public static readonly string OrderUpdated = "Order Upddated Successfully";
+        public static readonly string OrdersListed = "Orders Listed Successfully";
+        public static readonly string OrderFound = "Order Found";
+
+        //Color
+        public static readonly string ColorsListed = "Colors Listed Successfully.";
     }
 }

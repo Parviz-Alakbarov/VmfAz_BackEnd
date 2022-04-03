@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Entities.DTOs.OrderDTOs
 {
-    public class OrderAddDto :IDto
+    public class OrderGetDto : IDto
     {
+        public int Id { get; set; }
         public int CityId { get; set; }
         public int CountryId { get; set; }
-        public int? AppUserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

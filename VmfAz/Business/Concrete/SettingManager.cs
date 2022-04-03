@@ -10,6 +10,7 @@ using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.Concrete.ProductEntries;
 using Entities.DTOs;
+using Entities.DTOs.ProductDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,9 +84,51 @@ namespace Business.Concrete
             return new SuccessResult(Messages.SettingUpdated);
         }
 
-        public async Task<IDataResult<List<ProductFunctionality>>> GetProductFuntionalities()
+        public async Task<IDataResult<List<ProductEntryDto>>> GetProductFuntionalities()
         {
-            return new SuccessDataResult<List<ProductFunctionality>> (await _settingDal.GetProductFunctionalities(), Messages.CountriesListed);
+            return new SuccessDataResult<List<ProductEntryDto>> (await _settingDal.GetProductFunctionalities(), Messages.EntriesListed);
+        }
+        public async Task<IDataResult<List<ProductEntryDto>>> GetProductBeltTypes()
+        {
+            return new SuccessDataResult<List<ProductEntryDto>>(await _settingDal.GetProductBeltTypes(), Messages.EntriesListed);
+        }
+        public async Task<IDataResult<List<ProductEntryDto>>> GetProductCaseMaterials()
+        {
+            return new SuccessDataResult<List<ProductEntryDto>>(await _settingDal.GetProductCaseMaterials(), Messages.EntriesListed);
+        }
+        public async Task<IDataResult<List<ProductEntryDto>>> GetProductCaseShapes()
+        {
+            return new SuccessDataResult<List<ProductEntryDto>>(await _settingDal.GetProductCaseShapes(), Messages.EntriesListed);
+        }
+        public async Task<IDataResult<List<ProductEntryDto>>> GetProductCaseSizes()
+        {
+            return new SuccessDataResult<List<ProductEntryDto>>(await _settingDal.GetProductCaseSizes(), Messages.EntriesListed);
+        }
+        public async Task<IDataResult<List<ProductEntryDto>>> GetProductGlassTypes()
+        {
+            return new SuccessDataResult<List<ProductEntryDto>>(await _settingDal.GetProductGlassTypes(), Messages.EntriesListed);
+        }
+        public async Task<IDataResult<List<ProductEntryDto>>> GetProductMechanisms()
+        {
+            return new SuccessDataResult<List<ProductEntryDto>>(await _settingDal.GetProductMechanisms(), Messages.EntriesListed);
+        }
+        public async Task<IDataResult<List<ProductEntryDto>>> GetProductStyles()
+        {
+            return new SuccessDataResult<List<ProductEntryDto>>(await _settingDal.GetProductStyles(), Messages.EntriesListed);
+        }
+        public async Task<IDataResult<List<ProductEntryDto>>> GetProductWaterResistances()
+        {
+            return new SuccessDataResult<List<ProductEntryDto>>(await _settingDal.GetProductWaterResistances(), Messages.EntriesListed);
+        }
+
+        public async Task<IDataResult<List<ProductEntryDto>>> GetGenders()
+        {
+            return new SuccessDataResult<List<ProductEntryDto>>(await _settingDal.GetGenders(), Messages.EntriesListed);
+        }
+
+        public async Task<IDataResult<List<Color>>> GetColors()
+        {
+            return new SuccessDataResult<List<Color>>(await _settingDal.GetColors(), Messages.ColorsListed);
         }
     }
 }

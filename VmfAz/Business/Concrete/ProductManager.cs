@@ -34,7 +34,7 @@ namespace Business.Concrete
             _countryService = countryService;
             _brandService = brandService;
         }
-        [AuthorizeOperation("SuperAdmin")]
+        //[AuthorizeOperation("SuperAdmin")]
         [ValidationAspect(typeof(ProductAddDtoValidator), Priority = 1)]
         [CacheRemoveAspect("IProductService.Get")]
         public async Task<IResult> Add(ProductAddDto productAddDto)

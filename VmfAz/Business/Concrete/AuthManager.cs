@@ -24,16 +24,18 @@ namespace Business.Concrete
         private ITokenHelper _tokenHelper;
         private ICountryService _countryService;
         private ICityService _cityService;
+        private IUserOperationClaimService _operationClaimService;
 
         public AuthManager(IUserService userService,
                             ITokenHelper tokenHelper,
                             ICityService cityService,
-                            ICountryService countryService)
+                            ICountryService countryService, IUserOperationClaimService operationClaimService)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
             _cityService = cityService;
             _countryService = countryService;
+            _operationClaimService = operationClaimService;
         }
         [ValidationAspect(typeof(UserRegisterDtoValidator))]
         public async Task<IDataResult<AppUser>> Register(UserRegisterDto userRegisterDto)
@@ -62,6 +64,7 @@ namespace Business.Concrete
                 IsDeleted = false
             };
             await _userService.Add(user);
+            await _operationClaimService.Add((await _userService.GetByMail(user.Email)).Data.Id,3);
             return new SuccessDataResult<AppUser>(user, Messages.UserRegistered);
         }
 
@@ -104,7 +107,7 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(UserLoginDtoValidator))]
-        [AuthorizeOperation("Member")]
+        [AuthorizeOperation("AppUser")]
         public async Task<IResult> ChangePassword(UserChangePasswordDto userForChangePasswordDto)
         {
             var user = await _userService.GetByMail(userForChangePasswordDto.Email);
@@ -126,6 +129,10 @@ namespace Business.Concrete
             return new SuccessDataResult<AccessToken>(accessToken, Messages.AccessTokenCreated);
 
         }
+
+
+
+        //BusinessRules
         private async Task<IResult> CheckCountryExist(int countryId)
         {
             return await _countryService.CheckCountryExists(countryId);

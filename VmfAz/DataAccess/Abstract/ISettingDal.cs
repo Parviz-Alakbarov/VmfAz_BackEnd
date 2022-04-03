@@ -2,6 +2,7 @@
 using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
 using Entities.Concrete.ProductEntries;
+using Entities.DTOs.ProductDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,17 @@ namespace DataAccess.Abstract
         Task Update(Setting setting);
         Task<List<Country>> GetCountries();
         Task<List<City>> GetCitiesByCountry(int countryId);
-        Task<List<ProductFunctionality>> GetProductFunctionalities();
+        Task<List<ProductEntryDto>> GetProductFunctionalities();
+        Task<List<ProductEntryDto>> GetProductWaterResistances();
+        Task<List<ProductEntryDto>> GetProductStyles();
+        Task<List<ProductEntryDto>> GetProductMechanisms();
+        Task<List<ProductEntryDto>> GetProductGlassTypes();
+        Task<List<ProductEntryDto>> GetProductCaseSizes();
+        Task<List<ProductEntryDto>> GetProductCaseShapes();
+        Task<List<ProductEntryDto>> GetProductCaseMaterials();
+        Task<List<ProductEntryDto>> GetProductBeltTypes();
+        Task<List<ProductEntryDto>> GetGenders();
+        Task<List<Color>> GetColors();
 
     }
 }

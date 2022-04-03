@@ -12,8 +12,7 @@ namespace Business.Abstract
     public interface IBasketItemService
     {
         Task<IDataResult<List<BasketItem>>> Add(BasketItemAddDto basketItemAddDto);
-        Task<IResult> IncreaseCount(int basketItemId);
-        Task<IResult> DecreaseCount(int basketItemId);
+        Task<IResult> Update(BasketItemUpdateDto basketItemUpdateDto);
         Task<IResult> Delete(int basketItemId);
         Task<IDataResult<List<BasketItem>>> GetAllBasketItemsByUserId(int userId);
     }
