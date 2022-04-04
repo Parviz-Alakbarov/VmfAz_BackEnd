@@ -36,6 +36,21 @@ namespace Core.Utilities.Security.JWT
             return handler.ReadJwtToken(input).ToString();
         }
 
+        public AccessToken CreateRefreshToken(AppUser user)
+        {
+            _accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOptions.RefreshTokenExpiration);
+            var securityKey = SecurityKeyHelper.CreateSecurityKey(_tokenOptions.RefreshSecurityKey);
+            var signingCredentials = SigningCredentialsHelper.CreateSigningCredentials(securityKey);
+            var jwt = CreateJwtSecurityToken(_tokenOptions, user, signingCredentials);
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            var token = jwtSecurityTokenHandler.WriteToken(jwt);
+
+            return new AccessToken
+            {
+                Token = token,
+                ExpirationDate = _accessTokenExpiration
+            };
+        }
 
         public AccessToken CreateToken(AppUser user, List<OperationClaim> operationClaims)
         {
@@ -55,7 +70,7 @@ namespace Core.Utilities.Security.JWT
         }
 
         public JwtSecurityToken CreateJwtSecurityToken(TokenOptions tokenOptions, AppUser user,
-            SigningCredentials signingCredentials, List<OperationClaim> operationClaims)
+            SigningCredentials signingCredentials, List<OperationClaim> operationClaims = null)
         {
             var jwt = new JwtSecurityToken(
                 issuer: tokenOptions.Issuer,
@@ -74,9 +89,40 @@ namespace Core.Utilities.Security.JWT
             claims.AddNameIdentifier(user.Id.ToString());
             claims.AddEmail(user.Email);
             claims.AddName($"{user.FirstName} {user.LastName}");
-            claims.AddRoles(operationClaims.Select(c => c.Name).ToArray());
-
+            if (operationClaims != null)
+            {
+                claims.AddRoles(operationClaims.Select(c => c.Name).ToArray());
+            }
             return claims;
+        }
+
+
+        public bool ValidateRefreshToken(string refreshToken)
+        {
+
+            TokenValidationParameters validationParameters = new TokenValidationParameters
+            {
+                ValidAudience = _tokenOptions.Audience,
+                ValidIssuer = _tokenOptions.Issuer,
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(_tokenOptions.RefreshSecurityKey)
+            };
+
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                tokenHandler.ValidateToken(refreshToken, validationParameters, out SecurityToken validatedToken);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

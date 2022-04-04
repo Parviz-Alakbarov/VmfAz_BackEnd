@@ -10,5 +10,7 @@ namespace Core.Utilities.Security.JWT
     public interface ITokenHelper
     {
         AccessToken CreateToken(AppUser user, List<OperationClaim> claims);
+        AccessToken CreateRefreshToken(AppUser user);
+        bool ValidateRefreshToken(string refreshToken);
     }
 }

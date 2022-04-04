@@ -46,6 +46,17 @@ namespace Business.Constants
         public static readonly string UserAlreadyExists = "User Already Exist!";
         public static readonly string AccessTokenCreated = "Token Created Successfully!";
         public static readonly string ChangePasswordError = "Your Current Password Is Incorrect!";
+        public static readonly string RefreshTokenCreated = "Refresh Token Created Successfully!";
+        public static readonly string RefreshTokenDeleted = "Refresh Token Deleted Successfully!";
+        public static readonly string RefreshTokenNotFound = "Refresh Token Not Found!";
+        public static readonly string RefreshTokenAdded = "Refresh Token Added.";
+        public static readonly string UserLoggedOut = "User Successfully Logged out.";
+        public static readonly string InvalidRefreshToken = "Invalid Refresh token!";
+        public static readonly string TokenRefreshed = "Token Refresed Successfully";
+        public static readonly string RefreshTokenCreationError = "Error accured while refresh token creation";
+        
+        
+        
 
         //BasketItem Messages
         public static readonly string ProductAddedToBasket = "Product Added to Basket Successfully!";

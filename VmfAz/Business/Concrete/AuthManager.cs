@@ -4,12 +4,15 @@ using Business.ValidationRules.FluentValidation.UserValidators;
 using Core.Aspects.Autofac.Authorization;
 using Core.Aspects.Autofac.Validation;
 using Core.Entities.Concrete;
+using Core.Extensions;
 using Core.Utilities.BusinessMotor;
 using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Security.Hashing;
 using Core.Utilities.Security.JWT;
+using Entities.Concrete;
 using Entities.DTOs.UserDTOs;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,22 +23,29 @@ namespace Business.Concrete
 {
     public class AuthManager : IAuthService
     {
-        private IUserService _userService;
-        private ITokenHelper _tokenHelper;
-        private ICountryService _countryService;
-        private ICityService _cityService;
-        private IUserOperationClaimService _operationClaimService;
+        private readonly IUserService _userService;
+        private readonly ITokenHelper _tokenHelper;
+        private readonly ICountryService _countryService;
+        private readonly ICityService _cityService;
+        private readonly IUserOperationClaimService _operationClaimService;
+        private readonly IRefreshTokenService _refreshTokenService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AuthManager(IUserService userService,
                             ITokenHelper tokenHelper,
                             ICityService cityService,
-                            ICountryService countryService, IUserOperationClaimService operationClaimService)
+                            ICountryService countryService, 
+                            IUserOperationClaimService operationClaimService, 
+                            IRefreshTokenService refreshTokenService, 
+                             IHttpContextAccessor httpContextAccessor)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
             _cityService = cityService;
             _countryService = countryService;
             _operationClaimService = operationClaimService;
+            _refreshTokenService = refreshTokenService;
+            _httpContextAccessor = httpContextAccessor;
         }
         [ValidationAspect(typeof(UserRegisterDtoValidator))]
         public async Task<IDataResult<AppUser>> Register(UserRegisterDto userRegisterDto)
@@ -69,20 +79,26 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(UserLoginDtoValidator))]
-        public async Task<IDataResult<AppUser>> Login(UserLoginDto userForLoginDto)
+        public async Task<IDataResult<TokensModel>> Login(UserLoginDto userForLoginDto)
         {
             var userToCheck = await _userService.GetByMail(userForLoginDto.Email);
             if (userToCheck.Data == null)
             {
-                return new ErrorDataResult<AppUser>(Messages.UserNotFound);
+                return new ErrorDataResult<TokensModel>(Messages.UserNotFound);
             }
 
             if (!HashingHelper.VerifyPasswordHash(userForLoginDto.Password, userToCheck.Data.PasswordHash, userToCheck.Data.PasswordSalt))
             {
-                return new ErrorDataResult<AppUser>(Messages.PasswordError);
+                return new ErrorDataResult<TokensModel>(Messages.PasswordError);
             }
 
-            return new SuccessDataResult<AppUser>(userToCheck.Data, Messages.SuccessfullLogin);
+            var tokensModelResult = await CreateTokensModel(userToCheck.Data);
+            if (!tokensModelResult.Success)
+            {
+                return tokensModelResult;
+            }
+
+            return new SuccessDataResult<TokensModel>(tokensModelResult.Data, Messages.SuccessfullLogin);
         }
 
         public async Task<IResult> UserExists(string email)
@@ -106,8 +122,8 @@ namespace Business.Concrete
             throw new NotImplementedException();
         }
 
+        [AuthorizeOperation("AppUser,Admin,SuperAdmin")]
         [ValidationAspect(typeof(UserLoginDtoValidator))]
-        [AuthorizeOperation("AppUser")]
         public async Task<IResult> ChangePassword(UserChangePasswordDto userForChangePasswordDto)
         {
             var user = await _userService.GetByMail(userForChangePasswordDto.Email);
@@ -132,6 +148,81 @@ namespace Business.Concrete
 
 
 
+
+        [AuthorizeOperation("AppUser,Admin,SuperAdmin")]
+        public async Task<IResult> Logout(string auth)
+        {
+            var roleClaims = _httpContextAccessor.HttpContext.User.GetNameIdentifier()[0];
+
+            if (!Int32.TryParse(roleClaims, out int id))
+            {
+                return new ErrorResult(Messages.UserNotFound);
+            }
+            await _refreshTokenService.DeleteAll(id);
+            return new SuccessResult(Messages.UserLoggedOut);
+        }
+
+        [ValidationAspect(typeof(UserForRefreshTokenDtoValidator))]
+        public async Task<IDataResult<TokensModel>> RefreshToken(UserForRefreshTokenDto userForRefreshTokenDto)
+        {
+            bool isValidRefreshToken = _tokenHelper.ValidateRefreshToken(userForRefreshTokenDto.RefreshToken);
+            if (!isValidRefreshToken)
+            {
+                return new ErrorDataResult<TokensModel>(Messages.InvalidRefreshToken);
+            }
+
+            RefreshToken refreshToken = (await _refreshTokenService.GetByToken(userForRefreshTokenDto.RefreshToken)).Data;
+            if (refreshToken == null)
+            {
+                return new ErrorDataResult<TokensModel>(Messages.InvalidRefreshToken);
+            }
+
+            await _refreshTokenService.DeleteAll(refreshToken.UserId);
+
+            AppUser appUser = (await _userService.GetById(refreshToken.UserId)).Data;
+            if (appUser == null)
+            {
+                return new ErrorDataResult<TokensModel>(Messages.UserNotFound);
+            }
+
+            var tokensModelResult = await CreateTokensModel(appUser);
+            if (!tokensModelResult.Success)
+            {
+                return tokensModelResult;
+            }
+            return new SuccessDataResult<TokensModel>(tokensModelResult.Data, Messages.TokenRefreshed);
+        }
+
+        private async Task<IDataResult<TokensModel>> CreateTokensModel(AppUser user)
+        {
+            var result = await CreateAccessToken(user);
+            if (!result.Success)
+            {
+                return new ErrorDataResult<TokensModel>(result.Message);
+            }
+            var refreshToken = _tokenHelper.CreateRefreshToken(user);
+            if (refreshToken == null)
+            {
+                return new ErrorDataResult<TokensModel>(Messages.RefreshTokenCreationError);
+            }
+
+            await _refreshTokenService.Add(new RefreshTokenPostDto { Token = refreshToken.Token, UserId = user.Id });
+
+            TokensModel model = new TokensModel
+            {
+                AccessToken = result.Data,
+                RefreshToken = refreshToken
+            };
+            return new SuccessDataResult<TokensModel>(model);
+        }
+
+        public IDataResult<AccessToken> CreateRefreshToken(AppUser user)
+        {
+            var accessToken = _tokenHelper.CreateRefreshToken(user);
+            return new SuccessDataResult<AccessToken>(accessToken, Messages.RefreshTokenCreated);
+        }
+
+
         //BusinessRules
         private async Task<IResult> CheckCountryExist(int countryId)
         {
@@ -141,8 +232,6 @@ namespace Business.Concrete
         {
             return await _cityService.CheckCityExistsOnCountry(countryId, cityId);
         }
-
     }
-
 }
 

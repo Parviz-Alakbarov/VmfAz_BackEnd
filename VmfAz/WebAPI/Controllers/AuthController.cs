@@ -12,8 +12,8 @@ namespace WebAPI.Controllers
     [ApiController]
     public class AuthController : Controller
     {
-        private IAuthService _authService;
-        private IConfiguration _configuration;
+        private readonly IAuthService _authService;
+        private readonly IConfiguration _configuration;
 
         public AuthController(IAuthService authService, IConfiguration configuration)
         {
@@ -29,14 +29,7 @@ namespace WebAPI.Controllers
             {
                 return BadRequest(userToLogin.Message);
             }
-
-            var result = await _authService.CreateAccessToken(userToLogin.Data);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-
-            return BadRequest(result.Message);
+            return Ok(userToLogin);
         }
 
         [HttpPost("register")]
@@ -68,6 +61,31 @@ namespace WebAPI.Controllers
             }
             return Ok(result);
         }
+
+        [HttpDelete("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var auth = Request.Headers["Authorization"];
+
+            var userToLogout = await _authService.Logout(auth);
+            if (!userToLogout.Success)
+            {
+                return BadRequest(userToLogout.Message);
+            }
+            return Ok(userToLogout);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(UserForRefreshTokenDto refreshTokenDto)
+        {
+            var userToLogin = await _authService.RefreshToken(refreshTokenDto);
+            if (!userToLogin.Success)
+            {
+                return BadRequest(userToLogin.Message);
+            }
+            return Ok(userToLogin);
+        }
+
 
 
         [HttpPost("test")]

@@ -33,6 +33,8 @@ namespace DataAccess.Concrete.EntityFramework
         public DbSet<Slider> Sliders { get; set; }
         public DbSet<ProductShop> ProductShops { get; set; }
         public DbSet<Shop> Shops { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
 
         ////ProductDetails
         public DbSet<Color> Colors { get; set; }
