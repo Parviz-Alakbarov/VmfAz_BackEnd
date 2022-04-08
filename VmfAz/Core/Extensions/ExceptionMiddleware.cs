@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Security;
 using System.Threading.Tasks;
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 
 namespace Core.Extensions
 {
     public class ExceptionMiddleware
     {
-        private readonly RequestDelegate _next;
-
+        private RequestDelegate _next;
 
         public ExceptionMiddleware(RequestDelegate next)
         {
@@ -23,55 +24,61 @@ namespace Core.Extensions
             {
                 await _next(httpContext);
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 await HandleExceptionAsync(httpContext, e);
             }
         }
 
-
-        private async Task HandleExceptionAsync(HttpContext httpContext, Exception e)
+        private Task HandleExceptionAsync(HttpContext httpContext, System.Exception e)
         {
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            _ = e.Message;
-            string message;
+
+            string message = "Internal Server Error";
             if (e.GetType() == typeof(ValidationException))
             {
-                message = e.Message;
+                message = "Bad Request";
                 httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            }
-            else if (e.GetType() == typeof(ApplicationException))
-            {
-                message = e.Message;
-                httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            }
-            else if (e.GetType() == typeof(UnauthorizedAccessException))
-            {
-                message = e.Message;
-                httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            }
-            else if (e.GetType() == typeof(SecurityException))
-            {
-                message = e.Message;
-                httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            }
-            else if (e.GetType() == typeof(NotSupportedException))
-            {
-                message = e.Message;
-                httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            }
-            else if (e.GetType() == typeof(ArgumentNullException))
-            {
-                message = e.Message;
-                httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            }
-            else
-            {
-                message = "Something went wrong. Please try again.";
+                IEnumerable<ValidationFailure> validationErrors = ((ValidationException)e).Errors;
+
+                return httpContext.Response.WriteAsync(new ValidationErrorDetails()
+                {
+                    StatusCode = 400,
+                    Message = message,
+                    ValidationErrors = validationErrors
+                }.ToString());
             }
 
-            await httpContext.Response.WriteAsync(message);
+            if (e.GetType() == typeof(UnauthorizedAccessException))
+            {
+                message = "Unauthorized";
+                httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+
+                return httpContext.Response.WriteAsync(new ErrorDetails()
+                {
+                    StatusCode = 401,
+                    Message = message
+                }.ToString());
+            }
+
+            if (e.GetType() == typeof(ArgumentNullException))
+            {
+                message = "Null Exception";
+                httpContext.Response.StatusCode = (int)HttpStatusCode.ExpectationFailed;
+
+                return httpContext.Response.WriteAsync(new ErrorDetails()
+                {
+                    StatusCode = 417,
+                    Message = message
+                }.ToString());
+            }
+
+            return httpContext.Response.WriteAsync(new ErrorDetails
+            {
+                StatusCode = httpContext.Response.StatusCode,
+                Message = message
+            }.ToString());
         }
     }
 }

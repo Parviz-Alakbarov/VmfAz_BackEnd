@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
             var userToLogin = await _authService.Login(userForLoginDto);
             if (!userToLogin.Success)
             {
-                return BadRequest(userToLogin.Message);
+                return Unauthorized(userToLogin.Message);
             }
             return Ok(userToLogin);
         }
@@ -35,17 +35,17 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register(UserRegisterDto userForRegisterDto)
         {
-            var userExists = await _authService.UserExists(userForRegisterDto.Email);
-            if (!userExists.Success)
-            {
-                return BadRequest(userExists.Message);
-            }
+            //var userExists = await _authService.UserExists(userForRegisterDto.Email);
+            //if (!userExists.Success)
+            //{
+            //    return BadRequest(userExists.Message);
+            //}
 
             var registerResult = await _authService.Register(userForRegisterDto);
             var result = await _authService.CreateAccessToken(registerResult.Data);
             if (result.Success)
             {
-                return Ok(result.Data);
+                return Ok(result);
             }
 
             return BadRequest(result.Message);
@@ -78,12 +78,12 @@ namespace WebAPI.Controllers
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(UserForRefreshTokenDto refreshTokenDto)
         {
-            var userToLogin = await _authService.RefreshToken(refreshTokenDto);
-            if (!userToLogin.Success)
+            var userRefreshResult = await _authService.RefreshToken(refreshTokenDto);
+            if (!userRefreshResult.Success)
             {
-                return BadRequest(userToLogin.Message);
+                return BadRequest(userRefreshResult.Message);
             }
-            return Ok(userToLogin);
+            return Ok(userRefreshResult);
         }
 
 

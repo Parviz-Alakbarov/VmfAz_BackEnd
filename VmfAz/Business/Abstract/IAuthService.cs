@@ -21,6 +21,8 @@ namespace Business.Abstract
         IDataResult<AccessToken> CreateRefreshToken(AppUser user);
         Task<IResult> Logout(string auth);
         Task<IDataResult<TokensModel>> RefreshToken(UserForRefreshTokenDto userForRefreshTokenDto);
+        Task<IResult> SetClaimToUser(UserSetClaimDto setClaimDto);
+
 
         Task<IResult> ResetPassword(UserResetPasswordDto userForResetPasswordDto);
     }

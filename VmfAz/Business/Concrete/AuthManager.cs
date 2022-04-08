@@ -27,25 +27,28 @@ namespace Business.Concrete
         private readonly ITokenHelper _tokenHelper;
         private readonly ICountryService _countryService;
         private readonly ICityService _cityService;
-        private readonly IUserOperationClaimService _operationClaimService;
+        private readonly IUserOperationClaimService _userOperationClaimService;
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IOperationClaimService _operationClaimService;
 
         public AuthManager(IUserService userService,
                             ITokenHelper tokenHelper,
                             ICityService cityService,
-                            ICountryService countryService, 
-                            IUserOperationClaimService operationClaimService, 
-                            IRefreshTokenService refreshTokenService, 
-                             IHttpContextAccessor httpContextAccessor)
+                            ICountryService countryService,
+                            IUserOperationClaimService userOperationClaimService,
+                            IRefreshTokenService refreshTokenService,
+                             IHttpContextAccessor httpContextAccessor, 
+                             IOperationClaimService operationClaimService)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
             _cityService = cityService;
             _countryService = countryService;
-            _operationClaimService = operationClaimService;
+            _userOperationClaimService = userOperationClaimService;
             _refreshTokenService = refreshTokenService;
             _httpContextAccessor = httpContextAccessor;
+            _operationClaimService = operationClaimService;
         }
         [ValidationAspect(typeof(UserRegisterDtoValidator))]
         public async Task<IDataResult<AppUser>> Register(UserRegisterDto userRegisterDto)
@@ -74,7 +77,7 @@ namespace Business.Concrete
                 IsDeleted = false
             };
             await _userService.Add(user);
-            await _operationClaimService.Add((await _userService.GetByMail(user.Email)).Data.Id,3);
+            await _userOperationClaimService.Add((await _userService.GetByMail(user.Email)).Data.Id,3);
             return new SuccessDataResult<AppUser>(user, Messages.UserRegistered);
         }
 
@@ -146,6 +149,21 @@ namespace Business.Concrete
 
         }
 
+        [AuthorizeOperation("SuperAdmin")]
+        public async Task<IResult> SetClaimToUser(UserSetClaimDto setClaimDto)
+        {
+            var user = await _userService.GetByMail(setClaimDto.Email);
+
+            if (user == null)
+                return new ErrorResult(Messages.UserNotFound);
+
+            var claimResult = await _operationClaimService.GetById(setClaimDto.ClaimId);
+            if (claimResult == null)
+                return new ErrorResult(Messages.ClaimNotFound);
+
+            await _userOperationClaimService.Add(user.Data.Id, claimResult.Data.Id);
+            return new SuccessResult(Messages.ClaimAddedToUser);
+        }
 
 
 

@@ -54,9 +54,10 @@ namespace Business.Constants
         public static readonly string InvalidRefreshToken = "Invalid Refresh token!";
         public static readonly string TokenRefreshed = "Token Refresed Successfully";
         public static readonly string RefreshTokenCreationError = "Error accured while refresh token creation";
-        
-        
-        
+        public static readonly string ClaimNotFound = "Claim Not Found!";
+        public static readonly string ClaimAddedToUser = "Claim added to user!";
+
+
 
         //BasketItem Messages
         public static readonly string ProductAddedToBasket = "Product Added to Basket Successfully!";
