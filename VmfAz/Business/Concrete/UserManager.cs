@@ -3,6 +3,7 @@ using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
 using DataAccess.Abstract;
+using Entities.DTOs.UserDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,11 @@ namespace Business.Concrete
             var result = await _userDal.Get(x=>x.Id== userId);
           
             return new SuccessDataResult<AppUser>(result);
+        }
+
+        public async Task<IDataResult<UserGetDto>> GetUserInGetDto(int userId)
+        {
+            return new SuccessDataResult<UserGetDto>(await _userDal.GetUserInGetDto(userId));
         }
     }
 }

@@ -86,7 +86,16 @@ namespace WebAPI.Controllers
             return Ok(userRefreshResult);
         }
 
-
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetPofile()
+        {
+            var result = await _authService.GetUser();
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result);
+        }
 
         [HttpPost("test")]
         public IActionResult LoginTest()

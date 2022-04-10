@@ -96,17 +96,7 @@ namespace Business.Concrete
         public async Task<IDataResult<List<ProductImage>>> GetProductImages(int productId)
         {
             var result = await _productImageDal.GetAll(p => p.ProductId == productId);
-            return new SuccessDataResult<List<ProductImage>>(result.Count == 0 ?
-                (new List<ProductImage>
-                {
-                    new ProductImage
-                    {
-                        ProductId = productId,
-                        ImagePath = "images/default.jpg",
-                        UploadDate = DateTime.Now
-                    }
-                })
-                : result);
+            return new SuccessDataResult<List<ProductImage>>(result);
         }
 
         public async Task<IResult> Update(ProductImage productImage, IFormFile file)

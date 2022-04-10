@@ -1,4 +1,5 @@
-﻿ using Business.Abstract;
+﻿using AutoMapper;
+using Business.Abstract;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation.UserValidators;
 using Core.Aspects.Autofac.Authorization;
@@ -102,6 +103,25 @@ namespace Business.Concrete
             }
 
             return new SuccessDataResult<TokensModel>(tokensModelResult.Data, Messages.SuccessfullLogin);
+        }
+
+        [AuthorizeOperation("AppUser")]
+        public async Task<IDataResult<UserGetDto>> GetUser()
+        {
+            var userId = _httpContextAccessor.HttpContext.User.GetNameIdentifier()[0];
+
+            if (!Int32.TryParse(userId, out int id))
+            {
+                return new ErrorDataResult<UserGetDto>(Messages.UserNotFound);
+            }
+
+            var result = await _userService.GetUserInGetDto(id);
+            if (result == null)
+            {
+                return new ErrorDataResult<UserGetDto>(Messages.UserNotFound);
+            }
+            return new SuccessDataResult<UserGetDto>(result.Data,Messages.UserDataFound);
+
         }
 
         public async Task<IResult> UserExists(string email)

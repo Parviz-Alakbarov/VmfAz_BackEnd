@@ -1,5 +1,6 @@
 ﻿using Core.Entities.Concrete;
 using Core.Utilities.Results.Abstract;
+using Entities.DTOs.UserDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace Business.Abstract
         Task<IResult> Update(AppUser user);
         Task<IDataResult<AppUser>> GetByMail(string email);
         Task<IDataResult<AppUser>> GetById(int userId);
+        Task<IDataResult<UserGetDto>> GetUserInGetDto(int userId);
+        
     }
 }

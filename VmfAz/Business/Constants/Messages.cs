@@ -44,6 +44,7 @@ namespace Business.Constants
         public static readonly string PasswordError = "Username or Password is Incorrect!";
         public static readonly string SuccessfullLogin = "User Loged in Succesfully";
         public static readonly string UserAlreadyExists = "User Already Exist!";
+        public static readonly string UserDataFound = "User Data Found!";
         public static readonly string AccessTokenCreated = "Token Created Successfully!";
         public static readonly string ChangePasswordError = "Your Current Password Is Incorrect!";
         public static readonly string RefreshTokenCreated = "Refresh Token Created Successfully!";

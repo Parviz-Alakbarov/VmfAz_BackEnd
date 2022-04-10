@@ -1,6 +1,7 @@
 ﻿using Core.DataAccess.EntityFramework;
 using Core.Entities.Concrete;
 using DataAccess.Abstract;
+using Entities.DTOs.UserDTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,27 @@ namespace DataAccess.Concrete.EntityFramework
                              where userOperationClaim.AppUserId == appUser.Id
                              select new OperationClaim { Id = operationClaim.Id, Name = operationClaim.Name };
                 return await result.ToListAsync();
+            }
+        }
+
+        public async Task<UserGetDto> GetUserInGetDto(int userId)
+        {
+            using (VmfAzContext context = new VmfAzContext())
+            {
+                var result = from u in context.AppUsers
+                             where u.IsDeleted == false && u.Id == userId
+                             select new UserGetDto
+                             {
+                                 Id = u.Id,
+                                 FirstName = u.FirstName,
+                                 LastName = u.LastName,
+                                 Address = u.Address,
+                                 CityId = u.CityId,
+                                 CountryId = u.CountryId,
+                                 Email = u.Email ,
+                                 PhoneNumber = u.PhoneNumber,
+                             };
+                return await result.SingleOrDefaultAsync();
             }
         }
     }
