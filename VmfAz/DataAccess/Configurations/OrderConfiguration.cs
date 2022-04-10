@@ -26,6 +26,7 @@ namespace DataAccess.Configurations
             builder.Property(x => x.UpdateDate).HasDefaultValueSql("GETUTCDATE()");
             builder.Property(x => x.Note).IsRequired(false).HasMaxLength(500);
             builder.Property(x => x.OrderStatus).HasDefaultValue(OrderStatus.Accepted);
+            builder.Property(x => x.OrderTrackId).IsRequired();
 
             builder.HasOne(x => x.ShippingType).WithMany(x => x.Orders).OnDelete(DeleteBehavior.NoAction);
 

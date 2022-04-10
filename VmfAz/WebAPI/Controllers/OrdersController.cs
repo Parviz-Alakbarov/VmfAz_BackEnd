@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Business.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using System;
 
 namespace WebAPI.Controllers
 {
@@ -32,6 +33,17 @@ namespace WebAPI.Controllers
         public async Task<ActionResult> Update(OrderUpdateDto orderUpdateDto)
         {
             var result = await _orderService.Update(orderUpdateDto);
+            if (result.Success)
+            {
+                return StatusCode(201, result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("track")]
+        public async Task<IActionResult> GetOrderByTrackId(Guid guid)
+        {
+            var result = await _orderService.GetOrderByTrackId(guid);
             if (result.Success)
             {
                 return StatusCode(201, result.Message);

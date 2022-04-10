@@ -13,6 +13,8 @@ namespace Business.Abstract
         Task<IResult> Add(OrderAddDto orderAddDto);
         Task<IResult> Update(OrderUpdateDto orderUpdateDto);
         Task<IDataResult<List<OrderGetDto>>> GetAll();
+        Task<IDataResult<List<OrderGetDto>>> GetAllByUser();
         Task<IDataResult<OrderGetDto>> GerOrderById(int orderId);
+        Task<IDataResult<OrderGetDto>> GetOrderByTrackId(Guid trackId);
     }
 }

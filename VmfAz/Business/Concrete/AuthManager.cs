@@ -141,7 +141,7 @@ namespace Business.Concrete
             HashingHelper.CreatePasswordHash(userForChangePasswordDto.NewPassword, out var passwordHash, out var passwordSalt);
             user.Data.PasswordHash = passwordHash;
             user.Data.PasswordSalt = passwordSalt;
-            _userService.Update(user.Data);
+            await _userService.Update(user.Data);
 
             var claims = await _userService.GetClaims(user.Data);
             var accessToken = _tokenHelper.CreateToken(user.Data, claims.Data);

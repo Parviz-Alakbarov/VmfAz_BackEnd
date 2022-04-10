@@ -28,6 +28,8 @@ namespace Entities.Concrete
         public DateTime CreatedDate { get; set; }
         public DateTime UpdateDate { get; set; }
 
+        public Guid OrderTrackId { get; set; }
+
 
         public Country Country { get; set; }
         public City City { get; set; }

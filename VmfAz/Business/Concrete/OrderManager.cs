@@ -42,6 +42,7 @@ namespace Business.Concrete
                 return result;
             Order order = _mapper.Map<Order>(orderAddDto);
 
+            order.OrderTrackId = Guid.NewGuid();
             order.CreatedDate = DateTime.Now.AddHours(4);
             order.UpdateDate = DateTime.Now.AddHours(4);
             order.OrderStatus = OrderStatus.Pending;
@@ -70,7 +71,27 @@ namespace Business.Concrete
         public async Task<IDataResult<OrderGetDto>> GerOrderById(int orderId)
         {
             OrderGetDto orderGetDto = _mapper.Map<OrderGetDto>(await _orderDal.Get(x => x.Id == orderId));
+            if (orderGetDto == null)
+                return new ErrorDataResult<OrderGetDto>(Messages.OrderNotFound);
             return new SuccessDataResult<OrderGetDto>(orderGetDto,Messages.OrderFound);
         }
+
+        public async Task<IDataResult<OrderGetDto>> GetOrderByTrackId(Guid trackId)
+        {
+            OrderGetDto orderGetDto = _mapper.Map<OrderGetDto>(await _orderDal.Get(x => x.OrderTrackId == trackId));
+            if (orderGetDto == null)
+                return new ErrorDataResult<OrderGetDto>(Messages.OrderNotFound);
+            return new SuccessDataResult<OrderGetDto>(orderGetDto, Messages.OrderFound);
+        }
+
+        [AuthorizeOperation("AppUser")]
+        public async Task<IDataResult<List<OrderGetDto>>> GetAllByUser()
+        {
+            return new SuccessDataResult<List<OrderGetDto>>(await _orderDal.GetOrderInGetDto(), Messages.OrdersListed);
+        }
+
+        
+
+
     }
 }
