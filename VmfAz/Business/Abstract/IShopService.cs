@@ -1,5 +1,6 @@
 ﻿using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,8 @@ namespace Business.Abstract
         Task<IDataResult<List<Shop>>> GetAll();
         Task<IDataResult<List<Shop>>> GetShopsByProduct(int productId);
 
-        Task<IResult> Add(Shop shop);
-        Task<IResult> Update(Shop shop);
+        Task<IResult> Add(ShopPostDto shopDto);
+        Task<IResult> Update(int id,ShopPostDto shopDto);
         Task<IResult> Delete(int id);
 
 

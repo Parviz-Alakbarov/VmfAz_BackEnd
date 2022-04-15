@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
             var userToLogin = await _authService.Login(userForLoginDto);
             if (!userToLogin.Success)
             {
-                return Unauthorized(userToLogin.Message);
+                return Unauthorized(userToLogin);
             }
             return Ok(userToLogin);
         }
@@ -35,20 +35,14 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register(UserRegisterDto userForRegisterDto)
         {
-            //var userExists = await _authService.UserExists(userForRegisterDto.Email);
-            //if (!userExists.Success)
-            //{
-            //    return BadRequest(userExists.Message);
-            //}
-
             var registerResult = await _authService.Register(userForRegisterDto);
-            var result = await _authService.CreateAccessToken(registerResult.Data);
-            if (result.Success)
+            if (registerResult.Success)
             {
+                var result = await _authService.CreateAccessToken(registerResult.Data);
                 return Ok(result);
             }
 
-            return BadRequest(result.Message);
+            return BadRequest(registerResult);
         }
 
         [HttpPost("changePassword")]

@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -41,9 +42,9 @@ namespace WebAPI.Controllers
 
 
         [HttpPost("add")]
-        public async Task<IActionResult> Add(Shop shop)
+        public async Task<IActionResult> Add(ShopPostDto shopDto)
         {
-            var result = await _shopService.Add(shop);
+            var result = await _shopService.Add(shopDto);
             if (result.Success)
             {
                 return StatusCode(201, result.Message);
@@ -52,8 +53,19 @@ namespace WebAPI.Controllers
         }
 
 
-        [HttpDelete("delete")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Remove(int id)
+        {
+            var result = await _shopService.Delete(id);
+            if (result.Success)
+            {
+                return StatusCode(204, result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(int id, ShopPostDto shopPostDto)
         {
             var result = await _shopService.Delete(id);
             if (result.Success)

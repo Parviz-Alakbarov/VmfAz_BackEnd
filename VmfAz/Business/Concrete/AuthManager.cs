@@ -54,13 +54,13 @@ namespace Business.Concrete
         [ValidationAspect(typeof(UserRegisterDtoValidator))]
         public async Task<IDataResult<AppUser>> Register(UserRegisterDto userRegisterDto)
         {
-            var result = BusinessRules.Run(
+            IResult result = BusinessRules.Run(
                 await UserExists(userRegisterDto.Email),
                 await CheckCountryExist(userRegisterDto.CountryId),
                 await CheckCityExist(userRegisterDto.CountryId, userRegisterDto.CityId));
 
             if (result != null)
-                return new ErrorDataResult<AppUser>(result.Message);
+                return new ErrorDataResult<AppUser>(null,result.Message);
 
             byte[] passwordHash, passwordSalt;
             HashingHelper.CreatePasswordHash(userRegisterDto.Password, out passwordHash, out passwordSalt);

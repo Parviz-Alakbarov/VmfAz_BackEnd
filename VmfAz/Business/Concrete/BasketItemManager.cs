@@ -25,7 +25,8 @@ namespace Business.Concrete
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
 
-        public BasketItemManager(IBasketItemDal basketItemDal, IMapper mapper, IUserService userService, IProductService productService)
+        public BasketItemManager(IBasketItemDal basketItemDal, IMapper mapper, 
+            IUserService userService, IProductService productService)
         {
             _basketItemDal = basketItemDal;
             _mapper = mapper;
@@ -57,7 +58,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<BasketItem>>(basketItems, Messages.ProductAddedToBasket);
         }
 
-
+        [AuthorizeOperation("AppUser")]
         public async Task<IResult> Delete(int basketItemId)
         {
             var item = await _basketItemDal.Get(x => x.Id == basketItemId);
@@ -69,8 +70,13 @@ namespace Business.Concrete
             return new SuccessResult(Messages.BasketItemDeletedSuccessfully);
         }
 
+        [AuthorizeOperation("AppUser,Admin,SuperAdmin")]
         public async Task<IDataResult<List<BasketItem>>> GetAllBasketItemsByUserId(int userId)
         {
+            IResult result = BusinessRules.Run(CheckIfAppUserExists(userId));
+            if (result != null)
+                return new ErrorDataResult<List<BasketItem>>(Messages.UserNotFound);
+
             return new SuccessDataResult<List<BasketItem>>(await _basketItemDal.GetAll(x => x.AppUserId == userId));
         }
         [AuthorizeOperation("AppUser")]
@@ -99,7 +105,6 @@ namespace Business.Concrete
 
             return new SuccessResult();
         }
-
 
         private IResult CheckIfProductExists(int productId)
         {

@@ -15,37 +15,12 @@ namespace WebAPI.Controllers
     {
         private readonly IProductService _productService;
         private readonly IProductImageService _productImageService;
-        private readonly IBasketItemService _basketItemService;
 
-        public ProductsController(IProductService productService, IProductImageService productImageService, IBasketItemService basketItemService)
+        public ProductsController(IProductService productService, IProductImageService productImageService)
         {
             _productService = productService;
             _productImageService = productImageService;
-            _basketItemService = basketItemService;
         }
-
-        [HttpPost("addtobasket")]
-        public async Task<IActionResult> AddToBasket(BasketItemAddDto basketItemAddDto)
-        {
-            var result = await _basketItemService.Add(basketItemAddDto);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result.Message);
-        }
-
-        //[HttpPost("")]
-        //public IActionResult IcreaseCountOfProduct()
-        //{
-        //    var result = _basketItemService.IncreaseCount(int );
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result.Message);
-        //}
-
 
         [HttpPost("add")]
         public async Task<IActionResult> Add(ProductAddDto productAddDto)

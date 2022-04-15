@@ -40,8 +40,8 @@ namespace Business.Constants
         //User Messages 
 
         public static readonly string UserRegistered = "User Registered Successfully";
-        public static readonly string UserNotFound = "Username or Password is Incorrect!";
-        public static readonly string PasswordError = "Username or Password is Incorrect!";
+        public static readonly string UserNotFound = "Email və ya şifrə yanlışdır!";
+        public static readonly string PasswordError = "Email və ya şifrə yanlışdır!";
         public static readonly string SuccessfullLogin = "User Loged in Succesfully";
         public static readonly string UserAlreadyExists = "User Already Exist!";
         public static readonly string UserDataFound = "User Data Found!";
@@ -91,6 +91,7 @@ namespace Business.Constants
         public static readonly string ShopNotFound = "Shop Not Found!";
         public static readonly string ShopDeleted = "Shop Deleted Successfully!";
         public static readonly string ShopUpdated = "Shop Updated Successfully!";
+        public static readonly string ShopAlreadyExist = "Shop Already Exist With That Name.";
 
         //Order Messages 
         public static readonly string OrderAdded = "Order created Successfully!";
