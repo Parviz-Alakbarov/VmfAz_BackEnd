@@ -50,6 +50,16 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Shop>>(await _shopDal.GetAll(), Messages.ShopListed);
         }
 
+        public async Task<IDataResult<Shop>> GetById(int id)
+        {
+            Shop shop = await _shopDal.Get(x => x.Id == id);
+            if (shop==null)
+            {
+                return new ErrorDataResult<Shop>(Messages.ShopNotFound);
+            }
+            return new SuccessDataResult<Shop>(shop);
+        }
+
         public async Task<IDataResult<List<Shop>>> GetShopsByProduct(int productId)
         {
             return new SuccessDataResult<List<Shop>>(await _shopDal.GetShopsByProduct(productId), Messages.ShopListed);

@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
-        [HttpPut("update")]
+        [HttpPut("update/{id}")]
         public async Task<IActionResult> Update(int id, ProductUpdateDto productUpdateDto)
         {
             var result = await _productService.Update(id, productUpdateDto);
@@ -78,7 +78,7 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
-        [HttpGet("getbyid")]
+        [HttpGet("getbyid/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _productService.GetProductById(id);

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Business.ValidationRules.FluentValidation.UserValidators
 {
-    public class UserRegisterDtoValidator : AbstractValidator<UserRegisterDto>
+    public class UserUpdateDtoValidator : AbstractValidator<UserUpdateDto>
     {
-        public UserRegisterDtoValidator()
+        public UserUpdateDtoValidator()
         {
             RuleFor(x => x.FirstName).NotEmpty().WithMessage("FirstName is required");
             RuleFor(x => x.FirstName).MaximumLength(25).WithMessage("FirstName must be less than 50 character!");
@@ -28,12 +28,6 @@ namespace Business.ValidationRules.FluentValidation.UserValidators
 
             RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required!");
             RuleFor(x => x.Email).MaximumLength(100).WithMessage("Email must be less than 100 character!");
-
-            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required!");
-            RuleFor(x => x.Password).MinimumLength(8).WithMessage("Password mustbe more than 8 character!");
-            RuleFor(x => x.Password).MaximumLength(25).WithMessage("Invalid Password Length");
-            RuleFor(x => x.Password).Matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,25}$").WithMessage("Password didn't match requirements!");
-
         }
     }
 }

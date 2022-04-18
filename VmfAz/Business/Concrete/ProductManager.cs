@@ -123,7 +123,7 @@ namespace Business.Concrete
         public async Task<IDataResult<List<Product>>> GetAll()
         {
             return new SuccessDataResult<List<Product>>(await _productDal.GetAll(x => !x.IsDeleted), Messages.ProductsListedSuccessfully);
-        }
+        } 
         public async Task<IDataResult<Product>> GetProductById(int productId)
         {
             var result = await _productDal.Get(p => p.Id == productId && !p.IsDeleted);

@@ -82,6 +82,7 @@ namespace Business.Concrete
             return new SuccessDataResult<AppUser>(user, Messages.UserRegistered);
         }
 
+
         [ValidationAspect(typeof(UserLoginDtoValidator))]
         public async Task<IDataResult<TokensModel>> Login(UserLoginDto userForLoginDto)
         {
@@ -103,6 +104,44 @@ namespace Business.Concrete
             }
 
             return new SuccessDataResult<TokensModel>(tokensModelResult.Data, Messages.SuccessfullLogin);
+        }
+
+        [AuthorizeOperation("AppUser")]
+        [ValidationAspect(typeof(UserUpdateDtoValidator))]
+        public async Task<IDataResult<AppUser>> UpdateUser(UserUpdateDto userUpdateDto)
+        {
+            IResult result = BusinessRules.Run(
+                await CheckCountryExist(userUpdateDto.CountryId),
+                await CheckCityExist(userUpdateDto.CountryId, userUpdateDto.CityId));
+
+            if (result != null)
+                return new ErrorDataResult<AppUser>(null, result.Message);
+
+            var userId = _httpContextAccessor.HttpContext.User.GetNameIdentifier()[0];
+            if (!Int32.TryParse(userId, out int id))
+                return new ErrorDataResult<AppUser>(Messages.UserNotFound);
+
+            var userResult = (await _userService.GetById(id)).Data;
+            if (userResult == null)
+                return new ErrorDataResult<AppUser>(Messages.UserNotFound);
+
+            AppUser user = new AppUser();
+            if (userResult.Email != userUpdateDto.Email)
+            {
+                var emailResult = (await _userService.GetByMail(userUpdateDto.Email)).Data;
+                if (emailResult != null)
+                    return new ErrorDataResult<AppUser>(Messages.UserAlreadyExists);
+            }
+
+            user.Email = userUpdateDto.Email;
+            user.FirstName = userUpdateDto.FirstName;
+            user.LastName = userUpdateDto.LastName;
+            user.Address = userUpdateDto.Address;
+            user.PhoneNumber = userUpdateDto.PhoneNumber;
+            user.CityId = userUpdateDto.CityId;
+            user.CountryId = userUpdateDto.CountryId;
+            await _userService.Update(user);
+            return new SuccessDataResult<AppUser>(user, Messages.UserRegistered);
         }
 
         [AuthorizeOperation("AppUser")]
@@ -215,13 +254,12 @@ namespace Business.Concrete
                 return new ErrorDataResult<TokensModel>(Messages.InvalidRefreshToken);
             }
 
-            await _refreshTokenService.DeleteAll(refreshToken.UserId);
-
             AppUser appUser = (await _userService.GetById(refreshToken.UserId)).Data;
             if (appUser == null)
             {
                 return new ErrorDataResult<TokensModel>(Messages.UserNotFound);
             }
+            await _refreshTokenService.Delete(refreshToken.Id);
 
             var tokensModelResult = await CreateTokensModel(appUser);
             if (!tokensModelResult.Success)
@@ -244,7 +282,7 @@ namespace Business.Concrete
                 return new ErrorDataResult<TokensModel>(Messages.RefreshTokenCreationError);
             }
 
-            await _refreshTokenService.Add(new RefreshTokenPostDto { Token = refreshToken.Token, UserId = user.Id });
+            await _refreshTokenService.Add(new RefreshTokenPostDto { Token = refreshToken.Token, UserId = user.Id, });
 
             TokensModel model = new TokensModel
             {

@@ -18,6 +18,17 @@ namespace WebAPI.Controllers
             _shopService = shopService;
         }
 
+        [HttpGet("getbyid/{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var result = await _shopService.GetById(id);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -47,7 +58,7 @@ namespace WebAPI.Controllers
             var result = await _shopService.Add(shopDto);
             if (result.Success)
             {
-                return StatusCode(201, result.Message);
+                return StatusCode(201, result);
             }
             return BadRequest(result.Message);
         }

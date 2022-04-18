@@ -12,6 +12,7 @@ namespace Business.Abstract
     public interface IShopService
     {
         Task<IDataResult<List<Shop>>> GetAll();
+        Task<IDataResult<Shop>> GetById(int id);
         Task<IDataResult<List<Shop>>> GetShopsByProduct(int productId);
 
         Task<IResult> Add(ShopPostDto shopDto);
