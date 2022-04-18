@@ -16,6 +16,7 @@ namespace Business.Abstract
         Task<IDataResult<TokensModel>> Login(UserLoginDto userForLoginDto);
         Task<IResult> ChangePassword(UserChangePasswordDto userForChangePasswordDto);
         Task<IResult> UserExists(string email);
+        Task<IResult> UpdateUser(UserUpdateDto userUpdateDto);
 
         Task<IDataResult<AccessToken>> CreateAccessToken(AppUser user);
         IDataResult<AccessToken> CreateRefreshToken(AppUser user);

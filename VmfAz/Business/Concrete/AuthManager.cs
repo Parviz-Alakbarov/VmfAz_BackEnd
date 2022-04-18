@@ -108,31 +108,30 @@ namespace Business.Concrete
 
         [AuthorizeOperation("AppUser")]
         [ValidationAspect(typeof(UserUpdateDtoValidator))]
-        public async Task<IDataResult<AppUser>> UpdateUser(UserUpdateDto userUpdateDto)
+        public async Task<IResult> UpdateUser(UserUpdateDto userUpdateDto)
         {
             IResult result = BusinessRules.Run(
                 await CheckCountryExist(userUpdateDto.CountryId),
                 await CheckCityExist(userUpdateDto.CountryId, userUpdateDto.CityId));
 
             if (result != null)
-                return new ErrorDataResult<AppUser>(null, result.Message);
+                return new ErrorResult(result.Message);
 
             var userId = _httpContextAccessor.HttpContext.User.GetNameIdentifier()[0];
             if (!Int32.TryParse(userId, out int id))
-                return new ErrorDataResult<AppUser>(Messages.UserNotFound);
+                return new ErrorResult(Messages.UserNotFound);
 
             var userResult = (await _userService.GetById(id)).Data;
             if (userResult == null)
-                return new ErrorDataResult<AppUser>(Messages.UserNotFound);
+                return new ErrorResult(Messages.UserNotFound);
 
             AppUser user = new AppUser();
             if (userResult.Email != userUpdateDto.Email)
             {
                 var emailResult = (await _userService.GetByMail(userUpdateDto.Email)).Data;
                 if (emailResult != null)
-                    return new ErrorDataResult<AppUser>(Messages.UserAlreadyExists);
+                    return new ErrorResult(Messages.UserAlreadyExists);
             }
-
             user.Email = userUpdateDto.Email;
             user.FirstName = userUpdateDto.FirstName;
             user.LastName = userUpdateDto.LastName;
@@ -141,7 +140,7 @@ namespace Business.Concrete
             user.CityId = userUpdateDto.CityId;
             user.CountryId = userUpdateDto.CountryId;
             await _userService.Update(user);
-            return new SuccessDataResult<AppUser>(user, Messages.UserRegistered);
+            return new SuccessResult(Messages.UserRegistered);
         }
 
         [AuthorizeOperation("AppUser")]

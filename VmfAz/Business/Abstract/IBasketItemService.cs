@@ -14,6 +14,6 @@ namespace Business.Abstract
         Task<IDataResult<List<BasketItem>>> Add(BasketItemAddDto basketItemAddDto);
         Task<IResult> Update(BasketItemUpdateDto basketItemUpdateDto);
         Task<IResult> Delete(int basketItemId);
-        Task<IDataResult<List<BasketItem>>> GetAllBasketItemsByUserId(int userId);
+        Task<IDataResult<List<BasketItem>>> GetAllBasketItemsByUserId();
     }
 }

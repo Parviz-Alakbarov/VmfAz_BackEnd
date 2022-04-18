@@ -4,12 +4,14 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation.BasketItemValidators;
 using Core.Aspects.Autofac.Authorization;
 using Core.Aspects.Autofac.Validation;
+using Core.Extensions;
 using Core.Utilities.BusinessMotor;
 using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs.OrderDTOs;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,14 +26,16 @@ namespace Business.Concrete
         private readonly IUserService _userService;
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public BasketItemManager(IBasketItemDal basketItemDal, IMapper mapper, 
-            IUserService userService, IProductService productService)
+        public BasketItemManager(IBasketItemDal basketItemDal, IMapper mapper,
+            IUserService userService, IProductService productService, IHttpContextAccessor contextAccessor)
         {
             _basketItemDal = basketItemDal;
             _mapper = mapper;
             _userService = userService;
             _productService = productService;
+            _httpContextAccessor = contextAccessor;
         }
 
         [ValidationAspect(typeof(BasketItemAddDtoValidator), Priority = 1)]
@@ -71,8 +75,12 @@ namespace Business.Concrete
         }
 
         [AuthorizeOperation("AppUser,Admin,SuperAdmin")]
-        public async Task<IDataResult<List<BasketItem>>> GetAllBasketItemsByUserId(int userId)
+        public async Task<IDataResult<List<BasketItem>>> GetAllBasketItemsByUserId()
         {
+            var idResult = _httpContextAccessor.HttpContext.User.GetNameIdentifier()[0];
+            if (!Int32.TryParse(idResult, out int userId))
+                return new ErrorDataResult<List<BasketItem>> (Messages.UserNotFound);
+
             IResult result = BusinessRules.Run(CheckIfAppUserExists(userId));
             if (result != null)
                 return new ErrorDataResult<List<BasketItem>>(Messages.UserNotFound);

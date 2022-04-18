@@ -29,9 +29,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getall")]
-        public async Task<IActionResult> GetAllByUser(int userId)
+        public async Task<IActionResult> GetAllByUser()
         {
-            var result = await _basketItemService.GetAllBasketItemsByUserId(userId);
+            var result = await _basketItemService.GetAllBasketItemsByUserId();
             if (result.Success)
             {
                 return Ok(result);
