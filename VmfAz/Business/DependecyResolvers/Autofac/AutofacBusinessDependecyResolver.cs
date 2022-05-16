@@ -27,7 +27,6 @@ namespace Business.DependecyResolvers.Autofac
 
             builder.RegisterType<BasketItemManager>().As<IBasketItemService>().SingleInstance();
             builder.RegisterType<EfBasketItemDal>().As<IBasketItemDal>().SingleInstance();
-            //Single Instance olmali deyil
 
             builder.RegisterType<CountryManager>().As<ICountryService>().SingleInstance();
             builder.RegisterType<EfCountryDal>().As<ICountryDal>().SingleInstance();

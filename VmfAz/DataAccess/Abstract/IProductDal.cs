@@ -16,6 +16,7 @@ namespace DataAccess.Abstract
         Task<ProductDetailDto> GetProductDetails(int id);
         Task<List<ProductGetDto>> GetProductsInGetDto(int? count=null,Expression<Func<ProductGetDto, bool>> expression = null);
         Task<List<ProductGetDto>> GetBestSellerProducts(int count , Expression<Func<ProductGetDto, bool>> expression = null);
-        Task<PaginationList<ProductGetDto>> GetProductsPaginated(UserParams userParams);
+        Task<PaginationList<ProductGetDto>> GetProductsPaginated(UserParams userParams, int pageSize);
+        Task<PaginationList<ProductGetDtoAdmin>> GetProductsPaginatedAdmin(AdminParams adminParams);
     }
 }

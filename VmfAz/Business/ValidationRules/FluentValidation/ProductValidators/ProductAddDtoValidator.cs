@@ -22,6 +22,7 @@ namespace Business.ValidationRules.FluentValidation.ProductValidators
             RuleFor(x => x.CostPrice).NotEmpty().WithMessage("Cost Price is required!");
             RuleFor(x => x.SalePrice).GreaterThanOrEqualTo(0).WithMessage("Sale Price can't be less than 0!");
             RuleFor(x => x.CostPrice).GreaterThanOrEqualTo(0).WithMessage("Cost Price can't be less than 0!");
+            RuleFor(x => x.WarrantyLimit).GreaterThanOrEqualTo(0).WithMessage("Warranty Limit can't be less than 0!");
             RuleFor(x => x.Description).NotEmpty().WithMessage("Description is required!");
             RuleFor(x => x.Description).MaximumLength(1000).WithMessage("Description must be less than 1000 character!");
             RuleFor(x => x.DiscountPercent).GreaterThanOrEqualTo(0).WithMessage("Discont price can't be less than 0!");

@@ -25,6 +25,7 @@ namespace Business.Abstract
         Task<IDataResult<List<ProductGetDto>>> GetRelatedProducts(int productId);
 
         Task<IDataResult<PaginationList<ProductGetDto>>> GetProductsPagination(UserParams userParams);
+        Task<IDataResult<PaginationList<ProductGetDtoAdmin>>> GetProductsPaginationAdmin(AdminParams adminParams);
 
         Task<IResult> Add(ProductAddDto productAddDto);
         Task<IResult> Update(int id,ProductUpdateDto productUpdateDto);

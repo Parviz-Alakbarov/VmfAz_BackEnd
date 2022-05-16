@@ -27,12 +27,14 @@ namespace Business.Concrete
         private readonly IBrandService _brandService;
         private readonly ICountryService _countryService;
         private readonly IMapper _mapper;
-        public ProductManager(IProductDal productDal, IMapper mapper, ICountryService countryService, IBrandService brandService)
+        private readonly ISettingService _settingService;
+        public ProductManager(IProductDal productDal, IMapper mapper, ICountryService countryService, IBrandService brandService, ISettingService settingService)
         {
             _productDal = productDal;
             _mapper = mapper;
             _countryService = countryService;
             _brandService = brandService;
+            _settingService = settingService;
         }
         //[AuthorizeOperation("SuperAdmin")]
         [ValidationAspect(typeof(ProductAddDtoValidator), Priority = 1)]
@@ -51,6 +53,7 @@ namespace Business.Concrete
                 return new ErrorResult(posterImageResult.Message);
 
             Product product = _mapper.Map<Product>(productAddDto);
+            product.CreateDate = DateTime.Now;
             product.PosterImage = posterImageResult.Message;
             await _productDal.Add(product);
 
@@ -186,7 +189,13 @@ namespace Business.Concrete
 
         public async Task<IDataResult<PaginationList<ProductGetDto>>> GetProductsPagination(UserParams userParams)
         {
-            return new SuccessDataResult<PaginationList<ProductGetDto>>(await _productDal.GetProductsPaginated(userParams), Messages.ProductsListedSuccessfully);
+            int pageSize = int.Parse((await _settingService.GetByKey("PageSize")).Data.Value);
+            return new SuccessDataResult<PaginationList<ProductGetDto>>(await _productDal.GetProductsPaginated(userParams, pageSize), Messages.ProductsListedSuccessfully);
+        }
+
+        public async Task<IDataResult<PaginationList<ProductGetDtoAdmin>>> GetProductsPaginationAdmin(AdminParams adminParams)
+        {
+            return new SuccessDataResult<PaginationList<ProductGetDtoAdmin>>(await _productDal.GetProductsPaginatedAdmin(adminParams), Messages.ProductsListedSuccessfully);
         }
 
         public async Task<IDataResult<List<ProductGetDto>>> GetRelatedProducts(int productId)

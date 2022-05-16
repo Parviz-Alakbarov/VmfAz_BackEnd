@@ -23,25 +23,25 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> Add(ProductAddDto productAddDto)
+        public async Task<IActionResult> Add([FromForm]ProductAddDto productAddDto)
         {
             var result = await _productService.Add(productAddDto);
             if (result.Success)
             {
-                return StatusCode(201, result.Message);
+                return Ok(result);
             }
             return BadRequest(result.Message);
         }
 
-        [HttpDelete("delete")]
-        public async Task<IActionResult> Remove(int id)
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Remove([FromRoute]int id)
         {
             var result = await _productService.Delete(id);
             if (result.Success)
             {
-                return StatusCode(204, result.Message);
+                return StatusCode(204, result);
             }
-            return BadRequest(result.Message);
+            return BadRequest(result);
         }
 
         [HttpPut("update/{id}")]
@@ -169,6 +169,20 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetPaginatedProducts([FromQuery] UserParams userParams)
         {
             var result = await _productService.GetProductsPagination(userParams);
+            if (result.Success)
+            {
+                Response.AddPaginationHeader(
+                    result.Data.CurrentPage, result.Data.TotalItems, result.Data.PageSize, result.Data.TotalPage);
+
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getpaginatedlistadmin")]
+        public async Task<IActionResult> GetPaginatedProducts([FromQuery] AdminParams adminParams)
+        {
+            var result = await _productService.GetProductsPaginationAdmin(adminParams);
             if (result.Success)
             {
                 Response.AddPaginationHeader(

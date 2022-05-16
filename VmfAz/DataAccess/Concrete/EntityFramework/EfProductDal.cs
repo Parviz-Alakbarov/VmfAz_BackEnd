@@ -84,29 +84,29 @@ namespace DataAccess.Concrete.EntityFramework
                                  ProductFunctionalityId = p.ProductFunctionalityId,
                              };
                 if (expression != null)
-                   result = result.Where(expression);
+                    result = result.Where(expression);
 
-                if (count!=null)
+                if (count != null)
                     result = result.Take((int)count);
 
                 return await result.ToListAsync();
             }
         }
 
-        public async Task<List<ProductGetDto>>GetBestSellerProducts(int count, Expression<Func<ProductGetDto, bool>> expression)
+        public async Task<List<ProductGetDto>> GetBestSellerProducts(int count, Expression<Func<ProductGetDto, bool>> expression)
         {
             using (VmfAzContext context = new VmfAzContext())
             {
                 var firstQuery = from o in context.OrderItems
                                  group o.Count by o.ProductId into g
                                  orderby g.Sum() descending
-                                 select g.Key ;
+                                 select g.Key;
 
-                var idArr =  firstQuery.Take(count).ToList();
+                var idArr = firstQuery.Take(count).ToList();
 
 
                 var result = from p in context.Products
-                             where p.IsDeleted == false &&  idArr.Contains(p.Id)
+                             where p.IsDeleted == false && idArr.Contains(p.Id)
                              select new ProductGetDto
                              {
                                  Id = p.Id,
@@ -124,7 +124,7 @@ namespace DataAccess.Concrete.EntityFramework
         }
 
 
-        public async Task<PaginationList<ProductGetDto>> GetProductsPaginated(UserParams userParams)
+        public async Task<PaginationList<ProductGetDto>> GetProductsPaginated(UserParams userParams, int pageSize)
         {
             using (VmfAzContext context = new VmfAzContext())
             {
@@ -141,10 +141,83 @@ namespace DataAccess.Concrete.EntityFramework
                                  CreateDate = p.CreateDate,
                                  GenderId = p.GenderId,
                                  ProductFunctionalityId = p.ProductFunctionalityId,
-                             }).AsNoTracking();
-                return await PaginationList<ProductGetDto>.CreateAsync(query,userParams.PageNumber,userParams.PageSize);
+                             }).AsQueryable();
+                if (userParams.MaxPrice != null)
+                {
+                    query = query.Where(p => p.SalePrice <= userParams.MaxPrice);
+                }
+                if (userParams.MinPrice != null)
+                {
+                    query = query.Where(p => p.SalePrice >= userParams.MinPrice);
+                }
+                if (userParams.GenderIds != null)
+                {
+                    query = query.Where(p => userParams.GenderIds.Contains(p.GenderId));
+                }
+                if (userParams.BrandIds != null)
+                {
+                    query = query.Where(p => userParams.BrandIds.Contains(p.BrandId));
+                }
+                //if (userParams.ProductFunctionalityIds != null)
+                //{
+                //    query = query.Where(p => userParams.ProductFunctionalityIds.Contains(p.ProductFunctionalityId));
+                //}
+
+                query = userParams.OrderBy switch
+                {
+                    "priceDesc" => query.OrderByDescending(p => p.SalePrice),
+                    "priceAsc" => query.OrderBy(p => p.SalePrice),
+                    "discountDesc" => query.OrderByDescending(p => p.DiscountPersent),
+                    _ => query.OrderByDescending(p => p.CreateDate)
+                };
+
+
+                return await PaginationList<ProductGetDto>.CreateAsync(query.AsNoTracking(), userParams.PageNumber, pageSize);
             }
         }
 
+        public async Task<PaginationList<ProductGetDtoAdmin>> GetProductsPaginatedAdmin(AdminParams adminParams)
+        {
+            using (VmfAzContext context = new VmfAzContext())
+            {
+                var query = (from p in context.Products
+                             select new ProductGetDtoAdmin
+                             {
+                                 Id = p.Id,
+                                 DiscountPersent = p.DiscountPercent,
+                                 Image = p.PosterImage,
+                                 Name = p.Name,
+                                 SalePrice = p.SalePrice,
+                                 BrandId = p.BrandId,
+                                 CreateDate = p.CreateDate,
+                                 GenderId = p.GenderId,
+                                 CostPrice = p.CostPrice,
+                                 IsDeleted = p.IsDeleted
+                             }).AsQueryable();
+                if (adminParams.MaxPrice != null)
+                {
+                    query = query.Where(p => p.SalePrice <= adminParams.MaxPrice);
+                }
+                if (adminParams.MinPrice != null)
+                {
+                    query = query.Where(p => p.SalePrice >= adminParams.MinPrice);
+                }
+
+                query = query.Where(p => p.IsDeleted == adminParams.IsDeleted);
+
+                query = adminParams.OrderBy switch
+                {
+                    "priceDesc" => query.OrderByDescending(p => p.SalePrice),
+                    "priceAsc" => query.OrderBy(p => p.SalePrice),
+                    "costPriceAsc" => query.OrderBy(p=>p.CostPrice),
+                    "costPriceDesc" => query.OrderByDescending(p=> p.CostPrice),
+                    "discountDesc" => query.OrderByDescending(p => p.DiscountPersent),
+                    _ => query.OrderByDescending(p => p.CreateDate)
+                };
+
+
+                return await PaginationList<ProductGetDtoAdmin>.CreateAsync(query.AsNoTracking(), adminParams.PageNumber, adminParams.PageSize);
+            }
+        }
     }
 }
