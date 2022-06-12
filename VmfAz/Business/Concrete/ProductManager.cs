@@ -126,7 +126,7 @@ namespace Business.Concrete
         public async Task<IDataResult<List<Product>>> GetAll()
         {
             return new SuccessDataResult<List<Product>>(await _productDal.GetAll(x => !x.IsDeleted), Messages.ProductsListedSuccessfully);
-        } 
+        }
         public async Task<IDataResult<Product>> GetProductById(int productId)
         {
             var result = await _productDal.Get(p => p.Id == productId && !p.IsDeleted);
@@ -148,7 +148,7 @@ namespace Business.Concrete
 
         public async Task<IDataResult<List<ProductGetDto>>> GetProductsByBrandId(int brandId)
         {
-            IResult businessResult = BusinessRules.Run( await CheckIfBrandExistsById(brandId));
+            IResult businessResult = BusinessRules.Run(await CheckIfBrandExistsById(brandId));
             if (businessResult != null)
                 return new ErrorDataResult<List<ProductGetDto>>(businessResult.Message);
 
@@ -163,7 +163,7 @@ namespace Business.Concrete
 
         public async Task<IDataResult<List<ProductGetDto>>> SearchProducts(string name)
         {
-            return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetProductsInGetDto(null, x => x.Name.IndexOf(name) != -1   ));
+            return new SuccessDataResult<List<ProductGetDto>>(await _productDal.GetProductsInGetDto(null, x => x.Name.IndexOf(name) != -1));
         }
 
         [CacheAspect]
@@ -223,7 +223,7 @@ namespace Business.Concrete
 
         private async Task<IResult> CheckIfProductExistWithName(string productName)
         {
-            if (await _productDal.Get(p => p.Name == productName) != null)
+            if (await _productDal.Get(p => p.Name == productName && p.Name != productName) != null)
                 return new ErrorResult(Messages.ProductAlreadyExists);
 
             return new SuccessResult();

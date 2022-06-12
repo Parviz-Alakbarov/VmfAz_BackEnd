@@ -18,7 +18,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public async Task<ProductDetailDto> GetProductDetails(int id)
         {
-            using (VmfAzContext context = new())
+            using (VmfAzContext context = new VmfAzContext())
             {
                 var result = from p in context.Products
                              join b in context.Brands on p.BrandId equals b.Id

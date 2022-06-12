@@ -65,7 +65,7 @@ namespace WebAPI.Controllers
             var result = await _authService.ChangePassword(userForChangePasswordDto);
             if (!result.Success)
             {
-                return BadRequest(result.Message);
+                return BadRequest(result);
             }
             return Ok(result);
         }

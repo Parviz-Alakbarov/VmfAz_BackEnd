@@ -45,7 +45,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> Update(int id, ProductUpdateDto productUpdateDto)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromForm]ProductUpdateDto productUpdateDto)
         {
             var result = await _productService.Update(id, productUpdateDto);
             if (result.Success)

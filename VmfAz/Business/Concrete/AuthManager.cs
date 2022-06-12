@@ -125,21 +125,21 @@ namespace Business.Concrete
             if (userResult == null)
                 return new ErrorResult(Messages.UserNotFound);
 
-            AppUser user = new AppUser();
+            //AppUser user = userResult;
             if (userResult.Email != userUpdateDto.Email)
             {
                 var emailResult = (await _userService.GetByMail(userUpdateDto.Email)).Data;
                 if (emailResult != null)
                     return new ErrorResult(Messages.UserAlreadyExists);
             }
-            user.Email = userUpdateDto.Email;
-            user.FirstName = userUpdateDto.FirstName;
-            user.LastName = userUpdateDto.LastName;
-            user.Address = userUpdateDto.Address;
-            user.PhoneNumber = userUpdateDto.PhoneNumber;
-            user.CityId = userUpdateDto.CityId;
-            user.CountryId = userUpdateDto.CountryId;
-            await _userService.Update(user);
+            userResult.Email = userUpdateDto.Email;
+            userResult.FirstName = userUpdateDto.FirstName;
+            userResult.LastName = userUpdateDto.LastName;
+            userResult.Address = userUpdateDto.Address;
+            userResult.PhoneNumber = userUpdateDto.PhoneNumber;
+            userResult.CityId = userUpdateDto.CityId;
+            userResult.CountryId = userUpdateDto.CountryId;
+            await _userService.Update(userResult);
             return new SuccessResult(Messages.UserRegistered);
         }
 
