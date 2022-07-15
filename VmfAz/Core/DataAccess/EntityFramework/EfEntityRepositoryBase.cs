@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Utilities.PaginationHelper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,16 @@ namespace Core.DataAccess.EntityFramework
                 return expression == null
                     ? await context.Set<TEntity>().ToListAsync()
                     : await context.Set<TEntity>().Where(expression).ToListAsync();
+            }
+        }
+
+        public async Task<List<TEntity>> GetAllWithPaginated( int pageNumber, int pageSize, Expression<Func<TEntity, bool>> expression)
+        {
+            using (TContext context = new TContext())
+            {
+                return expression == null
+                    ? await PaginationList<TEntity>.CreateAsync( context.Set<TEntity>(), pageNumber, pageSize)
+                    : await PaginationList<TEntity>.CreateAsync( context.Set<TEntity>().Where(expression), pageNumber, pageSize);
             }
         }
 

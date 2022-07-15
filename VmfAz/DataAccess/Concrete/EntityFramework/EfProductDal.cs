@@ -171,7 +171,6 @@ namespace DataAccess.Concrete.EntityFramework
                     _ => query.OrderByDescending(p => p.CreateDate)
                 };
 
-
                 return await PaginationList<ProductGetDto>.CreateAsync(query.AsNoTracking(), userParams.PageNumber, pageSize);
             }
         }

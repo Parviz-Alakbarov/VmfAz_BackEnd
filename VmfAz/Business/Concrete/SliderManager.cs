@@ -32,7 +32,7 @@ namespace Business.Concrete
             if (sliderPostDto.File == null)
                 return new ErrorResult(Messages.SliderImageIsRequired);
 
-            var uploadResult = FileHelper.Upload("Sliders",sliderPostDto.File);
+            var uploadResult = FileHelper.Upload("Sliders", sliderPostDto.File);
             if (!uploadResult.Success)
                 return new ErrorResult(uploadResult.Message);
 
@@ -50,7 +50,7 @@ namespace Business.Concrete
         public async Task<IResult> Delete(int id)
         {
             Slider slider = await _sliderDal.Get(x => x.Id == id);
-            if (slider==null)
+            if (slider == null)
             {
                 return new ErrorResult(Messages.SliderNotFound);
             }
@@ -84,9 +84,15 @@ namespace Business.Concrete
         [CacheAspect]
         public async Task<IDataResult<List<Slider>>> GetAll()
         {
-            return new SuccessDataResult<List<Slider>>((await _sliderDal.GetAll()).OrderBy(x=>x.Order).ToList());   
+            return new SuccessDataResult<List<Slider>>((await _sliderDal.GetAll()).OrderBy(x => x.Order).ToList());
         }
-    
+
+        //[AuthorizeOperation("Admin,SuperAdmin")]
+        public async Task<IDataResult<List<Slider>>> GetSlidersPaginated(int page, int pageSize)
+        {
+            return new SuccessDataResult<List<Slider>>((await _sliderDal.GetAllWithPaginated(page, pageSize)));
+        }
+
         public async Task<IDataResult<Slider>> GetById(int id)
         {
             Slider slider = await _sliderDal.Get(x => x.Id == id);

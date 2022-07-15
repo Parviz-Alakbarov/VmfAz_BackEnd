@@ -12,6 +12,7 @@ namespace Business.Abstract
     public interface ISliderService 
     {
         Task<IDataResult<List<Slider>>> GetAll();
+        Task<IDataResult<List<Slider>>> GetSlidersPaginated(int page, int size);
         Task<IDataResult<Slider>> GetById(int id);
         Task<IResult> Delete(int id);
         Task<IResult> Update(int id,SliderPostDto sliderPostDto);

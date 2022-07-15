@@ -15,5 +15,6 @@ namespace Core.DataAccess
         Task Delete(T entity);
         Task<T> Get(Expression<Func<T, bool>> expression);
         Task<List<T>> GetAll(Expression<Func<T, bool>> expression = null);
+        Task<List<T>> GetAllWithPaginated( int pageNumber, int pageSize, Expression<Func<T, bool>> expression = null);
     }
 }

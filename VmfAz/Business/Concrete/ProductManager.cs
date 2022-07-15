@@ -36,7 +36,7 @@ namespace Business.Concrete
             _brandService = brandService;
             _settingService = settingService;
         }
-        //[AuthorizeOperation("SuperAdmin")]
+        [AuthorizeOperation("SuperAdmin")]
         [ValidationAspect(typeof(ProductAddDtoValidator), Priority = 1)]
         [CacheRemoveAspect("IProductService.Get")]
         public async Task<IResult> Add(ProductAddDto productAddDto)

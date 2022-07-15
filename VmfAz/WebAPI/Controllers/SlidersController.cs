@@ -36,7 +36,18 @@ namespace WebAPI.Controllers
             {
                 return Ok(result);
             }
-            return BadRequest(result.Message);
+            return BadRequest(result);
+        }
+
+        [HttpGet("getsliderpaginated")]
+        public async Task<IActionResult> GetSliderPaginated(int page=1, int size=10)
+        {
+            var result = await _sliderService.GetSlidersPaginated(page, size);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
 
         [HttpPost]

@@ -40,6 +40,17 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
+        [HttpGet("getbyid/{id}")]
+        public async Task<IActionResult> GetById([FromQuery]int id)
+        {
+            var result = await _brandService.GetBrandById(id);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
 
         [HttpGet("getbrandsonlywithname")]
         public async Task<IActionResult> GetBrandsOnlyWithName()
