@@ -8,6 +8,6 @@ namespace Core.Utilities.MailHelper
 {
     public interface IEmailService
     {
-        void SendEmail(EmailMessage emailMessage);
+        Task SendEmail(EmailMessage emailMessage);
     }
 }

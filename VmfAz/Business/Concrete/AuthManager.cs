@@ -7,6 +7,7 @@ using Core.Aspects.Autofac.Validation;
 using Core.Entities.Concrete;
 using Core.Extensions;
 using Core.Utilities.BusinessMotor;
+using Core.Utilities.MailHelper;
 using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Security.Hashing;
@@ -24,6 +25,8 @@ namespace Business.Concrete
 {
     public class AuthManager : IAuthService
     {
+        private static readonly string templatesDirectory = Environment.CurrentDirectory + "\\wwwroot\\assets\\templates";
+
         private readonly IUserService _userService;
         private readonly ITokenHelper _tokenHelper;
         private readonly ICountryService _countryService;
@@ -32,6 +35,7 @@ namespace Business.Concrete
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IOperationClaimService _operationClaimService;
+        private readonly IEmailService _emailService;
 
         public AuthManager(IUserService userService,
                             ITokenHelper tokenHelper,
@@ -39,8 +43,9 @@ namespace Business.Concrete
                             ICountryService countryService,
                             IUserOperationClaimService userOperationClaimService,
                             IRefreshTokenService refreshTokenService,
-                             IHttpContextAccessor httpContextAccessor, 
-                             IOperationClaimService operationClaimService)
+                            IHttpContextAccessor httpContextAccessor,
+                            IOperationClaimService operationClaimService, 
+                            IEmailService emailService)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
@@ -50,6 +55,7 @@ namespace Business.Concrete
             _refreshTokenService = refreshTokenService;
             _httpContextAccessor = httpContextAccessor;
             _operationClaimService = operationClaimService;
+            _emailService = emailService;
         }
         [ValidationAspect(typeof(UserRegisterDtoValidator))]
         public async Task<IDataResult<AppUser>> Register(UserRegisterDto userRegisterDto)
@@ -101,7 +107,7 @@ namespace Business.Concrete
             if (!tokensModelResult.Success)
             {
                 return tokensModelResult;
-            }
+            }    
 
             return new SuccessDataResult<TokensModel>(tokensModelResult.Data, Messages.SuccessfullLogin);
         }
@@ -180,7 +186,29 @@ namespace Business.Concrete
 
         public async Task<IResult> ResetPassword(UserResetPasswordDto userForRPDto)
         {
-            throw new NotImplementedException();
+            AppUser user = (await _userService.GetByMail(userForRPDto.Email)).Data;
+            if (user == null)
+            {
+                return new ErrorResult(Messages.AuthCodeSendedToEmail); 
+            }
+
+            EmailMessage emailMessage = new EmailMessage();
+
+            string text = System.IO.File.ReadAllText(templatesDirectory + "/ForgotPassword.html");
+
+            text = text.Replace("[AuthDigit]", "232323");
+
+            emailMessage.Body = text;
+            emailMessage.Subject = "This is test email";
+            EmailAddress adress = new EmailAddress { Address = "parvizja@code.edu.az", Name = "parviz" };
+            EmailAddress adress2 = new EmailAddress { Address = "smtp.test2022@hotmail.com", Name = "sadiq" };
+            emailMessage.FromAdresses.Add(adress2);
+            emailMessage.ToAdresses.Add(adress);
+
+            await _emailService.SendEmail(emailMessage);
+
+            return new SuccessResult(Messages.AuthCodeSendedToEmail);
+
         }
 
         [AuthorizeOperation("AppUser,Admin,SuperAdmin")]

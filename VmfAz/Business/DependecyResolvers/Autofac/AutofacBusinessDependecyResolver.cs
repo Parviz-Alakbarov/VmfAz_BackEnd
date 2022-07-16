@@ -4,6 +4,7 @@ using Business.Abstract;
 using Business.Concrete;
 using Castle.DynamicProxy;
 using Core.Utilities.Interceptors;
+using Core.Utilities.MailHelper;
 using Core.Utilities.Security.JWT;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
@@ -62,6 +63,8 @@ namespace Business.DependecyResolvers.Autofac
 
             builder.RegisterType<RefreshTokenManager>().As<IRefreshTokenService>().SingleInstance();
             builder.RegisterType<EfRefreshTokenDal>().As<IRefreshTokenDal>().SingleInstance();
+
+            builder.RegisterType<EmailManager>().As<IEmailService>().SingleInstance();
 
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();

@@ -100,7 +100,7 @@ namespace WebAPI.Controllers
             var result = await _authService.GetUser();
             if (!result.Success)
             {
-                return BadRequest(result.Message);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -112,6 +112,18 @@ namespace WebAPI.Controllers
             var token = new JwtHelper(_configuration).DecodeToken(auth);
 
             return Ok(token);
+        }
+
+
+        [HttpPost("resetPassword")]
+        public async Task<IActionResult> ResetPassword(UserResetPasswordDto userResetPasswordDto)
+        {
+            var result = await _authService.ResetPassword(userResetPasswordDto);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }
