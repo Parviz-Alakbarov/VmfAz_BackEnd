@@ -10,9 +10,11 @@ using Core.Utilities.BusinessMotor;
 using Core.Utilities.MailHelper;
 using Core.Utilities.Results;
 using Core.Utilities.Results.Abstract;
+using Core.Utilities.Security.AuthDigit;
 using Core.Utilities.Security.Hashing;
 using Core.Utilities.Security.JWT;
 using Entities.Concrete;
+using Entities.DTOs.AuthDtos;
 using Entities.DTOs.UserDTOs;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -193,22 +195,39 @@ namespace Business.Concrete
             }
 
             EmailMessage emailMessage = new EmailMessage();
-
             string text = System.IO.File.ReadAllText(templatesDirectory + "/ForgotPassword.html");
-
-            text = text.Replace("[AuthDigit]", "232323");
+            text = text.Replace("[AuthDigit]", AuthDigitHelper.GenerateCode(user.Email).ToString());
 
             emailMessage.Body = text;
-            emailMessage.Subject = "This is test email";
-            EmailAddress adress = new EmailAddress { Address = "parvizja@code.edu.az", Name = "parviz" };
-            EmailAddress adress2 = new EmailAddress { Address = "smtp.test2022@hotmail.com", Name = "sadiq" };
-            emailMessage.FromAdresses.Add(adress2);
+            emailMessage.Subject = "Authentication code for reset password.";
+            EmailAddress adress = new EmailAddress { Address = user.Email, Name = user.FirstName };
             emailMessage.ToAdresses.Add(adress);
 
             await _emailService.SendEmail(emailMessage);
 
             return new SuccessResult(Messages.AuthCodeSendedToEmail);
+        }
 
+        public async Task<IResult> ForgotPasswordConfirmation(ForgotPasswordConfirmDto forgotPaswordConfirmDto )
+        {
+            AppUser user = (await _userService.GetByMail(forgotPaswordConfirmDto.Email)).Data;
+            if (user == null)
+            {
+                return new ErrorResult(Messages.UserNotFound);
+            }
+
+            IResult result = AuthDigitHelper.ValidateCode(forgotPaswordConfirmDto.Email,forgotPaswordConfirmDto.Code);
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            HashingHelper.CreatePasswordHash(forgotPaswordConfirmDto.NewPassword, out var passwordHash, out var passwordSalt);
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+            await _userService.Update(user);
+
+            return new SuccessResult(Messages.PasswordChangedSuccessfully);
         }
 
         [AuthorizeOperation("AppUser,Admin,SuperAdmin")]

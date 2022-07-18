@@ -1,6 +1,7 @@
 ﻿using Core.Entities.Concrete;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Security.JWT;
+using Entities.DTOs.AuthDtos;
 using Entities.DTOs.UserDTOs;
 using System;
 using System.Collections.Generic;
@@ -27,5 +28,7 @@ namespace Business.Abstract
 
 
         Task<IResult> ResetPassword(UserResetPasswordDto userForResetPasswordDto);
+        Task<IResult> ForgotPasswordConfirmation(ForgotPasswordConfirmDto forgotPasswordConfirmDto);
+
     }
 }

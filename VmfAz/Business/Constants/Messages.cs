@@ -103,6 +103,9 @@ namespace Business.Constants
         //Color
         public static readonly string ColorsListed = "Colors Listed Successfully.";
 
+        //Authentication
         public static readonly string AuthCodeSendedToEmail = "Check your email for 6 digit code.";
+        public static readonly string PasswordChangedSuccessfully = "Your Password Changed Successfully. Try to login again.";
+        
     }
 }

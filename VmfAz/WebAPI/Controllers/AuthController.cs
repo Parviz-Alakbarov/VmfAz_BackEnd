@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Core.Utilities.Security.JWT;
+using Entities.DTOs.AuthDtos;
 using Entities.DTOs.UserDTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -119,6 +120,17 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> ResetPassword(UserResetPasswordDto userResetPasswordDto)
         {
             var result = await _authService.ResetPassword(userResetPasswordDto);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPost("forgotPasswordConfirmation")]
+        public async Task<IActionResult> ForgotPasswordConfirmation(ForgotPasswordConfirmDto dto)
+        {
+            var result = await _authService.ForgotPasswordConfirmation(dto);
             if (!result.Success)
             {
                 return BadRequest(result);

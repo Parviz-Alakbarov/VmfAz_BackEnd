@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Core.Utilities.Results;
+using Entities.Concrete.ProductEntries;
 using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -184,15 +186,25 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
-        [HttpGet("getcolors")]
+        [HttpGet("getcolors.{format}"), FormatFilter]
         public async Task<IActionResult> GetColors()
         {
+            //var result = await _settingService.GetColors();
+            //if (result != null)
+            //{
+            //    return StatusCode(200, new SuccessDataResult<Color>(new Color { HexValue="2323",Id=1,Name="sari"}));
+            //}
+            //return BadRequest(result.Message);
+
+
+
             var result = await _settingService.GetColors();
             if (result != null)
             {
                 return StatusCode(200, result);
             }
             return BadRequest(result.Message);
+
         }
     }
 }

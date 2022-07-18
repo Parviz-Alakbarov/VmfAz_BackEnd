@@ -12,7 +12,7 @@ namespace Core.Utilities.MailHelper
         public EmailMessage()
         {
             ToAdresses = new List<EmailAddress>();
-            FromAdresses = new List<EmailAddress>();
+            FromAdresses = new List<EmailAddress> { new EmailAddress { Address = "smtp.test2022@hotmail.com", Name = "VMF.az" } };
         }
 
         public List<EmailAddress> FromAdresses { get; set; }

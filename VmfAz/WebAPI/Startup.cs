@@ -33,7 +33,7 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers().AddXmlDataContractSerializerFormatters();
 
             services.AddCors();
 
