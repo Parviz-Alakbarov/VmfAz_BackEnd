@@ -2,6 +2,7 @@ using Business.Profiles;
 using Core.DependencyResolvers;
 using Core.Extensions;
 using Core.Utilities.IoC;
+using Core.Utilities.MailHelper;
 using Core.Utilities.Security.Encryption;
 using Core.Utilities.Security.JWT;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -36,6 +37,8 @@ namespace WebAPI
             services.AddControllers().AddXmlDataContractSerializerFormatters();
 
             services.AddCors();
+
+            services.Configure<EmailConfiguration>(Configuration.GetSection("EmailConfiguration"));
 
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 

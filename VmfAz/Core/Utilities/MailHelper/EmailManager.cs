@@ -8,18 +8,16 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace Core.Utilities.MailHelper
 {
     public class EmailManager : IEmailService
     {
-        public readonly IConfiguration _configuration;
-        private readonly EmailConfiguration _emailConfiguration;
-
-        public EmailManager(IConfiguration configuration)
+        EmailConfiguration _emailConfiguration;
+        public EmailManager(IOptions<EmailConfiguration> emailConfiguration)
         {
-            _configuration = configuration;
-            _emailConfiguration = _configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+            _emailConfiguration = emailConfiguration.Value;
         }
 
         public async Task SendEmail(EmailMessage emailMessage)
