@@ -14,10 +14,12 @@ namespace Core.Utilities.MailHelper
     public class EmailManager : IEmailService
     {
         public readonly IConfiguration _configuration;
+        private readonly EmailConfiguration _emailConfiguration;
 
         public EmailManager(IConfiguration configuration)
         {
             _configuration = configuration;
+            _emailConfiguration = _configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
         }
 
         public async Task SendEmail(EmailMessage emailMessage)
@@ -33,12 +35,12 @@ namespace Core.Utilities.MailHelper
             using (SmtpClient emailClient = new SmtpClient())
             {
                 emailClient.Connect(
-                    _configuration.GetSection("EmailConfiguration").GetSection("SmtpServer").Value,
-                    Convert.ToInt32(_configuration.GetSection("EmailConfiguration").GetSection("SmtpPort").Value),
+                     _emailConfiguration.SmtpServer,
+                    _emailConfiguration.SmtpPort,
                     SecureSocketOptions.StartTls);
                 emailClient.Authenticate(
-                    _configuration.GetSection("EmailConfiguration").GetSection("SenderEmail").Value, 
-                    _configuration.GetSection("EmailConfiguration").GetSection("Password").Value);
+                    _emailConfiguration.SenderEmail,
+                    _emailConfiguration.Password);
                 await emailClient.SendAsync(message);
                 emailClient.Disconnect(true);
             }
