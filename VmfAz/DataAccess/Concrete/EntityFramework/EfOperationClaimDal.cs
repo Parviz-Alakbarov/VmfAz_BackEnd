@@ -15,7 +15,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         public async Task<List<OperationClaimGetDto>> GetOperationClaimsInGetDto()
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from operationClaim in context.OperationClaims
                              select new OperationClaimGetDto
@@ -29,7 +29,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public async Task<OperationClaimGetDto> GetOperatonClaimInGetDto(int claimId)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from operationClaim in context.OperationClaims
                              where operationClaim.Id == claimId

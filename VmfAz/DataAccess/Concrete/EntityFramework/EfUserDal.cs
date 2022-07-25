@@ -15,7 +15,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         public async Task<List<OperationClaim>> GetClaims(AppUser appUser)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from operationClaim in context.OperationClaims
                              join userOperationClaim in context.UserOperationClaims
@@ -28,7 +28,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public async Task<UserGetDto> GetUserInGetDto(int userId)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from u in context.AppUsers
                              where u.IsDeleted == false && u.Id == userId

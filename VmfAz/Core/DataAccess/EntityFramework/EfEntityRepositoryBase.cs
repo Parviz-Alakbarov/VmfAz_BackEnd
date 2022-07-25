@@ -16,7 +16,7 @@ namespace Core.DataAccess.EntityFramework
     {
         public async Task Add(TEntity entity)
         {
-            using (TContext context = new TContext())
+            using (TContext context = new())
             {
                 var addEntity = context.Entry(entity);
                 addEntity.State = EntityState.Added;
@@ -26,7 +26,7 @@ namespace Core.DataAccess.EntityFramework
 
         public async Task Delete(TEntity entity)
         {
-            using (TContext context= new TContext())
+            using (TContext context = new())
             {
                 var deleteEntity = context.Entry(entity);
                 deleteEntity.State = EntityState.Deleted;
@@ -36,7 +36,7 @@ namespace Core.DataAccess.EntityFramework
 
         public async Task<List<TEntity>> GetAll(Expression<Func<TEntity, bool>> expression)
         {
-            using (TContext context = new TContext())
+            using (TContext context = new())
             {
                 return expression == null
                     ? await context.Set<TEntity>().ToListAsync()
@@ -44,19 +44,19 @@ namespace Core.DataAccess.EntityFramework
             }
         }
 
-        public async Task<List<TEntity>> GetAllWithPaginated( int pageNumber, int pageSize, Expression<Func<TEntity, bool>> expression)
+        public async Task<List<TEntity>> GetAllWithPaginated(int pageNumber, int pageSize, Expression<Func<TEntity, bool>> expression)
         {
-            using (TContext context = new TContext())
+            using (TContext context = new())
             {
                 return expression == null
-                    ? await PaginationList<TEntity>.CreateAsync( context.Set<TEntity>(), pageNumber, pageSize)
-                    : await PaginationList<TEntity>.CreateAsync( context.Set<TEntity>().Where(expression), pageNumber, pageSize);
+                    ? await PaginationList<TEntity>.CreateAsync(context.Set<TEntity>(), pageNumber, pageSize)
+                    : await PaginationList<TEntity>.CreateAsync(context.Set<TEntity>().Where(expression), pageNumber, pageSize);
             }
         }
 
         public async Task<TEntity> Get(Expression<Func<TEntity, bool>> expression)
         {
-            using (TContext context = new TContext())
+            using (TContext context = new())
             {
                 return await context.Set<TEntity>().SingleOrDefaultAsync(expression);
             }
@@ -64,7 +64,7 @@ namespace Core.DataAccess.EntityFramework
 
         public async Task Update(TEntity entity)
         {
-            using (TContext context = new TContext())
+            using (TContext context = new())
             {
                 var updateEntity = context.Entry(entity);
                 updateEntity.State = EntityState.Modified;

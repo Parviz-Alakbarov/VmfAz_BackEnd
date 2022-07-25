@@ -12,7 +12,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         public async Task<bool> CheckCountryExists(int countryId)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from country in context.Countries
                              where country.Id == countryId

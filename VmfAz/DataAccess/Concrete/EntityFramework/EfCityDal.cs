@@ -13,7 +13,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         public async Task<bool> CheckCityExists(int id)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from city in context.Cities
                              where city.Id == id
@@ -24,7 +24,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public async  Task<bool> CheckCityExistsOnCountry(int countryId, int cityId)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from city in context.Cities
                              where city.CountryId == countryId && city.Id == cityId
@@ -35,7 +35,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public async Task<List<City>> GetCitiesByCountry(int countryId)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from city in context.Cities
 

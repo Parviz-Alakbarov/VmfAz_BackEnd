@@ -15,7 +15,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         public async Task<BrandDetailDto> GetBrandDetail(int id)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from brand in context.Brands
                              where brand.Id == id
@@ -33,7 +33,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public async Task<List<BrandWithNameDto>> GetBrandsOnlyWithName()
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from brand in context.Brands
                              select new BrandWithNameDto
@@ -47,7 +47,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public async Task<List<BrandWithImageDto>> GetBrandsWithImage()
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from brand in context.Brands
                              select new BrandWithImageDto

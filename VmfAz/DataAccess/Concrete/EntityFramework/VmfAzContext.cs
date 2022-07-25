@@ -1,9 +1,12 @@
 ﻿using Core.Entities.Concrete;
+using Core.Utilities.IoC;
 using DataAccess.Configurations;
 using DataAccess.Configurations.UserConfigurations;
 using Entities.Concrete;
 using Entities.Concrete.ProductEntries;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +17,15 @@ namespace DataAccess.Concrete.EntityFramework
 {
     public class VmfAzContext : DbContext
     {
+        private readonly IConfiguration _configuration;
+        public VmfAzContext()
+        {
+            _configuration = ServiceTool.ServiceProvider.GetService<IConfiguration>();
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=DESKTOP-SEQB6S7\SQLEXPRESS;Database=VmfAzProject;Trusted_Connection=true;");
+            optionsBuilder.UseSqlServer(_configuration["ConnectionString"]);
         }
 
         public DbSet<Product> Products { get; set; }

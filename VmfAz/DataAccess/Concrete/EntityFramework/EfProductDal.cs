@@ -18,7 +18,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public async Task<ProductDetailDto> GetProductDetails(int id)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from p in context.Products
                              join b in context.Brands on p.BrandId equals b.Id
@@ -67,7 +67,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public async Task<List<ProductGetDto>> GetProductsInGetDto(int? count, Expression<Func<ProductGetDto, bool>> expression)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from p in context.Products
                              where p.IsDeleted == false
@@ -95,7 +95,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public async Task<List<ProductGetDto>> GetBestSellerProducts(int count, Expression<Func<ProductGetDto, bool>> expression)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var firstQuery = from o in context.OrderItems
                                  group o.Count by o.ProductId into g
@@ -126,7 +126,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public async Task<PaginationList<ProductGetDto>> GetProductsPaginated(UserParams userParams, int pageSize)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var query = (from p in context.Products
                              where p.IsDeleted == false
@@ -177,7 +177,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public async Task<PaginationList<ProductGetDtoAdmin>> GetProductsPaginatedAdmin(AdminParams adminParams)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var query = (from p in context.Products
                              select new ProductGetDtoAdmin

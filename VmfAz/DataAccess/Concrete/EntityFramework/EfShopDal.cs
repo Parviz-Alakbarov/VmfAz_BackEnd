@@ -14,7 +14,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         public async Task<List<Shop>> GetShopsByProduct(int productId)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from shop in context.Shops
                              join productShop in context.ProductShops

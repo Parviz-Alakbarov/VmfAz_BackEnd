@@ -16,7 +16,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         public async Task<List<OrderGetDto>> GetOrderInGetDto(Expression<Func<OrderGetDto, bool>> expression = null)
         {
-            using (VmfAzContext context = new VmfAzContext())
+            using (VmfAzContext context = new())
             {
                 var result = from order in context.Orders
                              select new OrderGetDto
